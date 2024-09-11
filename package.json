@@ -1,0 +1,44 @@
+{
+  "name": "vue-default-template",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "format": "prettier --write src/"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "@unocss/preset-rem-to-px": "^0.61.5",
+    "@unocss/reset": "^0.62.3",
+    "@vueuse/core": "^10.11.0",
+    "axios": "^1.7.2",
+    "daisyui": "^3.9.4",
+    "dayjs": "^1.11.11",
+    "element-plus": "^2.7.6",
+    "pinia": "^2.1.7",
+    "pinia-plugin-persistedstate": "^3.2.1",
+    "unocss-preset-daisy": "^7.0.0",
+    "vue": "^3.4.31",
+    "vue-router": "^4.4.0"
+  },
+  "devDependencies": {
+    "@rushstack/eslint-patch": "^1.10.3",
+    "@unocss/preset-uno": "^0.61.5",
+    "@vitejs/plugin-vue": "^5.0.5",
+    "@vue/eslint-config-prettier": "^9.0.0",
+    "ant-design-vue": "4.x",
+    "eslint": "^8.57.0",
+    "eslint-plugin-vue": "^9.27.0",
+    "prettier": "^3.3.2",
+    "sass": "^1.77.7",
+    "unocss": "^0.61.5",
+    "unocss-preset-scrollbar": "^0.3.1",
+    "unplugin-auto-import": "^0.17.6",
+    "unplugin-vue-components": "^0.27.2",
+    "vite": "^5.3.3"
+  }
+}
