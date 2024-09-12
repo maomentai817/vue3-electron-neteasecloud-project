@@ -18,6 +18,15 @@
     <div class="swap-on">😈</div>
     <div class="swap-off">😇</div>
   </label>
+  <div class="window-container">1111111111111111111</div>
 </template>
 
-<style scoped></style>
+<style scoped>
+/* electron 无边框拖动窗口 */
+.window-container {
+  -webkit-app-region: drag;
+}
+.no-drag {
+  -webkit-app-region: no-drag !important;
+}
+</style>

@@ -11,6 +11,10 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest'
   },
+  env: {
+    node: true, // 添加 node 环境支持
+    es2021: true
+  },
   rules: {
     'prettier/prettier': [
       'warn',
