@@ -1,4 +1,3 @@
-// 重置样式
 * {
   box-sizing: border-box;
 }
@@ -6,14 +5,14 @@
 html {
   height: 100%;
 }
+
 body {
   height: 100%;
   background-color: #13131a;
   color: #d2d2d2;
-  font: 1em/1.4 'Microsoft Yahei', 'PingFang SC', 'Avenir', 'Segoe UI',
-    'Hiragino Sans GB', 'STHeiti', 'Microsoft Sans Serif', 'WenQuanYi Micro Hei',
-    sans-serif;
+  font: 1em/1.4 'Microsoft Yahei', 'PingFang SC', 'Avenir', 'Segoe UI', 'Hiragino Sans GB', 'STHeiti', 'Microsoft Sans Serif', 'WenQuanYi Micro Hei', sans-serif;
 }
+
 body,
 ul,
 h1,
@@ -25,13 +24,16 @@ dd {
   padding: 0;
   margin: 0;
 }
+
 a {
   text-decoration: none;
   outline: none;
 }
+
 i {
   font-style: normal;
 }
+
 input[type='text'],
 input[type='search'],
 input[type='password'],
@@ -40,16 +42,22 @@ input[type='checkbox'] {
   outline: none;
   border: none;
   -webkit-appearance: none;
-  &::placeholder {
-    color: #ccc;
-  }
 }
+
+input[type='text']::placeholder,
+input[type='search']::placeholder,
+input[type='password']::placeholder,
+input[type='checkbox']::placeholder {
+  color: #ccc;
+}
+
 img {
   max-width: 100%;
   max-height: 100%;
   vertical-align: middle;
-  background: #ebebeb url('@/assets/images/200.png') no-repeat center / contain;
+  background: #ebebeb url("@/assets/images/200.png") no-repeat center/contain;
 }
+
 ul {
   list-style: none;
 }
@@ -64,6 +72,7 @@ ul {
   margin: 0 auto;
   position: relative;
 }
+
 .ellipsis {
   white-space: nowrap;
   text-overflow: ellipsis;

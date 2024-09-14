@@ -9,8 +9,6 @@ import pinia from '@/stores'
 import ELementPlus from 'element-plus'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 
-// 引入初始化全局样式
-// import '@/styles/common.scss'
 // 引入全局组件
 import { componentPlugin } from '@/components'
 // 引入懒加载指令
@@ -22,6 +20,10 @@ import 'ant-design-vue/dist/reset.css'
 // UnoCSS
 import '@unocss/reset/tailwind.css'
 import 'virtual:uno.css'
+// 引入初始化全局样式
+// import '@/styles/common.scss'
+// fontawesome icon
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const app = createApp(App)
 
@@ -36,5 +38,7 @@ app.use(Antd)
 app.use(componentPlugin)
 // 注册自定义插件
 app.use(lazyPlugin)
+
+app.component('font-awesome-icon', FontAwesomeIcon)
 
 app.mount('#app')

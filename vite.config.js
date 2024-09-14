@@ -10,6 +10,7 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import UnoCSS from 'unocss/vite'
 import { presetUno } from 'unocss'
 import { presetDaisy } from 'unocss-preset-daisy'
+import optimizer from 'vite-plugin-optimizer'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -20,6 +21,9 @@ export default defineConfig({
   mode: 'development',
   plugins: [
     vue(),
+    optimizer({
+      electron: `const { ipcRenderer } = require('electron'); export { ipcRenderer };`
+    }),
     UnoCSS({ presets: [presetUno(), presetDaisy()] }),
     AutoImport({
       resolvers: [
