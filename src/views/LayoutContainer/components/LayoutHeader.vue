@@ -135,4 +135,9 @@ const maximizeToggle = async () => {
   box-shadow: none;
   color: #fff;
 }
+:deep(.ant-input-affix-wrapper) {
+  &:hover {
+    border-color: #96969633;
+  }
+}
 </style>

@@ -7,7 +7,34 @@ const router = createRouter({
       path: '/',
       name: 'LayoutContainer',
       component: () => import('@/views/LayoutContainer/LayoutContainer.vue'),
-      children: []
+      redirect: '/home',
+      children: [
+        {
+          path: '/home',
+          name: 'recommendPage',
+          component: () => import('@/views/RecommendPage/RecommendPage.vue')
+        },
+        {
+          path: '/recommend',
+          name: 'winnowPage',
+          component: () => import('@/views/WinnowPage/WinnowPage.vue')
+        },
+        {
+          path: '/local',
+          name: 'localList',
+          component: () => import('@/views/LocalList/LocalList.vue')
+        },
+        {
+          path: '/history',
+          name: 'recentlyList',
+          component: () => import('@/views/RecentlyList/RecentlyList.vue')
+        },
+        {
+          path: '/cloud',
+          name: 'musicCloud',
+          component: () => import('@/views/MusicCloud/MusicCloud.vue')
+        }
+      ]
     }
   ],
   // 滚动行为
