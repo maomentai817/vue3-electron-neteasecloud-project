@@ -9,7 +9,6 @@ import {
   CloudFilled
 } from '@ant-design/icons-vue'
 import { useRouter } from 'vue-router'
-import LoginBox from './LoginBox.vue'
 
 const asideConfigRecommend = [
   {
@@ -58,9 +57,8 @@ const MenuClick = (e) => {
   router.push(e.item.originItemValue.path)
 }
 
-const loginBoxRef = ref(null)
 const login = () => {
-  loginBoxRef.value.show()
+  window.$login.show()
 }
 </script>
 
@@ -104,7 +102,6 @@ const login = () => {
         </div>
       </div>
     </div>
-    <LoginBox ref="loginBoxRef" />
   </div>
 </template>
 
@@ -126,18 +123,5 @@ const login = () => {
 :deep(.ant-menu-item-active) {
   color: #fff !important;
   background-image: linear-gradient(#ff1168, #fc3d49);
-}
-:deep(.el-dialog) {
-  backdrop-filter: blur(60px) saturate(210%);
-  background-color: rgba(40, 40, 40, 0.7);
-  height: 300px;
-}
-:deep(.el-dialog__body) {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-:deep(.el-dialog__title) {
-  color: #d2d2d2;
 }
 </style>

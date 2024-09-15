@@ -10,3 +10,6 @@ export const getLoginQr = (key, qrimg) =>
 // 二维码监测扫码状态接口
 export const getLoginQrSta = (key) =>
   instance.get(`/login/qr/check?key=${key}&noCookie=true`)
+
+// 游客登录
+export const anonimousLogin = () => instance.get('/register/anonimous')

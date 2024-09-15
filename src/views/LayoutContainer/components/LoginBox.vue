@@ -2,6 +2,7 @@
 import { ref, onUnmounted } from 'vue'
 import { getLoginQr, getLoginQrKey, getLoginQrSta } from '@/api/login'
 import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/stores'
 
 const dialogVisible = ref(false)
 const key = ref('')
@@ -9,6 +10,7 @@ const qrUrl = ref('')
 const flag = ref(false) // 是否授权中
 const isSucceed = ref(false)
 let timer = null
+const userStore = useUserStore()
 
 const init = async () => {
   const {
@@ -39,6 +41,8 @@ const init = async () => {
       ElMessage.success('授权登录成功')
       dialogVisible.value = false
       // 获取用户信息
+      userStore.getUserInfo()
+      userStore.getPlayList()
     }
   }, 3000)
   return timer
