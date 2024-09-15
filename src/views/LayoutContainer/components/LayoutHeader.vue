@@ -4,7 +4,13 @@ import {
   faWindowMaximize,
   faWindowRestore
 } from '@fortawesome/free-regular-svg-icons'
-import { CloseBold, SemiSelect } from '@element-plus/icons-vue'
+import {
+  CloseBold,
+  SemiSelect,
+  ArrowLeftBold,
+  ArrowRightBold
+} from '@element-plus/icons-vue'
+import { SearchOutlined } from '@ant-design/icons-vue'
 import { onMounted, ref } from 'vue'
 
 library.add(faWindowMaximize, faWindowRestore)
@@ -61,8 +67,27 @@ const maximizeToggle = async () => {
 <template>
   <div class="header-container">
     <div class="window-container">
-      <div class="header-content f-b">
-        <div class="left-part no-drag">搜索</div>
+      <div class="header-content f-b p-y-10">
+        <div class="left-part no-drag f-c">
+          <div class="history-nav f-c h-full m-r-10">
+            <div class="back-item arrow f-c">
+              <el-icon><ArrowLeftBold /></el-icon>
+            </div>
+            <div class="go-item arrow f-c">
+              <el-icon><ArrowRightBold /></el-icon>
+            </div>
+          </div>
+          <div class="search-container w-290">
+            <a-input
+              v-model="keyword"
+              class="search-content bg-transparent border-#96969633 p-y-8 hover:border-#96969633"
+            >
+              <template #prefix>
+                <SearchOutlined class="color-#969696 fs-20"></SearchOutlined>
+              </template>
+            </a-input>
+          </div>
+        </div>
         <div class="center-part no-drag"></div>
         <div class="right-part no-drag color-hue">
           <div class="operator f-c">
@@ -90,5 +115,24 @@ const maximizeToggle = async () => {
 .handler {
   padding: 0 15px;
   cursor: pointer;
+}
+.history-nav {
+  .arrow {
+    border: 1px solid #96969633;
+    color: #96969666;
+    margin: 0 6px;
+    padding: 12px 6px;
+    border-radius: 10px;
+  }
+}
+:deep(.ant-input) {
+  background-color: transparent;
+  color: #fff;
+  font-weight: 600;
+}
+:deep(.ant-input-affix-wrapper-focused) {
+  border-color: none;
+  box-shadow: none;
+  color: #fff;
 }
 </style>

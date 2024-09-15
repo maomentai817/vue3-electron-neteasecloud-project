@@ -5,7 +5,7 @@ import LayoutHeader from './components/LayoutHeader.vue'
 
 <template>
   <a-layout class="min-h-screen layout-style">
-    <a-layout-sider class="aside-style color-hue">
+    <a-layout-sider class="aside-style color-hue" width="235px">
       <layout-aside></layout-aside>
     </a-layout-sider>
     <a-layout class="layout-style">
@@ -30,7 +30,7 @@ import LayoutHeader from './components/LayoutHeader.vue'
   .header-style {
     background-color: #13131a;
     color: #d2d2d2;
-    padding-right: 20px;
+    padding: 0 20px;
   }
 }
 </style>
