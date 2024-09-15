@@ -9,6 +9,7 @@ import {
   CloudFilled
 } from '@ant-design/icons-vue'
 import { useRouter } from 'vue-router'
+import LoginBox from './LoginBox.vue'
 
 const asideConfigRecommend = [
   {
@@ -56,13 +57,18 @@ const router = useRouter()
 const MenuClick = (e) => {
   router.push(e.item.originItemValue.path)
 }
+
+const loginBoxRef = ref(null)
+const login = () => {
+  loginBoxRef.value.show()
+}
 </script>
 
 <template>
   <div class="aside-container fd-col p-y-10 fw-600">
     <div class="user-container p-x-25 color-hue">
       <div class="user-info-box h-80 w-full f-s cursor-pointer">
-        <div class="no-login f-s" v-if="true">
+        <div class="no-login f-s" v-if="true" @click="login">
           <div class="avatar-box f-c wh-27 rounded-50% bg-#ffffff1a">
             <el-icon :size="22"><User /></el-icon>
           </div>
@@ -98,6 +104,7 @@ const MenuClick = (e) => {
         </div>
       </div>
     </div>
+    <LoginBox ref="loginBoxRef" />
   </div>
 </template>
 
@@ -119,5 +126,18 @@ const MenuClick = (e) => {
 :deep(.ant-menu-item-active) {
   color: #fff !important;
   background-image: linear-gradient(#ff1168, #fc3d49);
+}
+:deep(.el-dialog) {
+  backdrop-filter: blur(60px) saturate(210%);
+  background-color: rgba(40, 40, 40, 0.7);
+  height: 300px;
+}
+:deep(.el-dialog__body) {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+:deep(.el-dialog__title) {
+  color: #d2d2d2;
 }
 </style>
