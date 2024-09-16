@@ -16,14 +16,21 @@ onMounted(() => {
 </script>
 
 <template>
-  <a-layout
-    class="min-h-screen layout-style"
-    :style="globalStore.backgroundStyle"
-  >
+  <a-layout class="min-h-screen layout-style">
+    <div
+      id="opacity-bg1"
+      class="background-layer fixed wh-full duration-500"
+      :style="globalStore.bgLayer1Style"
+    ></div>
+    <div
+      id="opacity-bg2"
+      class="background-layer fixed wh-full duration-500"
+      :style="globalStore.bgLayer2Style"
+    ></div>
     <a-layout-sider class="aside-style no-select bgc-#ffffff08!" width="235px">
       <layout-aside></layout-aside>
     </a-layout-sider>
-    <a-layout class="layout-style" :style="globalStore.backgroundStyle">
+    <a-layout class="layout-style">
       <a-layout-header class="header-style h-84! bg-transparent! p-x-20!">
         <layout-header></layout-header>
       </a-layout-header>
@@ -44,6 +51,16 @@ onMounted(() => {
 .layout-style {
   color: #d2d2d2;
 }
+.background-layer {
+  transition: all 0.5s ease;
+  background-size: cover;
+}
+#opacity-bg1 {
+  opacity: 1;
+}
+#opacity-bg2 {
+  opacity: 0;
+}
 :deep(.el-dialog) {
   backdrop-filter: blur(60px) saturate(210%);
   background-color: rgba(40, 40, 40, 0.7);
@@ -56,5 +73,8 @@ onMounted(() => {
 }
 :deep(.el-dialog__title) {
   color: #d2d2d2;
+}
+:deep(.ant-layout) {
+  background: transparent;
 }
 </style>

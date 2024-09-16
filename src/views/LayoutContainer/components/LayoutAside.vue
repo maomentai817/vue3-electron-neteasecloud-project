@@ -69,6 +69,7 @@ const navgateToUserCenter = async () => {
   if (userStore.userInfo === '{}') await userStore.getUserDetailInfo()
   router.push('/user')
   selectedKeys.value = ['0']
+  activeIndex.value = '-1'
   if (userStore.profile.avatarUrl) {
     getDominantColor(userStore.profile.avatarUrl).then((color) => {
       globalStore.setBackgroundStyle(color)
@@ -81,6 +82,13 @@ const listClick = (i, item) => {
   selectedKeys.value = ['0']
   activeIndex.value = i
   router.push(`/play-list?id=${item.id}&count=${item.trackCount}`)
+  if (userStore.userPlayListInfo[i].coverImgUrl) {
+    getDominantColor(userStore.userPlayListInfo[i].coverImgUrl).then(
+      (color) => {
+        globalStore.setBackgroundStyle(color)
+      }
+    )
+  }
 }
 </script>
 
