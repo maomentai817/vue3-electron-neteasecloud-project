@@ -3,9 +3,11 @@ import LayoutAside from './components/LayoutAside.vue'
 import LayoutHeader from './components/LayoutHeader.vue'
 import LoginBox from './components/LoginBox.vue'
 import { onMounted, ref } from 'vue'
+import { useGlobalStore } from '@/stores'
 
 const refresh = ref(0) // 登录成功后强制刷新页面
 const loginBoxRef = ref(null)
+const globalStore = useGlobalStore()
 onMounted(() => {
   // 初始化全局挂载 $audio
   // 初始化 全局变量 $login
@@ -14,12 +16,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <a-layout class="min-h-screen layout-style">
+  <a-layout
+    class="min-h-screen layout-style"
+    :style="globalStore.backgroundStyle"
+  >
     <a-layout-sider class="aside-style no-select bgc-#ffffff08!" width="235px">
       <layout-aside></layout-aside>
     </a-layout-sider>
-    <a-layout class="layout-style">
-      <a-layout-header class="header-style h-84! bgc-#13131a! p-x-20!">
+    <a-layout class="layout-style" :style="globalStore.backgroundStyle">
+      <a-layout-header class="header-style h-84! bg-transparent! p-x-20!">
         <layout-header></layout-header>
       </a-layout-header>
       <a-layout-content class="content-style no-select">
@@ -37,7 +42,6 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .layout-style {
-  background-color: #13131a;
   color: #d2d2d2;
 }
 :deep(.el-dialog) {

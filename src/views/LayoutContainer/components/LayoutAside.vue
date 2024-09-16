@@ -9,6 +9,8 @@ import {
   CloudFilled
 } from '@ant-design/icons-vue'
 import { useRouter } from 'vue-router'
+import { useUserStore, useGlobalStore } from '@/stores'
+import { getDominantColor } from '@/utils/getMainColor'
 
 const asideConfigRecommend = [
   {
@@ -60,19 +62,37 @@ const MenuClick = (e) => {
 const login = () => {
   window.$login.show()
 }
+const userStore = useUserStore()
+const globalStore = useGlobalStore()
+const navgateToUserCenter = () => {
+  router.push('/user')
+  selectedKeys.value = ['0']
+  if (userStore.profile.avatarUrl) {
+    getDominantColor(userStore.profile.avatarUrl).then((color) => {
+      globalStore.setBackgroundStyle(color)
+    })
+  }
+}
 </script>
 
 <template>
   <div class="aside-container fd-col p-y-10 fw-600">
-    <div class="user-container p-x-25 color-hue">
+    <div class="user-container p-x-25">
       <div class="user-info-box h-80 w-full f-s cursor-pointer">
-        <div class="no-login f-s" v-if="true" @click="login">
+        <div class="no-login f-s" v-if="!userStore.isLogin" @click="login">
           <div class="avatar-box f-c wh-27 rounded-50% bg-#ffffff1a">
             <el-icon :size="22"><User /></el-icon>
           </div>
-          <span class="text m-l-8">未登录</span>
+          <span class="text m-l-8 color-hue">未登录</span>
         </div>
-        <div class="login" v-else>登录</div>
+        <div class="login f-s" v-else @click="navgateToUserCenter">
+          <div class="avatar-box f-c wh-40 rounded-50% bg-#ffffff1a">
+            <el-avatar :src="userStore.profile.avatarUrl" />
+          </div>
+          <span class="text m-l-8 color-hue">{{
+            userStore.profile.nickname
+          }}</span>
+        </div>
       </div>
     </div>
     <div class="menu-container p-x-20 p-b-100 color-hue">

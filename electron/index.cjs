@@ -71,7 +71,6 @@ class Main {
         const url = 'http://localhost:5173' // 开发模式下的URL
         this.win.loadURL(url)
       }
-      console.log(111)
       this.win.webContents.openDevTools() // 打开开发者工具
       this.setupWindowEventListeners()
     } catch (error) {

@@ -33,6 +33,11 @@ const router = createRouter({
           path: '/cloud',
           name: 'musicCloud',
           component: () => import('@/views/MusicCloud/MusicCloud.vue')
+        },
+        {
+          path: '/user',
+          name: 'userCenter',
+          component: () => import('@/views/UserCenter/UserCenter.vue')
         }
       ]
     }

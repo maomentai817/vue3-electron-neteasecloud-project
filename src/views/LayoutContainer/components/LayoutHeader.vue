@@ -11,7 +11,8 @@ import {
   ArrowRightBold
 } from '@element-plus/icons-vue'
 import { SearchOutlined } from '@ant-design/icons-vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 library.add(faWindowMaximize, faWindowRestore)
 
@@ -62,6 +63,44 @@ const maximizeToggle = async () => {
     isFullScreen.value = !isFullScreen.value
   }
 }
+
+// 前进后退路由导航
+const canGoBack = ref(false)
+const canGoForward = ref(false)
+const router = useRouter()
+
+// 判断是否可以后退
+const updateNavigationState = () => {
+  canGoBack.value = window.history.state && window.history.length > 1
+  canGoForward.value =
+    window.history.state && router.options.history.state.forward
+}
+
+// 后退操作
+const goBack = () => {
+  if (canGoBack.value) {
+    router.back()
+  }
+}
+// 前进操作
+const goForward = () => {
+  if (canGoForward.value) {
+    router.forward()
+  }
+}
+
+// 监听页面导航变化，更新按钮状态
+onMounted(() => {
+  updateNavigationState()
+
+  // 监听路由变化
+  watch(
+    () => router.currentRoute.value,
+    () => {
+      updateNavigationState()
+    }
+  )
+})
 </script>
 
 <template>
@@ -70,10 +109,18 @@ const maximizeToggle = async () => {
       <div class="header-content f-b p-y-10">
         <div class="left-part no-drag f-c">
           <div class="history-nav f-c h-full m-r-10">
-            <div class="back-item arrow f-c">
+            <div
+              class="back-item arrow f-c"
+              :class="{ disabled: !canGoBack }"
+              @click="goBack"
+            >
               <el-icon><ArrowLeftBold /></el-icon>
             </div>
-            <div class="go-item arrow f-c">
+            <div
+              class="go-item arrow f-c"
+              :class="{ disabled: !canGoForward }"
+              @click="goForward"
+            >
               <el-icon><ArrowRightBold /></el-icon>
             </div>
           </div>
@@ -117,9 +164,12 @@ const maximizeToggle = async () => {
   cursor: pointer;
 }
 .history-nav {
+  .disabled {
+    color: #96969666 !important;
+  }
   .arrow {
     border: 1px solid #96969633;
-    color: #96969666;
+    color: #ffffff80;
     margin: 0 6px;
     padding: 12px 6px;
     border-radius: 10px;

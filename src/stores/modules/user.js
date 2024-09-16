@@ -7,17 +7,23 @@ export const useUserStore = defineStore(
   'user',
   () => {
     // state
-    const profile = ref({
-      avatarUrl: '', // 头像
-      backgroundUrl: '', // 背景图
-      nickname: '', // 昵称
-      createTime: null,
-      vipType: null,
-      userId: null
-    })
-    const isLogin = ref(false) // 是否登录
-    const userPlayListInfo = ref([]) // 用户歌单信息
-    const userLikeIds = ref([]) // 用户喜欢的歌曲id
+    const profile = ref(
+      JSON.parse(localStorage.getItem('profile')) || {
+        avatarUrl: '', // 头像
+        backgroundUrl: '', // 背景图
+        nickname: '', // 昵称
+        createTime: null,
+        vipType: null,
+        userId: null
+      }
+    )
+    const isLogin = ref(JSON.parse(localStorage.getItem('isLogin')) || false) // 是否登录
+    const userPlayListInfo = ref(
+      JSON.parse(localStorage.getItem('userPlayListInfo')) || []
+    ) // 用户歌单信息
+    const userLikeIds = ref(
+      JSON.parse(localStorage.getItem('userLikeIds')) || []
+    ) // 用户喜欢的歌曲id
     const volume = ref(JSON.parse(localStorage.getItem('volume')) || 1) // 用户当前播放器音量
     // actions
 

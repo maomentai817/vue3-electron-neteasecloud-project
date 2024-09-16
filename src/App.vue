@@ -20,7 +20,6 @@
   animation: animate 8s linear infinite;
 }
 .color-hue-none {
-  color: #fff;
   animation: none;
 }
 
