@@ -66,7 +66,8 @@ const login = () => {
 const userStore = useUserStore()
 const globalStore = useGlobalStore()
 const navgateToUserCenter = async () => {
-  if (userStore.userInfo === '{}') await userStore.getUserDetailInfo()
+  if (Object.keys(userStore.userInfo).length === 0)
+    await userStore.getUserDetailInfo()
   router.push('/user')
   selectedKeys.value = ['0']
   activeIndex.value = '-1'

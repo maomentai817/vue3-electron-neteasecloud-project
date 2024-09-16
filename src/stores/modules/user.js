@@ -34,6 +34,8 @@ export const useUserStore = defineStore(
       updateProfile(res.profile)
       // 获取用户歌单信息
       await getPlayList()
+      // 获取用户详细信息
+      await getUserDetailInfo()
     }
 
     // 获取用户详情

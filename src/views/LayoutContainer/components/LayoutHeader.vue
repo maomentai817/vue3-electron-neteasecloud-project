@@ -182,13 +182,13 @@ onMounted(() => {
   font-weight: 600;
 }
 :deep(.ant-input-affix-wrapper-focused) {
-  border-color: none;
+  border-color: #d2d2d2;
   box-shadow: none;
   color: #fff;
 }
 :deep(.ant-input-affix-wrapper) {
   &:hover {
-    border-color: #96969633;
+    border-color: #d2d2d2;
   }
 }
 </style>

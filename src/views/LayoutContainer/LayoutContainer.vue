@@ -50,10 +50,13 @@ onMounted(() => {
 <style lang="scss" scoped>
 .layout-style {
   color: #d2d2d2;
+  background: transparent;
 }
 .background-layer {
   transition: all 0.5s ease;
   background-size: cover;
+  z-index: -1;
+  filter: brightness(80%);
 }
 #opacity-bg1 {
   opacity: 1;
@@ -75,6 +78,6 @@ onMounted(() => {
   color: #d2d2d2;
 }
 :deep(.ant-layout) {
-  background: transparent;
+  background: transparent !important;
 }
 </style>
