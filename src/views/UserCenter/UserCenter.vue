@@ -1,7 +1,10 @@
 <script setup>
 import CardContainer from '@/components/modules/CardContainer/CardContainer.vue'
 import { useUserStore } from '@/stores'
+import { ref } from 'vue'
+import musicBox from './components/musicBox.vue'
 
+const activeName = ref('created')
 const userStore = useUserStore()
 </script>
 
@@ -85,7 +88,45 @@ const userStore = useUserStore()
         </div>
       </CardContainer>
     </div>
-    <div class="list-card"></div>
+    <div class="list-card m-t-30 m-x-15">
+      <CardContainer class="wh-full">
+        <div class="list-content p-20 p-t-0">
+          <el-tabs
+            v-model="activeName"
+            class="demo-tabs"
+            @tab-click="handleClick"
+          >
+            <el-tab-pane label="创建的歌单" name="created">
+              <div class="list-container f-s">
+                <div
+                  class="item m-r-20"
+                  v-for="(item, index) in userStore.userPlayListInfo"
+                  :key="index"
+                  v-show="!item.subscribed"
+                >
+                  <musicBox :music="item" v-if="!item.subscribed"></musicBox>
+                </div>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="收藏的歌单" name="collect">
+              <div class="list-container f-s">
+                <div
+                  class="item m-r-20"
+                  v-for="(item, index) in userStore.userPlayListInfo"
+                  :key="index"
+                  v-show="item.subscribed"
+                >
+                  <musicBox :music="item" v-if="item.subscribed"></musicBox>
+                </div>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="创建的音乐专栏" name="music"
+              >待补充</el-tab-pane
+            >
+          </el-tabs>
+        </div>
+      </CardContainer>
+    </div>
   </div>
 </template>
 
@@ -137,5 +178,23 @@ const userStore = useUserStore()
       color: #969696;
     }
   }
+}
+:deep(.el-tabs__nav-wrap) {
+  &::after {
+    height: 0;
+  }
+}
+:deep(.el-tabs__item) {
+  font-size: 16px;
+  color: #969696;
+  &.is-active {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 800;
+  }
+}
+:deep(.el-tabs__active-bar) {
+  background-color: #ec4141;
+  height: 2px;
 }
 </style>
