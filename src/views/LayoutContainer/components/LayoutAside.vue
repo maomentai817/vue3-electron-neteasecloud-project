@@ -56,6 +56,7 @@ const selectedKeys = ref(['1'])
 
 const router = useRouter()
 const MenuClick = (e) => {
+  activeIndex.value = '-1'
   router.push(e.item.originItemValue.path)
 }
 
@@ -64,8 +65,8 @@ const login = () => {
 }
 const userStore = useUserStore()
 const globalStore = useGlobalStore()
-const navgateToUserCenter = () => {
-  userStore.getUserDetailInfo()
+const navgateToUserCenter = async () => {
+  if (userStore.userInfo === '{}') await userStore.getUserDetailInfo()
   router.push('/user')
   selectedKeys.value = ['0']
   if (userStore.profile.avatarUrl) {
@@ -73,6 +74,13 @@ const navgateToUserCenter = () => {
       globalStore.setBackgroundStyle(color)
     })
   }
+}
+
+const activeIndex = ref('-1')
+const listClick = (i, item) => {
+  selectedKeys.value = ['0']
+  activeIndex.value = i
+  router.push(`/play-list?id=${item.id}&count=${item.trackCount}`)
 }
 </script>
 
@@ -96,11 +104,11 @@ const navgateToUserCenter = () => {
         </div>
       </div>
     </div>
-    <div class="menu-container p-x-20 p-b-100 color-hue">
+    <div class="menu-container p-x-20 p-b-100">
       <a-menu
         v-model:selectedKeys="selectedKeys"
         mode="inline"
-        class="bg-transparent"
+        class="bg-transparent color-hue"
         :items="asideConfigRecommend"
         @click="MenuClick"
       />
@@ -108,18 +116,74 @@ const navgateToUserCenter = () => {
       <a-menu
         v-model:selectedKeys="selectedKeys"
         mode="inline"
-        class="bg-transparent"
+        class="bg-transparent color-hue"
         :items="asideConfigMy"
         @click="MenuClick"
       />
-      <div class="login-menu-list color-hue-none" v-if="false">
+      <div class="login-menu-list color-hue" v-if="userStore.isLogin">
         <div class="line h-1 m-x-10 m-y-15 bgc-#ffffff1a"></div>
-        <div class="created-container fs-13 fw-400 p-l-10">
-          <div class="created-title">创建的歌单</div>
+        <div class="created-container fs-13 fw-400">
+          <div class="created-title fs-14 color-#969696 fw-600 m-b-10 ml-10">
+            创建的歌单
+          </div>
+          <div class="created-list-container fd-col">
+            <div
+              class="created-list-item"
+              v-for="(item, index) in userStore.userPlayListInfo"
+              :key="index"
+              v-show="!item.subscribed"
+            >
+              <div
+                class="list-item-content f-s mb-10 h-40 cursor-pointer"
+                v-if="!item.subscribed"
+                @click="listClick(index, item)"
+                :class="{ active: index === activeIndex }"
+              >
+                <div class="cover-img wh-34 mr-10 rounded-6">
+                  <img
+                    :src="item.coverImgUrl"
+                    alt=""
+                    class="wh-full rounded-6"
+                  />
+                </div>
+                <div class="title text-overflow f-1 fw-600 color-#d2d2d2">
+                  {{ item.name }}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="line h-1 m-x-10 m-y-15 bgc-#ffffff1a"></div>
-        <div class="collected-container fs-13 fw-400 p-l-10">
-          <div class="collected-title">收藏的歌单</div>
+        <div class="collected-container fs-13 fw-400">
+          <div class="collected-title fs-14 color-#969696 fw-600 m-b-10 ml-10">
+            收藏的歌单
+          </div>
+          <div class="collect-list-container fd-col">
+            <div
+              class="collect-list-item"
+              v-for="(item, index) in userStore.userPlayListInfo"
+              :key="index"
+              v-show="item.subscribed"
+            >
+              <div
+                class="list-item-content f-s mb-10 h-40 cursor-pointer"
+                v-if="item.subscribed"
+                @click="listClick(index, item)"
+                :class="{ active: index === activeIndex }"
+              >
+                <div class="cover-img wh-34 mr-10 rounded-6">
+                  <img
+                    :src="item.coverImgUrl"
+                    alt=""
+                    class="wh-full rounded-6"
+                  />
+                </div>
+                <div class="title text-overflow f-1 fw-600 color-#d2d2d2">
+                  {{ item.name }}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -142,6 +206,23 @@ const navgateToUserCenter = () => {
   background-image: linear-gradient(#ff1168, #fc3d49);
 }
 :deep(.ant-menu-item-active) {
+  color: #fff !important;
+  background-image: linear-gradient(#ff1168, #fc3d49);
+}
+.list-item-content {
+  padding-left: 14px;
+  border-radius: 8px;
+  &:hover {
+    color: #fff !important;
+    background-image: linear-gradient(#ff1168, #fc3d49);
+  }
+}
+.cover-img {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.active {
   color: #fff !important;
   background-image: linear-gradient(#ff1168, #fc3d49);
 }

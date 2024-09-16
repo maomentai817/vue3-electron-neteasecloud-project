@@ -91,11 +91,7 @@ const userStore = useUserStore()
     <div class="list-card m-t-30 m-x-15">
       <CardContainer class="wh-full">
         <div class="list-content p-20 p-t-0">
-          <el-tabs
-            v-model="activeName"
-            class="demo-tabs"
-            @tab-click="handleClick"
-          >
+          <el-tabs v-model="activeName" class="demo-tabs">
             <el-tab-pane label="创建的歌单" name="created">
               <div class="list-container f-s">
                 <div
@@ -104,7 +100,7 @@ const userStore = useUserStore()
                   :key="index"
                   v-show="!item.subscribed"
                 >
-                  <musicBox :music="item" v-if="!item.subscribed"></musicBox>
+                  <musicBox :music="item"></musicBox>
                 </div>
               </div>
             </el-tab-pane>
@@ -116,13 +112,13 @@ const userStore = useUserStore()
                   :key="index"
                   v-show="item.subscribed"
                 >
-                  <musicBox :music="item" v-if="item.subscribed"></musicBox>
+                  <musicBox :music="item"></musicBox>
                 </div>
               </div>
             </el-tab-pane>
             <el-tab-pane label="创建的音乐专栏" name="music"
-              >待补充</el-tab-pane
-            >
+              >待补充
+            </el-tab-pane>
           </el-tabs>
         </div>
       </CardContainer>

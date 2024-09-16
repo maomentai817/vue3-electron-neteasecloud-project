@@ -38,6 +38,11 @@ const router = createRouter({
           path: '/user',
           name: 'userCenter',
           component: () => import('@/views/UserCenter/UserCenter.vue')
+        },
+        {
+          path: 'play-list',
+          name: 'playList',
+          component: () => import('@/views/PlayList/PlayList.vue')
         }
       ]
     }

@@ -16,11 +16,16 @@
 }
 
 .color-hue {
-  color: #f75d64;
-  animation: animate 8s linear infinite;
+  /* color: #f75d64; */
+  /* animation: animate 8s linear infinite; */
+  /* animation-name: animate; */
+  /* animation-duration: 8s; */
+  /* animation-timing-function: linear; */
+  /* animation-iteration-count: infinite; */
 }
 .color-hue-none {
   animation: none;
+  filter: none;
 }
 
 .no-select {

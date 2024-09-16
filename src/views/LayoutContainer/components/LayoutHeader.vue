@@ -108,7 +108,7 @@ onMounted(() => {
     <div class="window-container">
       <div class="header-content f-b p-y-10">
         <div class="left-part no-drag f-c">
-          <div class="history-nav f-c h-full m-r-10">
+          <div class="history-nav f-c h-full m-r-10 cursor-pointer">
             <div
               class="back-item arrow f-c"
               :class="{ disabled: !canGoBack }"
@@ -136,7 +136,7 @@ onMounted(() => {
           </div>
         </div>
         <div class="center-part no-drag"></div>
-        <div class="right-part no-drag color-hue">
+        <div class="right-part no-drag color-hue color-#d2d2d2">
           <div class="operator f-c">
             <div class="handler f-c" @click="minimize">
               <el-icon><SemiSelect /></el-icon>
@@ -166,6 +166,7 @@ onMounted(() => {
 .history-nav {
   .disabled {
     color: #96969666 !important;
+    cursor: not-allowed;
   }
   .arrow {
     border: 1px solid #96969633;

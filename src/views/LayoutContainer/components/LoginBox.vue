@@ -42,7 +42,7 @@ const init = async () => {
       dialogVisible.value = false
       // 获取用户信息
       userStore.getUserInfo()
-      userStore.getPlayList()
+      // userStore.getPlayList()
     }
   }, 3000)
   return timer

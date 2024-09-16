@@ -32,6 +32,8 @@ export const useUserStore = defineStore(
     const getUserInfo = async () => {
       const res = await getUserAccount()
       updateProfile(res.profile)
+      // 获取用户歌单信息
+      await getPlayList()
     }
 
     // 获取用户详情
@@ -47,7 +49,6 @@ export const useUserStore = defineStore(
     const getPlayList = async () => {
       // TODO: 获取用户歌单信息
       const data = await getUserPlayList(profile.value.userId)
-      console.log(data)
       updateUserPlayList(data.playlist)
     }
 
