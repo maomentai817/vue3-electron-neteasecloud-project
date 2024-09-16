@@ -59,7 +59,7 @@ class Main {
           nodeIntegration: true,
           contextIsolation: false,
           enableRemoteModule: true,
-          preload: path.join(__dirname, './preload.js')
+          preload: path.join(__dirname, './preload.cjs')
         },
         frame: false // 无框窗口，通常用于自定义窗口工具栏
       })

@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { getUserAccount } from '@/api/user'
+import { getUserAccount, getUserDetail } from '@/api/user'
 import { getUserPlayList } from '@/api/music'
+import { getCity } from '@/api/user'
 
 export const useUserStore = defineStore(
   'user',
@@ -17,6 +18,7 @@ export const useUserStore = defineStore(
         userId: null
       }
     )
+    const userInfo = ref({})
     const isLogin = ref(JSON.parse(localStorage.getItem('isLogin')) || false) // 是否登录
     const userPlayListInfo = ref(
       JSON.parse(localStorage.getItem('userPlayListInfo')) || []
@@ -30,6 +32,16 @@ export const useUserStore = defineStore(
     const getUserInfo = async () => {
       const res = await getUserAccount()
       updateProfile(res.profile)
+    }
+
+    // 获取用户详情
+    const getUserDetailInfo = async () => {
+      const res = await getUserDetail(profile.value.userId)
+      userInfo.value = res
+      userInfo.value.cityName = await parseCode(userInfo.value.profile.city)
+      userInfo.value.provinceName = await parseCode(
+        userInfo.value.profile.province
+      )
     }
 
     const getPlayList = async () => {
@@ -56,6 +68,11 @@ export const useUserStore = defineStore(
     const updateUserPlayList = (val) => {
       userPlayListInfo.value = val
     }
+
+    const parseCode = async (code) => {
+      const res = await getCity(code)
+      return res.data.districts[0].name
+    }
     // getters
     return {
       profile,
@@ -63,10 +80,12 @@ export const useUserStore = defineStore(
       userPlayListInfo,
       userLikeIds,
       volume,
+      userInfo,
       updateProfile,
       updateUserPlayList,
       getUserInfo,
-      getPlayList
+      getPlayList,
+      getUserDetailInfo
     }
   },
   // 本地持久化

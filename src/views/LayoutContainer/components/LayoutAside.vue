@@ -65,6 +65,7 @@ const login = () => {
 const userStore = useUserStore()
 const globalStore = useGlobalStore()
 const navgateToUserCenter = () => {
+  userStore.getUserDetailInfo()
   router.push('/user')
   selectedKeys.value = ['0']
   if (userStore.profile.avatarUrl) {

@@ -1,5 +1,141 @@
-<script setup></script>
+<script setup>
+import CardContainer from '@/components/modules/CardContainer/CardContainer.vue'
+import { useUserStore } from '@/stores'
 
-<template>用户中心</template>
+const userStore = useUserStore()
+</script>
 
-<style lang="scss" scoped></style>
+<template>
+  <div class="user-center-container">
+    <div class="user-card flex rounded-20">
+      <CardContainer class="wh-full">
+        <div class="content flex p-x-20 p-t-20 fw-600">
+          <div class="avatar-box f-c wh-200 rounded-50% bg-#ffffff1a">
+            <div
+              class="avatar rounded-50%"
+              :style="{
+                backgroundImage: `url(${userStore.profile.avatarUrl})`
+              }"
+            ></div>
+          </div>
+          <div class="user-detail m-l-30 f-1">
+            <div class="top-contain f-b">
+              <div class="vip-info fd-col">
+                <h2 class="name fs-22 m-b-15">
+                  {{ userStore.profile.nickname }}
+                </h2>
+                <div class="level f-e fs-12 color-#13131a">
+                  <span class="bg-#f0f0f0 rounded-10 p-x-7 p-y-1 fw-700"
+                    >Lv{{ userStore.userInfo.level }}</span
+                  >
+                </div>
+              </div>
+              <div class="btn-group-container flex items-end">
+                <div class="btn">歌手页</div>
+                <div class="btn">发私信</div>
+                <div class="btn">已关注</div>
+              </div>
+            </div>
+            <div class="line h-1 m-y-15 bgc-#ffffff1f w-full"></div>
+            <div class="bottom-container fd-col">
+              <div class="info-count f-s h-50">
+                <div class="dynamic info">
+                  <div class="count">
+                    {{ userStore.userInfo.profile.eventCount }}
+                  </div>
+                  <div class="title">动态</div>
+                </div>
+                <div class="line w-1 bgc-#ffffff1f! h-full m-x-20"></div>
+                <div class="follow info">
+                  <div class="count">
+                    {{ userStore.userInfo.profile.newFollows }}
+                  </div>
+                  <div class="title">关注</div>
+                </div>
+                <div class="line w-1 bgc-#ffffff1f! h-full m-x-20"></div>
+                <div class="fans info">
+                  <div class="count">
+                    {{ userStore.userInfo.profile.followeds }}
+                  </div>
+                  <div class="title">粉丝</div>
+                </div>
+              </div>
+              <div class="region personal">
+                <div class="title">所在地区:</div>
+                <div class="content">
+                  {{
+                    userStore.userInfo.provinceName +
+                    '-' +
+                    userStore.userInfo.cityName
+                  }}
+                </div>
+              </div>
+              <div class="social personal">
+                <div class="title">社交网络:</div>
+                <div class="content">未绑定</div>
+              </div>
+              <div class="hi personal">
+                <div class="title">个人介绍:</div>
+                <div class="content">
+                  {{ userStore.userInfo.profile.signature || '暂无介绍' }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </CardContainer>
+    </div>
+    <div class="list-card"></div>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.user-card {
+  width: calc(87vw - 180px);
+  margin: 0 auto;
+  box-shadow: 0 5px 15px 5px rgb(0 0 0 / 10%);
+  transition: 0.4s;
+}
+.avatar {
+  width: 200px;
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.btn {
+  margin-left: 10px;
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid #ffffff33;
+  padding: 3px 20px;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+.personal {
+  font-size: 13px;
+  margin-bottom: 5px;
+  display: flex;
+  .content {
+    color: #969696;
+    margin-left: 10px;
+  }
+}
+.info-count {
+  margin-bottom: 15px;
+  .info {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    .count {
+      font-size: 20px;
+    }
+    .title {
+      font-size: 13px;
+      color: #969696;
+    }
+  }
+}
+</style>
