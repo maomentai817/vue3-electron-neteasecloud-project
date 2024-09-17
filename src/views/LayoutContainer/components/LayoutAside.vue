@@ -6,7 +6,8 @@ import {
   CustomerServiceFilled,
   DownloadOutlined,
   ClockCircleFilled,
-  CloudFilled
+  CloudFilled,
+  HeartFilled
 } from '@ant-design/icons-vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore, useGlobalStore } from '@/stores'
@@ -28,23 +29,32 @@ const asideConfigRecommend = [
     path: '/recommend'
   }
 ]
-const asideConfigMy = [
+const asideConfigLike = [
   {
     key: '3',
+    icon: () => h(HeartFilled),
+    label: '我喜欢的音乐',
+    title: '我喜欢的音乐',
+    path: '/play-list'
+  }
+]
+const asideConfigMy = [
+  {
+    key: '4',
     icon: () => h(DownloadOutlined),
     label: '本地与下载',
     title: '本地与下载',
     path: '/local'
   },
   {
-    key: '4',
+    key: '5',
     icon: () => h(ClockCircleFilled),
     label: '最近播放',
     title: '最近播放',
     path: '/history'
   },
   {
-    key: '5',
+    key: '6',
     icon: () => h(CloudFilled),
     label: '我的音乐云盘',
     title: '我的音乐云盘',
@@ -58,7 +68,14 @@ const router = useRouter()
 const route = useRoute()
 const MenuClick = (e) => {
   activeIndex.value = '-1'
-  router.push(e.item.originItemValue.path)
+  // router.push(e.item.originItemValue.path)
+  // console.log(e)
+
+  if (e.item.title === '我喜欢的音乐')
+    router.push(
+      `${e.item.path}?id=${userStore.userPlayListInfo.filter((item) => item.name === '我喜欢的音乐')[0].id}`
+    )
+  else router.push(e.item.path)
 }
 
 const login = () => {
@@ -69,7 +86,7 @@ const globalStore = useGlobalStore()
 const navgateToUserCenter = async () => {
   if (Object.keys(userStore.userInfo).length === 0)
     await userStore.getUserDetailInfo()
-  router.push('/user')
+  router.push(`/user?uid=${userStore.profile.userId}`)
   selectedKeys.value = ['0']
   activeIndex.value = '-1'
   if (userStore.profile.avatarUrl) {
@@ -81,9 +98,15 @@ const navgateToUserCenter = async () => {
 
 const activeIndex = ref(route.query?.id || '-1')
 watch(
-  () => route.query?.id,
+  () => route.query,
   (newVal) => {
-    if (newVal) activeIndex.value = newVal.toString()
+    if (newVal) {
+      if (newVal.like === 'true') {
+        selectedKeys.value = ['3']
+      } else {
+        activeIndex.value = newVal.id
+      }
+    }
   }
 )
 
@@ -135,6 +158,14 @@ const listClick = (i, item) => {
         v-model:selectedKeys="selectedKeys"
         mode="inline"
         class="bg-transparent color-hue"
+        :items="asideConfigLike"
+        @click="MenuClick"
+        v-if="userStore.isLogin"
+      />
+      <a-menu
+        v-model:selectedKeys="selectedKeys"
+        mode="inline"
+        class="bg-transparent color-hue"
         :items="asideConfigMy"
         @click="MenuClick"
       />
@@ -149,7 +180,7 @@ const listClick = (i, item) => {
               class="created-list-item"
               v-for="(item, index) in userStore.userPlayListInfo"
               :key="index"
-              v-show="!item.subscribed"
+              v-show="!item.subscribed && item.name !== '我喜欢的音乐'"
             >
               <div
                 class="list-item-content f-s mb-10 h-40 cursor-pointer"

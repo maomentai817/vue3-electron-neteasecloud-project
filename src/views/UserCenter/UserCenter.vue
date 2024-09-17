@@ -12,7 +12,9 @@ const globalStore = useGlobalStore()
 
 const router = useRouter()
 const navigateToList = (item) => {
-  router.push(`/play-list?id=${item.id}&count=${item.trackCount}`)
+  let like = false
+  if (item.name === '我喜欢的音乐') like = true
+  router.push(`/play-list?id=${item.id}&count=${item.trackCount}&like=${like}`)
   if (item.coverImgUrl) {
     getDominantColor(item.coverImgUrl).then((color) => {
       globalStore.setBackgroundStyle(color)
