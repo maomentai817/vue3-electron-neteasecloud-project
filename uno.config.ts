@@ -96,6 +96,7 @@ export default defineConfig({
     [
       /^wh-(\d+)$/,
       (match) => ({ width: `${match[1]}px`, height: `${match[1]}px` })
-    ]
+    ],
+    [/^bo-#([\w]+)$/, (match) => ({ border: `solid 1px #${match[1]}` })]
   ]
 })
