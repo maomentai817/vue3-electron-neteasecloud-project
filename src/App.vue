@@ -15,26 +15,16 @@
   -webkit-app-region: no-drag !important;
 }
 
-.color-hue {
-  /* color: #f75d64; */
-  /* animation: animate 8s linear infinite; */
-  /* animation-name: animate; */
-  /* animation-duration: 8s; */
-  /* animation-timing-function: linear; */
-  /* animation-iteration-count: infinite; */
-}
-.color-hue-none {
-  animation: none;
-  filter: none;
-}
-
 .no-select {
   -webkit-user-select: none; /* 针对 Safari 和 Chrome */
   -moz-user-select: none; /* 针对 Firefox */
   -ms-user-select: none; /* 针对 IE 和 Edge */
   user-select: none; /* 标准属性 */
 }
-
+.color-hue {
+  color: #f75d64;
+  animation: animate 8s linear infinite;
+}
 @keyframes animate {
   0% {
     filter: hue-rotate(0deg);

@@ -136,7 +136,7 @@ onMounted(() => {
           </div>
         </div>
         <div class="center-part no-drag"></div>
-        <div class="right-part no-drag color-hue color-#d2d2d2">
+        <div class="right-part no-drag color-hue">
           <div class="operator f-c">
             <div class="handler f-c" @click="minimize">
               <el-icon><SemiSelect /></el-icon>
@@ -189,6 +189,18 @@ onMounted(() => {
 :deep(.ant-input-affix-wrapper) {
   &:hover {
     border-color: #d2d2d2;
+  }
+}
+.color-hue {
+  color: #f75d64;
+  animation: animate 8s linear infinite;
+}
+@keyframes animate {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
   }
 }
 </style>

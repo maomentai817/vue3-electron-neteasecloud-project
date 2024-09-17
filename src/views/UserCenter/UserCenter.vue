@@ -1,11 +1,24 @@
 <script setup>
 import CardContainer from '@/components/modules/CardContainer/CardContainer.vue'
-import { useUserStore } from '@/stores'
+import { useUserStore, useGlobalStore } from '@/stores'
 import { ref } from 'vue'
 import musicBox from './components/musicBox.vue'
+import { useRouter } from 'vue-router'
+import { getDominantColor } from '@/utils/getMainColor'
 
 const activeName = ref('created')
 const userStore = useUserStore()
+const globalStore = useGlobalStore()
+
+const router = useRouter()
+const navigateToList = (item) => {
+  router.push(`/play-list?id=${item.id}&count=${item.trackCount}`)
+  if (item.coverImgUrl) {
+    getDominantColor(item.coverImgUrl).then((color) => {
+      globalStore.setBackgroundStyle(color)
+    })
+  }
+}
 </script>
 
 <template>
@@ -99,6 +112,7 @@ const userStore = useUserStore()
                   v-for="(item, index) in userStore.userPlayListInfo"
                   :key="index"
                   v-show="!item.subscribed"
+                  @click="navigateToList(item)"
                 >
                   <musicBox :music="item"></musicBox>
                 </div>
@@ -111,6 +125,7 @@ const userStore = useUserStore()
                   v-for="(item, index) in userStore.userPlayListInfo"
                   :key="index"
                   v-show="item.subscribed"
+                  @click="navigateToList(item)"
                 >
                   <musicBox :music="item"></musicBox>
                 </div>

@@ -1,6 +1,6 @@
 <script setup>
 import { User } from '@element-plus/icons-vue'
-import { h, ref } from 'vue'
+import { h, ref, watch } from 'vue'
 import {
   HomeFilled,
   CustomerServiceFilled,
@@ -8,7 +8,7 @@ import {
   ClockCircleFilled,
   CloudFilled
 } from '@ant-design/icons-vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useUserStore, useGlobalStore } from '@/stores'
 import { getDominantColor } from '@/utils/getMainColor'
 
@@ -55,6 +55,7 @@ const asideConfigMy = [
 const selectedKeys = ref(['1'])
 
 const router = useRouter()
+const route = useRoute()
 const MenuClick = (e) => {
   activeIndex.value = '-1'
   router.push(e.item.originItemValue.path)
@@ -78,10 +79,18 @@ const navgateToUserCenter = async () => {
   }
 }
 
-const activeIndex = ref('-1')
+const activeIndex = ref(route.query?.id || '-1')
+watch(
+  () => route.query?.id,
+  (newVal) => {
+    if (newVal) activeIndex.value = newVal.toString()
+  }
+)
+
 const listClick = (i, item) => {
   selectedKeys.value = ['0']
-  activeIndex.value = i
+  activeIndex.value = item.id
+
   router.push(`/play-list?id=${item.id}&count=${item.trackCount}`)
   if (userStore.userPlayListInfo[i].coverImgUrl) {
     getDominantColor(userStore.userPlayListInfo[i].coverImgUrl).then(
@@ -129,7 +138,7 @@ const listClick = (i, item) => {
         :items="asideConfigMy"
         @click="MenuClick"
       />
-      <div class="login-menu-list color-hue" v-if="userStore.isLogin">
+      <div class="login-menu-list" v-if="userStore.isLogin">
         <div class="line h-1 m-x-10 m-y-15 bgc-#ffffff1a"></div>
         <div class="created-container fs-13 fw-400">
           <div class="created-title fs-14 color-#969696 fw-600 m-b-10 ml-10">
@@ -146,7 +155,9 @@ const listClick = (i, item) => {
                 class="list-item-content f-s mb-10 h-40 cursor-pointer"
                 v-if="!item.subscribed"
                 @click="listClick(index, item)"
-                :class="{ active: index === activeIndex }"
+                :class="{
+                  active: +item.id === +activeIndex
+                }"
               >
                 <div class="cover-img wh-34 mr-10 rounded-6">
                   <img
@@ -178,12 +189,12 @@ const listClick = (i, item) => {
                 class="list-item-content f-s mb-10 h-40 cursor-pointer"
                 v-if="item.subscribed"
                 @click="listClick(index, item)"
-                :class="{ active: index === activeIndex }"
+                :class="{ active: +item.id === +activeIndex }"
               >
                 <div class="cover-img wh-34 mr-10 rounded-6">
                   <img
                     :src="item.coverImgUrl"
-                    alt=""
+                    :alt="item.name"
                     class="wh-full rounded-6"
                   />
                 </div>
@@ -226,13 +237,27 @@ const listClick = (i, item) => {
     background-image: linear-gradient(#ff1168, #fc3d49);
   }
 }
+
 .cover-img {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+  z-index: 1;
 }
 .active {
   color: #fff !important;
   background-image: linear-gradient(#ff1168, #fc3d49);
+}
+.color-hue {
+  color: #f75d64;
+  animation: animate 8s linear infinite;
+}
+@keyframes animate {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
 }
 </style>
