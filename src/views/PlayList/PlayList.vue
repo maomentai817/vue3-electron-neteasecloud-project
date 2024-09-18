@@ -2,9 +2,9 @@
 import { useRoute, useRouter } from 'vue-router'
 import { getPlayListDetail, getSongListDetail } from '@/api/music'
 import { watch, ref, onMounted } from 'vue'
-// import { useUserStore } from '@/stores'
 import { formatTimestamp, formatNumber } from '@/utils/format'
 import ListContent from './components/ListContent.vue'
+import { useIntersectionObserver } from '@vueuse/core'
 
 // const userStore = useUserStore()
 const route = useRoute()
@@ -20,8 +20,6 @@ onMounted(async () => {
   loading.value = true
   const res = await getPlayListDetail(route.query.id)
   playList.value = res.playlist
-  // console.log(playList.value)
-  // console.log(route)
   // 页面挂载时,先行获取歌曲数据
   const songRes = await getSongListDetail(
     route.query.id,
@@ -38,8 +36,6 @@ watch(
       loading.value = true
       const res = await getPlayListDetail(newVal.id)
       playList.value = res.playlist
-      // console.log(playList.value)
-      // console.log(route)
       // 切换歌单重新获取数据
       page.value = 0
       songList.value = []
@@ -50,11 +46,26 @@ watch(
       )
       songList.value = songRes.songs
       loading.value = false
-      // console.log(songList.value)
     }
   }
 )
 // 无限滚动
+const listBottom = ref(null)
+useIntersectionObserver(listBottom, async ([{ isIntersecting }]) => {
+  if (isIntersecting) {
+    // 触底
+    loading.value = true
+    // 请求下一页
+    page.value += 1
+    const songRes = await getSongListDetail(
+      route.query.id,
+      page.value * pageSize,
+      pageSize
+    )
+    songList.value = [...songList.value, ...songRes.songs]
+    loading.value = false
+  }
+})
 
 // 跳转歌单创建者中心
 const navigateToUserCenter = (id) => {
@@ -114,8 +125,9 @@ const navigateToUserCenter = (id) => {
         </div>
       </div>
     </div>
-    <div class="play-list-content f-1 p-35">
+    <div class="play-list-content f-1 p-35" ref="playListContent">
       <ListContent :songList="songList" :loading="loading" />
+      <div class="bottom h-1" ref="listBottom"></div>
     </div>
   </div>
 </template>
