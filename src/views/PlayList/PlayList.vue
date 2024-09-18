@@ -21,6 +21,7 @@ onMounted(async () => {
   const res = await getPlayListDetail(route.query.id)
   playList.value = res.playlist
   // 页面挂载时,先行获取歌曲数据
+  page.value = 0
   const songRes = await getSongListDetail(
     route.query.id,
     page.value * pageSize,
@@ -46,6 +47,7 @@ watch(
       )
       songList.value = songRes.songs
       loading.value = false
+      console.log(playList.value)
     }
   }
 )
@@ -54,16 +56,19 @@ const listBottom = ref(null)
 useIntersectionObserver(listBottom, async ([{ isIntersecting }]) => {
   if (isIntersecting) {
     // 触底
-    loading.value = true
-    // 请求下一页
-    page.value += 1
-    const songRes = await getSongListDetail(
-      route.query.id,
-      page.value * pageSize,
-      pageSize
-    )
-    songList.value = [...songList.value, ...songRes.songs]
-    loading.value = false
+    // 判断是否加载完毕
+    if (songList.value.length < playList.value.trackCount) {
+      loading.value = true
+      // 请求下一页
+      page.value += 1
+      const songRes = await getSongListDetail(
+        route.query.id,
+        page.value * pageSize,
+        pageSize
+      )
+      songList.value = [...songList.value, ...songRes.songs]
+      loading.value = false
+    }
   }
 })
 
