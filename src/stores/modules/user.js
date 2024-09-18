@@ -76,6 +76,8 @@ export const useUserStore = defineStore(
 
     const parseCode = async (code) => {
       const res = await getCity(code)
+      // console.log(res.data)
+      if (res.data.districts.length === 0) return '未知'
       return res.data.districts[0].name
     }
 
@@ -103,7 +105,8 @@ export const useUserStore = defineStore(
       getPlayList,
       getUserDetailInfo,
       getLikeListInfo,
-      addLikeSong
+      addLikeSong,
+      parseCode
     }
   },
   // 本地持久化

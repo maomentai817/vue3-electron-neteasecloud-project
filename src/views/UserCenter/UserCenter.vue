@@ -1,10 +1,12 @@
 <script setup>
 import CardContainer from '@/components/modules/CardContainer/CardContainer.vue'
 import { useUserStore, useGlobalStore } from '@/stores'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import musicBox from './components/musicBox.vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { getDominantColor } from '@/utils/getMainColor'
+import { getUserPlayList } from '@/api/music'
+import { getUserDetail } from '@/api/user'
 
 const activeName = ref('created')
 const userStore = useUserStore()
@@ -25,6 +27,34 @@ const navigateToList = (item) => {
     })
   }
 }
+
+// 他人用户中心
+const route = useRoute()
+const playListInfo = ref([])
+const userInfo = ref({})
+onMounted(async () => {
+  if (+route.query.uid !== userStore.profile.userId) {
+    const { playlist } = await getUserPlayList(+route.query.uid)
+    playListInfo.value = playlist
+    const res = await getUserDetail(+route.query.uid)
+    userInfo.value = res.profile
+    userInfo.value.level = res.level
+  } else {
+    playListInfo.value = userStore.userPlayListInfo
+    userInfo.value = userStore.userInfo.profile
+    userInfo.value.level = userStore.userInfo.level
+  }
+  // 获取省份信息
+  userInfo.value.cityName = await userStore.parseCode(userInfo.value.city)
+  userInfo.value.provinceName = await userStore.parseCode(
+    userInfo.value.province
+  )
+  if (userInfo.value.avatarUrl) {
+    getDominantColor(userInfo.value.avatarUrl).then((color) => {
+      globalStore.setBackgroundStyle(color)
+    })
+  }
+})
 </script>
 
 <template>
@@ -36,7 +66,7 @@ const navigateToList = (item) => {
             <div
               class="avatar rounded-50%"
               :style="{
-                backgroundImage: `url(${userStore.profile.avatarUrl})`
+                backgroundImage: `url(${userInfo.avatarUrl})`
               }"
             ></div>
           </div>
@@ -44,11 +74,11 @@ const navigateToList = (item) => {
             <div class="top-contain f-b">
               <div class="vip-info fd-col">
                 <h2 class="name fs-22 m-b-15">
-                  {{ userStore.profile.nickname }}
+                  {{ userInfo.nickname }}
                 </h2>
                 <div class="level f-e fs-12 color-#13131a">
                   <span class="bg-#f0f0f0 rounded-10 p-x-7 p-y-1 fw-700"
-                    >Lv{{ userStore.userInfo.level }}</span
+                    >Lv{{ userInfo.level }}</span
                   >
                 </div>
               </div>
@@ -63,21 +93,21 @@ const navigateToList = (item) => {
               <div class="info-count f-s h-50">
                 <div class="dynamic info">
                   <div class="count">
-                    {{ userStore.userInfo.profile.eventCount }}
+                    {{ userInfo.eventCount }}
                   </div>
                   <div class="title">动态</div>
                 </div>
                 <div class="line w-1 bgc-#ffffff1f! h-full m-x-20"></div>
                 <div class="follow info">
                   <div class="count">
-                    {{ userStore.userInfo.profile.newFollows }}
+                    {{ userInfo.newFollows }}
                   </div>
                   <div class="title">关注</div>
                 </div>
                 <div class="line w-1 bgc-#ffffff1f! h-full m-x-20"></div>
                 <div class="fans info">
                   <div class="count">
-                    {{ userStore.userInfo.profile.followeds }}
+                    {{ userInfo.followeds }}
                   </div>
                   <div class="title">粉丝</div>
                 </div>
@@ -85,11 +115,7 @@ const navigateToList = (item) => {
               <div class="region personal">
                 <div class="title">所在地区:</div>
                 <div class="content">
-                  {{
-                    userStore.userInfo.provinceName +
-                    '-' +
-                    userStore.userInfo.cityName
-                  }}
+                  {{ userInfo.provinceName + '-' + userInfo.cityName }}
                 </div>
               </div>
               <div class="social personal">
@@ -99,7 +125,7 @@ const navigateToList = (item) => {
               <div class="hi personal">
                 <div class="title">个人介绍:</div>
                 <div class="content">
-                  {{ userStore.userInfo.profile.signature || '暂无介绍' }}
+                  {{ userInfo.signature || '暂无介绍' }}
                 </div>
               </div>
             </div>
@@ -115,7 +141,7 @@ const navigateToList = (item) => {
               <div class="list-container flex flex-wrap justify-start">
                 <div
                   class="item w-25%"
-                  v-for="(item, index) in userStore.userPlayListInfo"
+                  v-for="(item, index) in playListInfo"
                   :key="index"
                   v-show="!item.subscribed"
                   @click="navigateToList(item)"
@@ -128,7 +154,7 @@ const navigateToList = (item) => {
               <div class="list-container flex flex-wrap justify-start">
                 <div
                   class="item w-25%"
-                  v-for="(item, index) in userStore.userPlayListInfo"
+                  v-for="(item, index) in playListInfo"
                   :key="index"
                   v-show="item.subscribed"
                   @click="navigateToList(item)"

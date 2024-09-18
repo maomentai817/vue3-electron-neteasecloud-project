@@ -60,7 +60,7 @@ onMounted(() => {
   transition: all 0.5s ease 0s;
   background-size: cover;
   // z-index: -1;
-  filter: brightness(60%);
+  filter: brightness(90%);
   // transform: translateY(-40%);
 }
 
