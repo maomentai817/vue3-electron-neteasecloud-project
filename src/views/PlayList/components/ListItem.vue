@@ -38,8 +38,9 @@ const setLike = async () => {
     <div class="item-content f-s h-70 fs-14 fw-600 color-#969696">
       <div class="id w-45">{{ index.toString().padStart(2, '0') }}</div>
       <div class="title f-c w-45% mr-2% text-overflow">
-        <div class="cover-img wh-50 rounded-8 mr-10">
-          <img :src="item.al.picUrl" alt="" class="wh-full rounded-8" />
+        <div class="cover-img wh-50 rounded-8 mr-10 bgc-#d2d2d2">
+          <!-- <img :src="item.al.picUrl" alt="" class="wh-full rounded-8" /> -->
+          <img v-img-lazy="item.al.picUrl" alt="" class="wh-full rounded-8" />
         </div>
         <div class="song-info f-1">
           <div class="song-name color-#d2d2d2 text-overflow">
