@@ -7,6 +7,10 @@
 </template>
 
 <style>
+#app {
+  background-color: #13131a;
+  position: relative;
+}
 /* electron 无边框拖动窗口 */
 .window-container {
   -webkit-app-region: drag;

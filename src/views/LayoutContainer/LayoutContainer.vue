@@ -19,12 +19,12 @@ onMounted(() => {
   <a-layout class="min-h-screen layout-style">
     <div
       id="opacity-bg1"
-      class="background-layer fixed wh-full duration-500"
+      class="background-layer fixed wh-full"
       :style="globalStore.bgLayer1Style"
     ></div>
     <div
       id="opacity-bg2"
-      class="background-layer fixed wh-full duration-500"
+      class="background-layer fixed wh-full"
       :style="globalStore.bgLayer2Style"
     ></div>
     <a-layout-sider class="aside-style no-select bgc-#ffffff08!" width="235px">
@@ -50,14 +50,16 @@ onMounted(() => {
 <style lang="scss" scoped>
 .layout-style {
   color: #d2d2d2;
-  background: transparent;
+  z-index: 2;
+  background-color: inherit;
 }
 .background-layer {
-  transition: all 0.5s ease;
+  transition: all 0.5s ease 0s;
   background-size: cover;
-  z-index: -1;
-  filter: brightness(80%);
+  // z-index: -1;
+  // filter: brightness(80%);
 }
+
 #opacity-bg1 {
   opacity: 1;
 }

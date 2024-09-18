@@ -18,8 +18,8 @@ export const useGlobalStore = defineStore(
     // actions
     const setBackgroundStyle = (rgbColor) => {
       const newStyle = {
-        backgroundImage: `linear-gradient(to bottom, #13131a, ${rgbColor})`,
-        // backgroundImage: `linear-gradient(to bottom, ${rgbColor}, #13131a)`,
+        // backgroundImage: `linear-gradient(to bottom, #13131a, ${rgbColor})`,
+        backgroundImage: `linear-gradient(to bottom, ${rgbColor}, #13131a)`,
         opacity: '1'
       }
 

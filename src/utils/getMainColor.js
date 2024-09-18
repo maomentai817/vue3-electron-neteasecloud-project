@@ -31,7 +31,7 @@ export function getDominantColor(
         const palette = colorThief.getPalette(img, colorCount)
         const dominantColor =
           palette.find((color) => !isColorTooBright(color)) || palette[0]
-        const rgbColor = `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]}, 1.2)`
+        const rgbColor = `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`
         resolve(rgbColor)
       } catch (error) {
         reject(`Failed to get color from image: ${error}`)

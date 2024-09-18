@@ -15,7 +15,6 @@ onMounted(async () => {
   )[0]
   const res = await getPlayListDetail(route.query.id)
   playList.value = res.playlist
-  console.log(playShortInfo)
 })
 watch(
   () => route.query,
@@ -27,7 +26,6 @@ watch(
       const res = await getPlayListDetail(newVal.id)
       playList.value = res.playlist
     }
-    console.log(playShortInfo)
   }
 )
 </script>
@@ -41,7 +39,6 @@ watch(
           alt=""
           class="wh-full rounded-10"
         />
-        {{ playShortInfo }}
       </div>
       <div class="play-list-info m-l-20 fd-col m-t-5">
         <div class="songs-name f-s">
@@ -75,7 +72,7 @@ watch(
         </div>
         <div class="songs-handle m-t-10">
           <div class="btn-group1">
-            <div class="btn bgi">播放全部</div>
+            <div class="btn bgi ml-0!">播放全部</div>
             <div class="btn">创建</div>
             <div class="btn">分享</div>
             <div class="btn">下载全部</div>
