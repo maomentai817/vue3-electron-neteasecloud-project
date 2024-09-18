@@ -114,7 +114,15 @@ watch(
     }
   }
 )
-
+watch(
+  () => route.path,
+  (newVal) => {
+    if (newVal === '/user') {
+      selectedKeys.value = ['0']
+      activeIndex.value = '-1'
+    }
+  }
+)
 const listClick = (i, item) => {
   selectedKeys.value = ['0']
   activeIndex.value = item.id

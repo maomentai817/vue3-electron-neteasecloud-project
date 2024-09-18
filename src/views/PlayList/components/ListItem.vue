@@ -42,7 +42,9 @@ const setLike = async () => {
           <img :src="item.al.picUrl" alt="" class="wh-full rounded-8" />
         </div>
         <div class="song-info f-1">
-          <div class="song-name color-#d2d2d2">{{ item.name }}</div>
+          <div class="song-name color-#d2d2d2 text-overflow">
+            {{ item.name }}
+          </div>
           <div class="singers f-s">
             <span class="singer" v-for="(singer, i) in item.ar" :key="i">
               <span class="hover:color-#d2d2d2 cursor-pointer">{{
@@ -78,5 +80,8 @@ const setLike = async () => {
 <style lang="scss" scoped>
 :deep(#heart1 svg) {
   fill: #eb4141;
+}
+.song-info {
+  width: calc(45% - 50px);
 }
 </style>

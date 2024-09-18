@@ -2,12 +2,11 @@
 import { useRoute, useRouter } from 'vue-router'
 import { getPlayListDetail, getSongListDetail } from '@/api/music'
 import { watch, ref, onMounted } from 'vue'
-import { useUserStore } from '@/stores'
+// import { useUserStore } from '@/stores'
 import { formatTimestamp, formatNumber } from '@/utils/format'
 import ListContent from './components/ListContent.vue'
 
-const userStore = useUserStore()
-const playShortInfo = ref({})
+// const userStore = useUserStore()
 const route = useRoute()
 const router = useRouter()
 const playList = ref([])
@@ -19,11 +18,9 @@ const songList = ref([])
 const loading = ref(false)
 onMounted(async () => {
   loading.value = true
-  playShortInfo.value = userStore.userPlayListInfo.filter(
-    (item) => +item.id === +route.query.id
-  )[0]
   const res = await getPlayListDetail(route.query.id)
   playList.value = res.playlist
+  // console.log(playList.value)
   // console.log(route)
   // 页面挂载时,先行获取歌曲数据
   const songRes = await getSongListDetail(
@@ -39,9 +36,6 @@ watch(
   async (newVal) => {
     if (newVal) {
       loading.value = true
-      playShortInfo.value = userStore.userPlayListInfo.filter(
-        (item) => +item.id === +newVal.id
-      )[0]
       const res = await getPlayListDetail(newVal.id)
       playList.value = res.playlist
       // console.log(playList.value)
@@ -74,13 +68,9 @@ const navigateToUserCenter = (id) => {
   >
     <div class="play-list-header p-x-35 flex">
       <div class="cover-img wh-220 rounded-10 relative">
-        <img
-          :src="playShortInfo.coverImgUrl"
-          alt=""
-          class="wh-full rounded-10"
-        />
+        <img :src="playList.coverImgUrl" alt="" class="wh-full rounded-10" />
         <span class="count absolute top-8 right-10 fs-15 fw-600 color-#fff">
-          {{ formatNumber(playShortInfo.playCount) }}
+          {{ formatNumber(playList.playCount) }}
         </span>
       </div>
       <div class="play-list-info m-l-20 fd-col m-t-5">
@@ -91,13 +81,13 @@ const navigateToUserCenter = (id) => {
             歌单
           </div>
           <div class="name ml-10 fs-25 fw-600 color-#fff">
-            {{ playShortInfo.name }}
+            {{ playList.name }}
           </div>
         </div>
         <div class="songs-info f-s fs-12 m-t-5">
           <div class="creator-avatar wh-25 rounded-50%">
             <img
-              :src="playShortInfo?.creator?.avatarUrl"
+              :src="playList?.creator?.avatarUrl"
               alt=""
               class="wh-full rounded-50"
             />
@@ -105,12 +95,12 @@ const navigateToUserCenter = (id) => {
           <div class="creator-info m-l-10 flex fw-600">
             <div
               class="creator-name color-#85b9e6 cursor-pointer hover: color-#96c8e6"
-              @click="navigateToUserCenter(playShortInfo?.creator?.userId)"
+              @click="navigateToUserCenter(playList?.creator?.userId)"
             >
-              {{ playShortInfo?.creator?.nickname }}
+              {{ playList?.creator?.nickname }}
             </div>
             <div class="creator-create-time ml-10">
-              {{ formatTimestamp(playShortInfo.createTime) }} 创建
+              {{ formatTimestamp(playList.createTime) }} 创建
             </div>
           </div>
         </div>

@@ -13,7 +13,7 @@ defineProps({
   >
     <div class="img-box rounded-10 m-b-5 relative">
       <img :src="music.coverImgUrl" alt="" class="wh-full rounded-10" />
-      <div class="play-btn-box z-2 absolute f-c">
+      <div class="play-btn-box z-2 absolute f-c!">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 384 512"
