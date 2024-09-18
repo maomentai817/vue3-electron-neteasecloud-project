@@ -10,6 +10,7 @@
 #app {
   background-color: #13131a;
   position: relative;
+  height: 100%;
 }
 /* electron 无边框拖动窗口 */
 .window-container {

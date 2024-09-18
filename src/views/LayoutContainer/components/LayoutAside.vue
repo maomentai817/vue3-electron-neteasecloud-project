@@ -152,7 +152,7 @@ const collapseKey = ref(['1', '2'])
         </div>
       </div>
     </div>
-    <div class="menu-container p-x-20 p-b-20">
+    <div class="menu-container p-x-20 p-b-20 f-1 overflow-y-auto">
       <a-menu
         v-model:selectedKeys="selectedKeys"
         mode="inline"
@@ -350,5 +350,11 @@ const collapseKey = ref(['1', '2'])
 :deep(.ant-collapse-content-box) {
   padding: 0 !important;
   padding-right: 16px !important;
+}
+.menu-container {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 </style>

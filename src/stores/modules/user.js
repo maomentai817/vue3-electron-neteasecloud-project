@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { getUserAccount, getUserDetail } from '@/api/user'
-import { getUserPlayList } from '@/api/music'
+import { getUserPlayList, getLikeList, setLikeSong } from '@/api/music'
 import { getCity } from '@/api/user'
 
 export const useUserStore = defineStore(
@@ -23,8 +23,8 @@ export const useUserStore = defineStore(
     const userPlayListInfo = ref(
       JSON.parse(localStorage.getItem('userPlayListInfo')) || []
     ) // 用户歌单信息
-    const userLikeIds = ref(
-      JSON.parse(localStorage.getItem('userLikeIds')) || []
+    const userLikeList = ref(
+      JSON.parse(localStorage.getItem('userLikeList')) || []
     ) // 用户喜欢的歌曲id
     const volume = ref(JSON.parse(localStorage.getItem('volume')) || 1) // 用户当前播放器音量
     // actions
@@ -36,6 +36,8 @@ export const useUserStore = defineStore(
       await getPlayList()
       // 获取用户详细信息
       await getUserDetailInfo()
+      // 获取用户喜欢的歌曲
+      await getLikeListInfo()
     }
 
     // 获取用户详情
@@ -76,19 +78,32 @@ export const useUserStore = defineStore(
       const res = await getCity(code)
       return res.data.districts[0].name
     }
+
+    // 获取喜欢列表
+    const getLikeListInfo = async () => {
+      const res = await getLikeList(profile.value.userId)
+      userLikeList.value = res
+    }
+    // 添加喜欢歌曲
+    const addLikeSong = async (id, like = true) => {
+      await setLikeSong(id, like)
+      await getLikeListInfo()
+    }
     // getters
     return {
       profile,
       isLogin,
       userPlayListInfo,
-      userLikeIds,
+      userLikeList,
       volume,
       userInfo,
       updateProfile,
       updateUserPlayList,
       getUserInfo,
       getPlayList,
-      getUserDetailInfo
+      getUserDetailInfo,
+      getLikeListInfo,
+      addLikeSong
     }
   },
   // 本地持久化

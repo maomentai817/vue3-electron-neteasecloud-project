@@ -1,44 +1,81 @@
 <script setup>
 import { useRoute } from 'vue-router'
-import { getPlayListDetail } from '@/api/music'
+import { getPlayListDetail, getSongListDetail } from '@/api/music'
 import { watch, ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores'
-import { formatTimestamp } from '@/utils/formatTimestamp'
+import { formatTimestamp, formatNumber } from '@/utils/format'
+import ListContent from './components/ListContent.vue'
 
 const userStore = useUserStore()
 const playShortInfo = ref({})
 const route = useRoute()
 const playList = ref([])
+// 分页获取歌单详情
+const pageSize = 50
+const page = ref(0)
+const songList = ref([])
+// loading
+const loading = ref(false)
 onMounted(async () => {
+  loading.value = true
   playShortInfo.value = userStore.userPlayListInfo.filter(
     (item) => +item.id === +route.query.id
   )[0]
   const res = await getPlayListDetail(route.query.id)
   playList.value = res.playlist
+  // console.log(route)
+  // 页面挂载时,先行获取歌曲数据
+  const songRes = await getSongListDetail(
+    route.query.id,
+    page.value * pageSize,
+    pageSize
+  )
+  songList.value = songRes.songs
+  loading.value = false
 })
 watch(
   () => route.query,
   async (newVal) => {
     if (newVal) {
+      loading.value = true
       playShortInfo.value = userStore.userPlayListInfo.filter(
         (item) => +item.id === +newVal.id
       )[0]
       const res = await getPlayListDetail(newVal.id)
       playList.value = res.playlist
+      // console.log(playList.value)
+      // console.log(route)
+      // 切换歌单重新获取数据
+      page.value = 0
+      songList.value = []
+      const songRes = await getSongListDetail(
+        route.query.id,
+        page.value * pageSize,
+        pageSize
+      )
+      songList.value = songRes.songs
+      loading.value = false
+      // console.log(songList.value)
     }
   }
 )
+// 无限滚动
 </script>
 
 <template>
-  <div class="play-list-container fd-col duration-1000">
+  <div
+    class="play-list-container fd-col duration-1000 wh-full overflow-hidden overflow-y-auto"
+  >
     <div class="play-list-header p-x-35 flex">
-      <div class="cover-img wh-220 rounded-10">
+      <div class="cover-img wh-220 rounded-10 relative">
         <img
           :src="playShortInfo.coverImgUrl"
           alt=""
           class="wh-full rounded-10"
         />
+        <span class="count absolute top-8 right-10 fs-15 fw-600 color-#fff">
+          {{ formatNumber(playShortInfo.playCount) }}
+        </span>
       </div>
       <div class="play-list-info m-l-20 fd-col m-t-5">
         <div class="songs-name f-s">
@@ -80,7 +117,9 @@ watch(
         </div>
       </div>
     </div>
-    <div class="play-list-content f-1">歌单</div>
+    <div class="play-list-content f-1 p-35">
+      <ListContent :songList="songList" :loading="loading" />
+    </div>
   </div>
 </template>
 
@@ -97,5 +136,14 @@ watch(
 }
 .bgi {
   background-image: linear-gradient(#ff1168, #fc3d49);
+}
+:deep(.el-loading-mask) {
+  background-color: transparent;
+}
+.play-list-container {
+  scrollbar-width: none;
+  &:state(webkit-scrollbar) {
+    display: none;
+  }
 }
 </style>

@@ -16,7 +16,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <a-layout class="min-h-screen layout-style">
+  <a-layout class="min-h-screen layout-style h-full">
     <div
       id="opacity-bg1"
       class="background-layer fixed wh-full"
@@ -27,14 +27,17 @@ onMounted(() => {
       class="background-layer fixed wh-full"
       :style="globalStore.bgLayer2Style"
     ></div>
-    <a-layout-sider class="aside-style no-select bgc-#ffffff08!" width="235px">
-      <layout-aside></layout-aside>
+    <a-layout-sider
+      class="aside-style no-select bgc-#ffffff08! h-full"
+      width="235px"
+    >
+      <layout-aside class="h-full"></layout-aside>
     </a-layout-sider>
-    <a-layout class="layout-style">
-      <a-layout-header class="header-style h-84! bg-transparent! p-x-20!">
+    <a-layout class="layout-style fd-col h-full">
+      <a-layout-header class="header-style h-90! bg-transparent! p-x-20!">
         <layout-header></layout-header>
       </a-layout-header>
-      <a-layout-content class="content-style no-select">
+      <a-layout-content class="content-style no-select f-1!">
         <!-- 二级路由出口 -->
         <router-view v-slot="{ Component }">
           <!--          <keep-alive>-->
@@ -57,7 +60,8 @@ onMounted(() => {
   transition: all 0.5s ease 0s;
   background-size: cover;
   // z-index: -1;
-  // filter: brightness(80%);
+  filter: brightness(60%);
+  // transform: translateY(-40%);
 }
 
 #opacity-bg1 {
@@ -81,5 +85,14 @@ onMounted(() => {
 }
 :deep(.ant-layout) {
   background: transparent !important;
+}
+.content-style {
+  height: calc(100% - 60px);
+  overflow: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+  &:state(webkit-scrollbar) {
+    display: none;
+  }
 }
 </style>
