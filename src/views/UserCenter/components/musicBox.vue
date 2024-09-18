@@ -8,7 +8,9 @@ defineProps({
 </script>
 
 <template>
-  <div class="music-container fd-col items-center cursor-pointer">
+  <div
+    class="music-container fd-col items-center cursor-pointer w-15vw h-15v mb-20"
+  >
     <div class="img-box rounded-10 m-b-5 relative">
       <img :src="music.coverImgUrl" alt="" class="wh-full rounded-10" />
       <div class="play-btn-box z-2 absolute f-c">
@@ -23,7 +25,7 @@ defineProps({
         </svg>
       </div>
     </div>
-    <div class="title fw-600">{{ music.name }}</div>
+    <div class="title fw-600 f-1">{{ music.name }}</div>
   </div>
 </template>
 

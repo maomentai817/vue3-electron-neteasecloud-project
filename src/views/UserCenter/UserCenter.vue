@@ -12,9 +12,13 @@ const globalStore = useGlobalStore()
 
 const router = useRouter()
 const navigateToList = (item) => {
-  let like = false
-  if (item.name === '我喜欢的音乐') like = true
+  // 使用正则表达式匹配以'喜欢的音乐'结尾的名称
+  const like = /喜欢的音乐$/.test(item.name)
+
+  // 路由跳转，并传递 `id`、`trackCount` 以及 `like` 参数
   router.push(`/play-list?id=${item.id}&count=${item.trackCount}&like=${like}`)
+
+  // 如果有封面图片，提取主色调并设置背景样式
   if (item.coverImgUrl) {
     getDominantColor(item.coverImgUrl).then((color) => {
       globalStore.setBackgroundStyle(color)
@@ -103,14 +107,14 @@ const navigateToList = (item) => {
         </div>
       </CardContainer>
     </div>
-    <div class="list-card m-t-30 m-x-15">
+    <div class="list-card m-y-30 m-x-15">
       <CardContainer class="wh-full">
         <div class="list-content p-20 p-t-0">
           <el-tabs v-model="activeName" class="demo-tabs">
             <el-tab-pane label="创建的歌单" name="created">
-              <div class="list-container f-s">
+              <div class="list-container flex flex-wrap justify-start">
                 <div
-                  class="item m-r-20"
+                  class="item w-25%"
                   v-for="(item, index) in userStore.userPlayListInfo"
                   :key="index"
                   v-show="!item.subscribed"
@@ -121,9 +125,9 @@ const navigateToList = (item) => {
               </div>
             </el-tab-pane>
             <el-tab-pane label="收藏的歌单" name="collect">
-              <div class="list-container f-s">
+              <div class="list-container flex flex-wrap justify-start">
                 <div
-                  class="item m-r-20"
+                  class="item w-25%"
                   v-for="(item, index) in userStore.userPlayListInfo"
                   :key="index"
                   v-show="item.subscribed"

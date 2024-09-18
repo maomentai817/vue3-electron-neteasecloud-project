@@ -68,14 +68,19 @@ const router = useRouter()
 const route = useRoute()
 const MenuClick = (e) => {
   activeIndex.value = '-1'
-  // router.push(e.item.originItemValue.path)
-  // console.log(e)
+  const musicTitleRegex = /喜欢的音乐$/ // 匹配以'喜欢的音乐'结尾的字符串
 
-  if (e.item.title === '我喜欢的音乐')
-    router.push(
-      `${e.item.path}?id=${userStore.userPlayListInfo.filter((item) => item.name === '我喜欢的音乐')[0].id}`
+  if (musicTitleRegex.test(e.item.title)) {
+    const playlist = userStore.userPlayListInfo.find((item) =>
+      musicTitleRegex.test(item.name)
     )
-  else router.push(e.item.path)
+
+    if (playlist) {
+      router.push(`${e.item.path}?id=${playlist.id}`)
+    }
+  } else {
+    router.push(e.item.path)
+  }
 }
 
 const login = () => {
@@ -123,6 +128,8 @@ const listClick = (i, item) => {
     )
   }
 }
+
+const collapseKey = ref(['1', '2'])
 </script>
 
 <template>
@@ -145,7 +152,7 @@ const listClick = (i, item) => {
         </div>
       </div>
     </div>
-    <div class="menu-container p-x-20 p-b-100">
+    <div class="menu-container p-x-20 p-b-20">
       <a-menu
         v-model:selectedKeys="selectedKeys"
         mode="inline"
@@ -171,71 +178,109 @@ const listClick = (i, item) => {
       />
       <div class="login-menu-list" v-if="userStore.isLogin">
         <div class="line h-1 m-x-10 m-y-15 bgc-#ffffff1a"></div>
-        <div class="created-container fs-13 fw-400">
-          <div class="created-title fs-14 color-#969696 fw-600 m-b-10 ml-10">
-            创建的歌单
-          </div>
-          <div class="created-list-container fd-col">
-            <div
-              class="created-list-item"
-              v-for="(item, index) in userStore.userPlayListInfo"
-              :key="index"
-              v-show="!item.subscribed && item.name !== '我喜欢的音乐'"
-            >
-              <div
-                class="list-item-content f-s mb-10 h-40 cursor-pointer"
-                v-if="!item.subscribed"
-                @click="listClick(index, item)"
-                :class="{
-                  active: +item.id === +activeIndex
-                }"
-              >
-                <div class="cover-img wh-34 mr-10 rounded-6">
-                  <img
-                    :src="item.coverImgUrl"
-                    alt=""
-                    class="wh-full rounded-6"
-                  />
+
+        <a-collapse v-model:activeKey="collapseKey" ghost>
+          <a-collapse-panel key="1" header="创建的歌单" :showArrow="false">
+            <div class="collapse-content1 fd-col p-0!">
+              <template v-for="(item, index) in userStore.userPlayListInfo">
+                <div
+                  class="created-list-item"
+                  :key="index"
+                  v-if="!item.subscribed && !/喜欢的音乐$/.test(item.name)"
+                >
+                  <div
+                    class="list-item-content f-s mb-10 h-40 cursor-pointer"
+                    @click="listClick(index, item)"
+                    :class="{
+                      active: +item.id === +activeIndex
+                    }"
+                  >
+                    <div class="cover-img wh-34 mr-10 rounded-6">
+                      <img
+                        :src="item.coverImgUrl"
+                        alt=""
+                        class="wh-full rounded-6"
+                      />
+                    </div>
+                    <div class="title text-overflow f-1 fw-600 color-#d2d2d2">
+                      {{ item.name }}
+                    </div>
+                  </div>
                 </div>
-                <div class="title text-overflow f-1 fw-600 color-#d2d2d2">
-                  {{ item.name }}
-                </div>
-              </div>
+              </template>
             </div>
-          </div>
-        </div>
+          </a-collapse-panel>
+        </a-collapse>
         <div class="line h-1 m-x-10 m-y-15 bgc-#ffffff1a"></div>
-        <div class="collected-container fs-13 fw-400">
-          <div class="collected-title fs-14 color-#969696 fw-600 m-b-10 ml-10">
+
+        <a-collapse v-model:activeKey="collapseKey" ghost>
+          <a-collapse-panel key="2" header="收藏的歌单" :showArrow="false">
+            <div class="collapse-content1 fd-col p-0!">
+              <template v-for="(item, index) in userStore.userPlayListInfo">
+                <div
+                  class="collect-list-item"
+                  :key="index"
+                  v-if="item.subscribed"
+                >
+                  <div
+                    class="list-item-content f-s mb-10 h-40 cursor-pointer"
+                    @click="listClick(index, item)"
+                    :class="{
+                      active: +item.id === +activeIndex
+                    }"
+                  >
+                    <div class="cover-img wh-34 mr-10 rounded-6">
+                      <img
+                        :src="item.coverImgUrl"
+                        alt=""
+                        class="wh-full rounded-6"
+                      />
+                    </div>
+                    <div class="title text-overflow f-1 fw-600 color-#d2d2d2">
+                      {{ item.name }}
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </a-collapse-panel>
+        </a-collapse>
+        <!-- <div class="collapse fs-13 fw-400">
+          <input type="checkbox" checked="true" class="min-h-0!" />
+          <div
+            class="collapse-title fs-14 color-#969696 fw-600 m-b-15 ml-10 p-0! min-h-0!"
+          >
             收藏的歌单
           </div>
-          <div class="collect-list-container fd-col">
-            <div
-              class="collect-list-item"
-              v-for="(item, index) in userStore.userPlayListInfo"
-              :key="index"
-              v-show="item.subscribed"
-            >
+          <div class="collapse-content fd-col p-0!">
+            <template v-for="(item, index) in userStore.userPlayListInfo">
               <div
-                class="list-item-content f-s mb-10 h-40 cursor-pointer"
+                class="collect-list-item"
+                :key="index"
                 v-if="item.subscribed"
-                @click="listClick(index, item)"
-                :class="{ active: +item.id === +activeIndex }"
               >
-                <div class="cover-img wh-34 mr-10 rounded-6">
-                  <img
-                    :src="item.coverImgUrl"
-                    :alt="item.name"
-                    class="wh-full rounded-6"
-                  />
-                </div>
-                <div class="title text-overflow f-1 fw-600 color-#d2d2d2">
-                  {{ item.name }}
+                <div
+                  class="list-item-content f-s mb-10 h-40 cursor-pointer"
+                  @click="listClick(index, item)"
+                  :class="{ active: +item.id === +activeIndex }"
+                >
+                  <div class="cover-img wh-34 mr-10 rounded-6">
+                    <img
+                      :src="item.coverImgUrl"
+                      :alt="item.name"
+                      class="wh-full rounded-6"
+                    />
+                  </div>
+                  <div class="title text-overflow f-1 fw-600 color-#d2d2d2">
+                    {{ item.name }}
+                  </div>
                 </div>
               </div>
-            </div>
+            </template>
           </div>
-        </div>
+        </div> -->
+
+        <div class="line h-1 m-x-10 m-y-15 bgc-#ffffff1a"></div>
       </div>
     </div>
   </div>
@@ -290,5 +335,20 @@ const listClick = (i, item) => {
   100% {
     filter: hue-rotate(360deg);
   }
+}
+:deep(.ant-collapse-header) {
+  padding: 0 !important;
+}
+:deep(.ant-collapse-header-text) {
+  font-size: 14px;
+  color: #969696;
+  font-weight: 600;
+  margin-bottom: 15px;
+  margin-left: 10px;
+  padding: 0 !important;
+}
+:deep(.ant-collapse-content-box) {
+  padding: 0 !important;
+  padding-right: 16px !important;
 }
 </style>
