@@ -4,12 +4,14 @@ import {
   getArtistDetail,
   getArtistAlbum,
   getArtistMv,
-  getArtistDesc
+  getArtistDesc,
+  getArtistSimi
 } from '@/api/artist'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useGlobalStore } from '@/stores'
 import { getDominantColor } from '@/utils/getMainColor'
 import { useIntersectionObserver } from '@vueuse/core'
+import simiSinger from './components/simiSinger.vue'
 
 const globalStore = useGlobalStore()
 const route = useRoute()
@@ -17,9 +19,11 @@ const artist = ref({})
 const activeName = ref('album')
 const pageSize = 20
 const page = ref([0, 0, 0, 0])
-onMounted(async () => {
+
+const init = async () => {
   page.value = [0, 0, 0, 0]
   loading.value = false
+  activeName.value = 'album'
   const res = await getArtistDetail(route.query.id)
   artist.value = res.artist
   if (artist.value.picUrl) {
@@ -44,8 +48,21 @@ onMounted(async () => {
   // 获取歌手介绍
   const descRes = await getArtistDesc(route.query.id)
   artist.value.desc = descRes
-  console.log(artist.value)
+  // 获取相似歌手信息
+  const simiRes = await getArtistSimi(route.query.id)
+  artist.value.simiArtist = simiRes.artists
+  // console.log(artist.value)
+}
+onMounted(async () => {
+  await init()
 })
+
+watch(
+  () => route.query.id,
+  async () => {
+    await init()
+  }
+)
 
 // 无限滚动
 const loading = ref(false)
@@ -194,7 +211,17 @@ useIntersectionObserver(mvRef, async ([{ isIntersecting }]) => {
                 </div>
               </div>
             </el-tab-pane>
-            <el-tab-pane label="相似歌手" name="similar"> </el-tab-pane>
+            <el-tab-pane label="相似歌手" name="similar">
+              <div class="simi-container flex flex-wrap justify-start">
+                <div
+                  class="item w-25%"
+                  v-for="(singer, i) in artist.simiArtist"
+                  :key="i"
+                >
+                  <simiSinger :singer="singer" />
+                </div>
+              </div>
+            </el-tab-pane>
           </el-tabs>
         </div>
       </CardContainer>
