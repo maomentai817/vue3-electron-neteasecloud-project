@@ -1,8 +1,6 @@
 <script setup>
-import CardContainer from '@/components/modules/CardContainer/CardContainer.vue'
 import { useUserStore, useGlobalStore } from '@/stores'
 import { ref, onMounted } from 'vue'
-import musicBox from './components/musicBox.vue'
 import { useRouter, useRoute } from 'vue-router'
 import { getDominantColor } from '@/utils/getMainColor'
 import { getUserPlayList } from '@/api/music'
@@ -174,6 +172,9 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
+.user-center-container {
+  font-family: 'Orbitron', sans-serif !important;
+}
 .user-card {
   width: calc(87vw - 180px);
   margin: 0 auto;

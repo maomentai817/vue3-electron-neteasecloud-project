@@ -55,6 +55,7 @@ onMounted(() => {
   color: #d2d2d2;
   z-index: 2;
   background-color: inherit;
+  font-family: 'Orbitron', sans-serif !important;
 }
 .background-layer {
   transition: all 0.5s ease 0s;

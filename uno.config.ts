@@ -19,6 +19,7 @@ export default defineConfig({
     'f-c': 'flex justify-center items-center',
     'f-s': 'flex justify-start items-center',
     'f-e': 'flex justify-end items-center',
+    'f-a': 'flex justify-around items-center',
     'text-overflow': 'truncate',
     'wh-full': 'w-full h-full',
     'f-items-c': 'flex items-center',

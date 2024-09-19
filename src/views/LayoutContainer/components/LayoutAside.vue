@@ -205,7 +205,7 @@ const collapseKey = ref(['1', '2'])
                   >
                     <div class="cover-img wh-34 mr-10 rounded-6">
                       <img
-                        :src="item.coverImgUrl"
+                        v-img-lazy="item.coverImgUrl"
                         alt=""
                         class="wh-full rounded-6"
                       />
@@ -239,7 +239,7 @@ const collapseKey = ref(['1', '2'])
                   >
                     <div class="cover-img wh-34 mr-10 rounded-6">
                       <img
-                        :src="item.coverImgUrl"
+                        v-img-lazy="item.coverImgUrl"
                         alt=""
                         class="wh-full rounded-6"
                       />
@@ -253,41 +253,6 @@ const collapseKey = ref(['1', '2'])
             </div>
           </a-collapse-panel>
         </a-collapse>
-        <!-- <div class="collapse fs-13 fw-400">
-          <input type="checkbox" checked="true" class="min-h-0!" />
-          <div
-            class="collapse-title fs-14 color-#969696 fw-600 m-b-15 ml-10 p-0! min-h-0!"
-          >
-            收藏的歌单
-          </div>
-          <div class="collapse-content fd-col p-0!">
-            <template v-for="(item, index) in userStore.userPlayListInfo">
-              <div
-                class="collect-list-item"
-                :key="index"
-                v-if="item.subscribed"
-              >
-                <div
-                  class="list-item-content f-s mb-10 h-40 cursor-pointer"
-                  @click="listClick(index, item)"
-                  :class="{ active: +item.id === +activeIndex }"
-                >
-                  <div class="cover-img wh-34 mr-10 rounded-6">
-                    <img
-                      :src="item.coverImgUrl"
-                      :alt="item.name"
-                      class="wh-full rounded-6"
-                    />
-                  </div>
-                  <div class="title text-overflow f-1 fw-600 color-#d2d2d2">
-                    {{ item.name }}
-                  </div>
-                </div>
-              </div>
-            </template>
-          </div>
-        </div> -->
-
         <div class="line h-1 m-x-10 m-y-15 bgc-#ffffff1a"></div>
       </div>
     </div>
@@ -299,6 +264,7 @@ const collapseKey = ref(['1', '2'])
   color: #fff;
   font-size: 14px;
   margin: 7px 0;
+  font-family: 'Orbitron', sans-serif !important;
   &:hover {
     color: #fff !important;
     background-image: linear-gradient(#ff1168, #fc3d49);
@@ -321,7 +287,9 @@ const collapseKey = ref(['1', '2'])
     background-image: linear-gradient(#ff1168, #fc3d49);
   }
 }
-
+.aside-container {
+  font-family: 'Orbitron', sans-serif !important;
+}
 .cover-img {
   background-position: center;
   background-size: cover;
@@ -349,6 +317,7 @@ const collapseKey = ref(['1', '2'])
 }
 :deep(.ant-collapse-header-text) {
   font-size: 14px;
+  font-family: 'Orbitron', sans-serif !important;
   color: #969696;
   font-weight: 600;
   margin-bottom: 15px;

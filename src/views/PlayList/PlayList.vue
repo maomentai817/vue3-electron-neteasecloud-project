@@ -47,7 +47,7 @@ watch(
       )
       songList.value = songRes.songs
       loading.value = false
-      console.log(playList.value)
+      // console.log(playList.value)
     }
   }
 )
@@ -83,7 +83,7 @@ const navigateToUserCenter = (id) => {
     class="play-list-container fd-col duration-1000 wh-full overflow-hidden overflow-y-auto"
   >
     <div class="play-list-header p-x-35 flex">
-      <div class="cover-img wh-220 rounded-10 relative">
+      <div class="cover-img wh-220 rounded-10 relative bgc-#d2d2d2">
         <img :src="playList.coverImgUrl" alt="" class="wh-full rounded-10" />
         <span class="count absolute top-8 right-10 fs-15 fw-600 color-#fff">
           {{ formatNumber(playList.playCount) }}
@@ -123,7 +123,7 @@ const navigateToUserCenter = (id) => {
         <div class="songs-handle m-t-10">
           <div class="btn-group1">
             <div class="btn bgi ml-0!">播放全部</div>
-            <div class="btn">创建</div>
+            <div class="btn">收藏</div>
             <div class="btn">分享</div>
             <div class="btn">下载全部</div>
           </div>

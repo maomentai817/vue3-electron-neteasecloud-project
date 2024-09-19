@@ -11,6 +11,7 @@
   background-color: #13131a;
   position: relative;
   height: 100%;
+  font-family: 'Orbitron', sans-serif !important;
 }
 /* electron 无边框拖动窗口 */
 .window-container {

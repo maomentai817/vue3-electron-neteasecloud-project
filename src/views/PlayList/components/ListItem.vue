@@ -2,6 +2,7 @@
 import { HeartFilled, HeartOutlined } from '@ant-design/icons-vue'
 import { useUserStore } from '@/stores'
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 
 const userStore = useUserStore()
 
@@ -31,6 +32,12 @@ const isLike = computed(() => {
 const setLike = async () => {
   await userStore.addLikeSong(props.item.id, !isLike.value)
 }
+
+// 跳转歌手页面
+const router = useRouter()
+const navigateToSinger = (singer) => {
+  router.push(`/singer?id=${singer.id}&name=${singer.name}`)
+}
 </script>
 
 <template>
@@ -48,9 +55,13 @@ const setLike = async () => {
           </div>
           <div class="singers f-s">
             <span class="singer" v-for="(singer, i) in item.ar" :key="i">
-              <span class="hover:color-#d2d2d2 cursor-pointer">{{
-                singer.name
-              }}</span>
+              <span
+                class="hover:color-#d2d2d2 cursor-pointer"
+                v-if="singer.id !== 0"
+                @click="navigateToSinger(singer)"
+                >{{ singer.name }}</span
+              >
+              <span v-else>{{ singer.name }}</span>
               <span class="empty m-x-4">{{
                 i === item.ar.length - 1 ? '' : '/'
               }}</span>
