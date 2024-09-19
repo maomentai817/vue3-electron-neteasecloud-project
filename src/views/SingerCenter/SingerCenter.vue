@@ -44,6 +44,7 @@ onMounted(async () => {
   // 获取歌手介绍
   const descRes = await getArtistDesc(route.query.id)
   artist.value.desc = descRes
+  console.log(artist.value)
 })
 
 // 无限滚动
@@ -158,7 +159,41 @@ useIntersectionObserver(mvRef, async ([{ isIntersecting }]) => {
                 <div class="mv-bottom h-1" ref="mvRef"></div>
               </div>
             </el-tab-pane>
-            <el-tab-pane label="歌手详情" name="desc"></el-tab-pane>
+            <el-tab-pane label="歌手详情" name="desc">
+              <div class="desc-container fd-col">
+                <div class="brief-desc">
+                  <div class="desc-title">{{ artist.name }}简介</div>
+                  <div class="desc-content">
+                    <p
+                      class="txt"
+                      v-for="(item, index) in artist.desc?.briefDesc.split(
+                        '\n'
+                      )"
+                      :key="index"
+                    >
+                      {{ item }}
+                    </p>
+                  </div>
+                </div>
+                <div class="main-desc">
+                  <template
+                    v-for="(item, index) in artist.desc?.introduction"
+                    :key="index"
+                  >
+                    <div class="desc-title">{{ item?.ti }}</div>
+                    <div class="desc-content">
+                      <p
+                        class="txt"
+                        v-for="(p, i) in item?.txt.split('\n')"
+                        :key="i"
+                      >
+                        {{ p }}
+                      </p>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </el-tab-pane>
             <el-tab-pane label="相似歌手" name="similar"> </el-tab-pane>
           </el-tabs>
         </div>
@@ -206,5 +241,17 @@ useIntersectionObserver(mvRef, async ([{ isIntersecting }]) => {
 }
 :deep(.el-loading-mask) {
   background-color: transparent;
+}
+
+.desc-title {
+  margin-bottom: 10px;
+  font-weight: 600;
+  font-size: 18px;
+}
+.desc-content {
+  .txt {
+    margin-bottom: 8px;
+    color: #d2d2d2cc;
+  }
 }
 </style>
