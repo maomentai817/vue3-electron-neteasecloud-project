@@ -3,16 +3,19 @@ defineProps({
   music: {
     type: Object,
     default: () => ({})
+  },
+  img: {
+    type: String,
+    default: ''
   }
 })
 </script>
 
 <template>
-  <div
-    class="music-container fd-col items-center cursor-pointer w-15vw h-15v mb-20"
-  >
+  <div class="music-container fd-col items-center cursor-pointer w-15vw mt-20">
     <div class="img-box rounded-10 m-b-5 relative">
-      <img v-img-lazy="music.coverImgUrl" alt="" class="wh-full rounded-10" />
+      <img v-img-lazy="img" alt="" class="wh-full rounded-10" v-if="img" />
+      <div class="msk-img w-full rounded absolute top--15"></div>
       <div class="play-btn-box z-2 absolute f-c!">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -33,6 +36,14 @@ defineProps({
 .img-box {
   width: calc(15vw - 20px);
   height: calc(15vw - 20px);
+  .msk-img {
+    width: calc(15vw - 20px);
+    height: calc(15vw - 20px);
+    z-index: -1;
+    background-image: url('@/assets/bg1.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
   .play-btn-box {
     width: calc(5vw - 25px);
     height: calc(5vw - 25px);

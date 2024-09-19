@@ -144,7 +144,7 @@ onMounted(async () => {
                   v-show="!item.subscribed"
                   @click="navigateToList(item)"
                 >
-                  <musicBox :music="item"></musicBox>
+                  <musicBox :music="item" :img="item.coverImgUrl"></musicBox>
                 </div>
               </div>
             </el-tab-pane>
@@ -157,7 +157,7 @@ onMounted(async () => {
                   v-show="item.subscribed"
                   @click="navigateToList(item)"
                 >
-                  <musicBox :music="item"></musicBox>
+                  <musicBox :music="item" :img="item.coverImgUrl"></musicBox>
                 </div>
               </div>
             </el-tab-pane>

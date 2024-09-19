@@ -1,23 +1,93 @@
 <script setup>
 import { useRoute } from 'vue-router'
-import { getArtistDetail } from '@/api/artist'
+import {
+  getArtistDetail,
+  getArtistAlbum,
+  getArtistMv,
+  getArtistDesc
+} from '@/api/artist'
 import { onMounted, ref } from 'vue'
 import { useGlobalStore } from '@/stores'
 import { getDominantColor } from '@/utils/getMainColor'
+import { useIntersectionObserver } from '@vueuse/core'
 
 const globalStore = useGlobalStore()
 const route = useRoute()
 const artist = ref({})
-const hotSongs = ref([])
+const activeName = ref('album')
+const pageSize = 20
+const page = ref([0, 0, 0, 0])
 onMounted(async () => {
+  page.value = [0, 0, 0, 0]
+  loading.value = false
   const res = await getArtistDetail(route.query.id)
   artist.value = res.artist
-  hotSongs.value = res.hotSongs
-  // console.log(artist.value)
   if (artist.value.picUrl) {
     getDominantColor(artist.value.picUrl).then((color) => {
       globalStore.setBackgroundStyle(color)
     })
+  }
+  // 获取分页专辑数据
+  const res1 = await getArtistAlbum(
+    route.query.id,
+    pageSize,
+    page.value[0] * pageSize
+  )
+  artist.value.albumInfo = res1.hotAlbums
+  // 分页获取 MV 数据
+  const res2 = await getArtistMv(
+    route.query.id,
+    pageSize,
+    page.value[1] * pageSize
+  )
+  artist.value.mvInfo = res2.mvs
+  // 获取歌手介绍
+  const descRes = await getArtistDesc(route.query.id)
+  artist.value.desc = descRes
+})
+
+// 无限滚动
+const loading = ref(false)
+const albumRef = ref(null)
+useIntersectionObserver(albumRef, async ([{ isIntersecting }]) => {
+  if (isIntersecting) {
+    // 触底
+    // 判断是否加载完毕
+    if (artist.value.albumInfo?.length < artist.value.albumSize) {
+      loading.value = true
+      // 请求下一页
+      page.value[0] += 1
+      const albumRes = await getArtistAlbum(
+        route.query.id,
+        pageSize,
+        page.value[0] * pageSize
+      )
+      artist.value.albumInfo = [
+        ...artist.value.albumInfo,
+        ...albumRes.hotAlbums
+      ]
+      loading.value = false
+    }
+  }
+})
+// mv
+const mvRef = ref(null)
+useIntersectionObserver(mvRef, async ([{ isIntersecting }]) => {
+  if (isIntersecting) {
+    // 触底
+    // 判断是否加载完毕
+    if (artist.value.mvInfo?.length < artist.value.mvSize) {
+      loading.value = true
+      // 请求下一页
+      page.value[1] += 1
+      const mvRes = await getArtistMv(
+        route.query.id,
+        pageSize,
+        page.value[1] * pageSize
+      )
+      artist.value.mvInfo = [...artist.value.mvInfo, ...mvRes.mvs]
+      loading.value = false
+    }
   }
 })
 </script>
@@ -26,7 +96,7 @@ onMounted(async () => {
   <div class="singer-center-contain">
     <div class="singer-card flex rounded-20 duration-400">
       <CardContainer class="wh-full">
-        <div class="content f-a p-20 fw-600">
+        <div class="content flex p-20 fw-600">
           <div class="avatar-box f-c wh-200 rounded-10 bg-#ffffff1a">
             <img :src="artist.picUrl" alt="" class="wh-full rounded-10" />
           </div>
@@ -63,34 +133,32 @@ onMounted(async () => {
     <div class="list-card m-y-30 m-x-15">
       <CardContainer class="wh-full">
         <div class="list-content p-20 p-t-0">
-          <el-tabs v-model="activeName" class="demo-tabs">
+          <el-tabs v-model="activeName" class="demo-tabs" v-loading="loading">
             <el-tab-pane label="专辑" name="album">
               <div class="list-container flex flex-wrap justify-start">
                 <div
                   class="item w-25%"
-                  v-for="(item, index) in playListInfo"
+                  v-for="(item, index) in artist.albumInfo"
                   :key="index"
-                  v-show="!item.subscribed"
-                  @click="navigateToList(item)"
                 >
-                  <musicBox :music="item"></musicBox>
+                  <musicBox :music="item" :img="item.picUrl"></musicBox>
                 </div>
+                <div class="album-bottom h-1" ref="albumRef"></div>
               </div>
             </el-tab-pane>
             <el-tab-pane label="MV" name="mv">
               <div class="list-container flex flex-wrap justify-start">
                 <div
                   class="item w-25%"
-                  v-for="(item, index) in playListInfo"
+                  v-for="(item, index) in artist.mvInfo"
                   :key="index"
-                  v-show="item.subscribed"
-                  @click="navigateToList(item)"
                 >
-                  <musicBox :music="item"></musicBox>
+                  <musicBox :music="item" :img="item.imgurl"></musicBox>
                 </div>
+                <div class="mv-bottom h-1" ref="mvRef"></div>
               </div>
             </el-tab-pane>
-            <el-tab-pane label="歌手详情" name="desc"> </el-tab-pane>
+            <el-tab-pane label="歌手详情" name="desc"></el-tab-pane>
             <el-tab-pane label="相似歌手" name="similar"> </el-tab-pane>
           </el-tabs>
         </div>
@@ -117,5 +185,26 @@ onMounted(async () => {
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
   }
+}
+:deep(.el-tabs__nav-wrap) {
+  &::after {
+    height: 0;
+  }
+}
+:deep(.el-tabs__item) {
+  font-size: 16px;
+  color: #969696;
+  &.is-active {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 800;
+  }
+}
+:deep(.el-tabs__active-bar) {
+  background-color: #ec4141;
+  height: 2px;
+}
+:deep(.el-loading-mask) {
+  background-color: transparent;
 }
 </style>

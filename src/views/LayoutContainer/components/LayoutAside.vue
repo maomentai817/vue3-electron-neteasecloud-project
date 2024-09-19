@@ -327,6 +327,7 @@ const collapseKey = ref(['1', '2'])
 :deep(.ant-collapse-content-box) {
   padding: 0 !important;
   padding-right: 16px !important;
+  font-family: 'Orbitron', sans-serif !important;
 }
 .menu-container {
   scrollbar-width: none;
