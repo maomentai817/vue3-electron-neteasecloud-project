@@ -30,7 +30,8 @@ const navigateToList = (item) => {
 const route = useRoute()
 const playListInfo = ref([])
 const userInfo = ref({})
-onMounted(async () => {
+
+const init = async () => {
   if (+route.query.uid !== userStore.profile.userId) {
     const { playlist } = await getUserPlayList(+route.query.uid)
     playListInfo.value = playlist
@@ -52,9 +53,17 @@ onMounted(async () => {
       globalStore.setBackgroundStyle(color)
     })
   }
-  // console.log(userInfo.value)
+}
+onMounted(async () => {
+  await init()
 })
-
+// 从他人用户页跳转本人用户中心
+watch(
+  () => route.query.uid,
+  async () => {
+    await init()
+  }
+)
 //跳转歌手页
 const navigateToSinger = () => {
   if (userInfo.value.artistId) {
