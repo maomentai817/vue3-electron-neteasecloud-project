@@ -1,5 +1,5 @@
 <script setup>
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import {
   getArtistDetail,
   getArtistAlbum,
@@ -109,6 +109,26 @@ useIntersectionObserver(mvRef, async ([{ isIntersecting }]) => {
     }
   }
 })
+
+const router = useRouter()
+// 跳转专辑页面
+const navigateToAlbum = (id) => {
+  console.log(id)
+}
+// 跳转 mv 页面
+const navigateToMV = (id) => {
+  console.log(id)
+}
+// 跳转歌手个人中心
+const navigateToSinger = () => {
+  if (artist.value.accountId) {
+    router.push(`/user?uid=${artist.value.accountId}`)
+  } else {
+    ElNotification.warning({
+      message: '此歌手暂无网易云音乐账号'
+    })
+  }
+}
 </script>
 
 <template>
@@ -131,6 +151,7 @@ useIntersectionObserver(mvRef, async ([{ isIntersecting }]) => {
               </span>
             </div>
             <div class="handle">
+              <div class="btn bgi" @click="navigateToSinger()">歌手主页</div>
               <div class="btn" v-if="!artist.followed">关注</div>
               <div class="btn" v-else>已关注</div>
             </div>
@@ -153,27 +174,42 @@ useIntersectionObserver(mvRef, async ([{ isIntersecting }]) => {
       <CardContainer class="wh-full">
         <div class="list-content p-20 p-t-0">
           <el-tabs v-model="activeName" class="demo-tabs" v-loading="loading">
-            <el-tab-pane label="专辑" name="album">
+            <el-tab-pane name="album">
+              <template #label>
+                <span>专辑</span>
+                <span class="s-count fw-400 fs-12">{{ artist.albumSize }}</span>
+              </template>
               <div class="list-container flex flex-wrap justify-start">
                 <div
                   class="item w-25%"
                   v-for="(item, index) in artist.albumInfo"
                   :key="index"
                 >
-                  <musicBox :music="item" :img="item.picUrl"></musicBox>
+                  <musicBox
+                    :music="item"
+                    :img="item.picUrl"
+                    @click="navigateToAlbum(item.id)"
+                  ></musicBox>
                 </div>
                 <div class="album-bottom h-1" ref="albumRef"></div>
               </div>
             </el-tab-pane>
             <el-tab-pane label="MV" name="mv">
+              <template #label>
+                <span>MV</span>
+                <span class="s-count fw-400 fs-12">{{ artist.mvSize }}</span>
+              </template>
               <div class="list-container flex flex-wrap justify-start">
                 <div
                   class="item w-33%"
                   v-for="(item, index) in artist.mvInfo"
                   :key="index"
                 >
-                  <!-- <musicBox :music="item" :img="item.imgurl"></musicBox> -->
-                  <mvBox :mv="item" :img="item.imgurl"></mvBox>
+                  <mvBox
+                    :mv="item"
+                    :img="item.imgurl"
+                    @click="navigateToMV(item.id)"
+                  ></mvBox>
                 </div>
                 <div class="mv-bottom h-1" ref="mvRef"></div>
               </div>
@@ -246,9 +282,13 @@ useIntersectionObserver(mvRef, async ([{ isIntersecting }]) => {
   border: 1px solid #ffffff33;
   padding: 3px 20px;
   font-size: 18px;
+  margin-right: 15px;
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
   }
+}
+.bgi {
+  background-image: linear-gradient(#ff1168, #fc3d49);
 }
 :deep(.el-tabs__nav-wrap) {
   &::after {
@@ -282,5 +322,8 @@ useIntersectionObserver(mvRef, async ([{ isIntersecting }]) => {
     margin-bottom: 8px;
     color: #d2d2d2cc;
   }
+}
+:deep(.s-count) {
+  transform: translate(30%, -30%);
 }
 </style>

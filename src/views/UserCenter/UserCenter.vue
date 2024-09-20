@@ -142,9 +142,12 @@ onMounted(async () => {
                   v-for="(item, index) in playListInfo"
                   :key="index"
                   v-show="!item.subscribed"
-                  @click="navigateToList(item)"
                 >
-                  <musicBox :music="item" :img="item.coverImgUrl"></musicBox>
+                  <musicBox
+                    :music="item"
+                    :img="item.coverImgUrl"
+                    @click="navigateToList(item)"
+                  ></musicBox>
                 </div>
               </div>
             </el-tab-pane>
@@ -155,9 +158,12 @@ onMounted(async () => {
                   v-for="(item, index) in playListInfo"
                   :key="index"
                   v-show="item.subscribed"
-                  @click="navigateToList(item)"
                 >
-                  <musicBox :music="item" :img="item.coverImgUrl"></musicBox>
+                  <musicBox
+                    :music="item"
+                    :img="item.coverImgUrl"
+                    @click="navigateToList(item)"
+                  ></musicBox>
                 </div>
               </div>
             </el-tab-pane>

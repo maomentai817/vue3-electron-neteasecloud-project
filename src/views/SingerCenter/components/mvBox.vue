@@ -61,6 +61,10 @@ const formatTime = (milliseconds) => {
 .mv-container {
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
+    :deep(.img-box .msk) {
+      z-index: 20;
+      opacity: 1;
+    }
   }
   .img-box {
     width: calc(20vw);
@@ -70,10 +74,6 @@ const formatTime = (milliseconds) => {
     background-repeat: no-repeat;
     &:hover {
       box-shadow: 0 5px 15px 5px rgb(0 0 0 / 10%);
-      :deep(.msk) {
-        z-index: 20;
-        opacity: 1;
-      }
     }
     .msk {
       background-color: rgba(0, 0, 0, 0.5);

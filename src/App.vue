@@ -13,6 +13,10 @@
   height: 100%;
   font-family: 'Orbitron', sans-serif !important;
 }
+
+:deep(.el-notification) {
+  z-index: 30;
+}
 /* electron 无边框拖动窗口 */
 .window-container {
   -webkit-app-region: drag;
