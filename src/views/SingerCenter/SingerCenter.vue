@@ -12,6 +12,7 @@ import { useGlobalStore } from '@/stores'
 import { getDominantColor } from '@/utils/getMainColor'
 import { useIntersectionObserver } from '@vueuse/core'
 import simiSinger from './components/simiSinger.vue'
+import mvBox from './components/mvBox.vue'
 
 const globalStore = useGlobalStore()
 const route = useRoute()
@@ -51,7 +52,7 @@ const init = async () => {
   // 获取相似歌手信息
   const simiRes = await getArtistSimi(route.query.id)
   artist.value.simiArtist = simiRes.artists
-  // console.log(artist.value)
+  console.log(artist.value)
 }
 onMounted(async () => {
   await init()
@@ -167,11 +168,12 @@ useIntersectionObserver(mvRef, async ([{ isIntersecting }]) => {
             <el-tab-pane label="MV" name="mv">
               <div class="list-container flex flex-wrap justify-start">
                 <div
-                  class="item w-25%"
+                  class="item w-33%"
                   v-for="(item, index) in artist.mvInfo"
                   :key="index"
                 >
-                  <musicBox :music="item" :img="item.imgurl"></musicBox>
+                  <!-- <musicBox :music="item" :img="item.imgurl"></musicBox> -->
+                  <mvBox :mv="item" :img="item.imgurl"></mvBox>
                 </div>
                 <div class="mv-bottom h-1" ref="mvRef"></div>
               </div>

@@ -122,7 +122,7 @@ onMounted(async () => {
               </div>
               <div class="hi personal">
                 <div class="title">个人介绍:</div>
-                <div class="content">
+                <div class="content f-1">
                   {{ userInfo.signature || '暂无介绍' }}
                 </div>
               </div>
