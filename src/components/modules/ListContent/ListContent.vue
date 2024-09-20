@@ -1,5 +1,5 @@
 <script setup>
-import ListItem from './ListItem.vue'
+import ListItem from '../ListItem/ListItem.vue'
 defineProps({
   songList: {
     type: Object,

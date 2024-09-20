@@ -3,7 +3,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { getPlayListDetail, getSongListDetail } from '@/api/music'
 import { watch, ref, onMounted } from 'vue'
 import { formatTimestamp, formatNumber } from '@/utils/format'
-import ListContent from './components/ListContent.vue'
 import { useIntersectionObserver } from '@vueuse/core'
 
 // const userStore = useUserStore()
@@ -29,6 +28,7 @@ onMounted(async () => {
   )
   songList.value = songRes.songs
   loading.value = false
+  console.log(songList.value)
 })
 watch(
   () => route.query,

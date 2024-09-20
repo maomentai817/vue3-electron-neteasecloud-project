@@ -16,3 +16,7 @@ export const getArtistDesc = (id) => instance.get(`/artist/desc?id=${id}`)
 
 // 获取相似歌手
 export const getArtistSimi = (id) => instance.get(`/simi/artist?id=${id}`)
+
+// 获取歌手全部歌曲
+export const getArtistSongs = (id, limit, offset) =>
+  instance.get(`/artist/songs?id=${id}&limit=${limit}&offset=${offset}`)

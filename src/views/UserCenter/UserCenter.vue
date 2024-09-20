@@ -1,6 +1,6 @@
 <script setup>
 import { useUserStore, useGlobalStore } from '@/stores'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { getDominantColor } from '@/utils/getMainColor'
 import { getUserPlayList } from '@/api/music'
@@ -52,7 +52,17 @@ onMounted(async () => {
       globalStore.setBackgroundStyle(color)
     })
   }
+  // console.log(userInfo.value)
 })
+
+//跳转歌手页
+const navigateToSinger = () => {
+  if (userInfo.value.artistId) {
+    router.push(`/singer?id=${userInfo.value.artistId}`)
+  } else {
+    ElNotification.warning('该用户非入驻歌手')
+  }
+}
 </script>
 
 <template>
@@ -81,7 +91,7 @@ onMounted(async () => {
                 </div>
               </div>
               <div class="btn-group-container flex items-end">
-                <div class="btn">歌手页</div>
+                <div class="btn" @click="navigateToSinger">歌手页</div>
                 <div class="btn">发私信</div>
                 <div class="btn">已关注</div>
               </div>

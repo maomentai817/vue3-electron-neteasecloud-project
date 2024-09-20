@@ -17,16 +17,20 @@ import mvBox from './components/mvBox.vue'
 const globalStore = useGlobalStore()
 const route = useRoute()
 const artist = ref({})
-const activeName = ref('album')
+const activeName = ref('songs')
 const pageSize = 20
 const page = ref([0, 0, 0, 0])
+// const songList = ref([])
+// const songTotal = ref(0)
+const hotSongs = ref([])
 
 const init = async () => {
   page.value = [0, 0, 0, 0]
   loading.value = false
-  activeName.value = 'album'
+  activeName.value = 'songs'
   const res = await getArtistDetail(route.query.id)
   artist.value = res.artist
+  hotSongs.value = res.hotSongs
   if (artist.value.picUrl) {
     getDominantColor(artist.value.picUrl).then((color) => {
       globalStore.setBackgroundStyle(color)
@@ -52,7 +56,14 @@ const init = async () => {
   // 获取相似歌手信息
   const simiRes = await getArtistSimi(route.query.id)
   artist.value.simiArtist = simiRes.artists
-  console.log(artist.value)
+  // // 获取歌手全部歌曲
+  // const songRes = await getArtistSongs(
+  //   route.query.id,
+  //   pageSize,
+  //   page.value[2] * pageSize
+  // )
+  // songList.value = songRes.songs
+  // songTotal.value = songRes.total
 }
 onMounted(async () => {
   await init()
@@ -160,7 +171,7 @@ const navigateToSinger = () => {
                 >专辑数: {{ artist.albumSize }}</span
               >
               <span class="mr-15" v-if="artist.mvSize"
-                >MV 数: {{ artist.mvSize }}</span
+                >MV数: {{ artist.mvSize }}</span
               >
               <span class="mr-15" v-if="artist.musicSize"
                 >单曲数: {{ artist.musicSize }}</span
@@ -174,6 +185,14 @@ const navigateToSinger = () => {
       <CardContainer class="wh-full">
         <div class="list-content p-20 p-t-0">
           <el-tabs v-model="activeName" class="demo-tabs" v-loading="loading">
+            <el-tab-pane name="songs">
+              <template #label>
+                <span>热门单曲</span>
+              </template>
+              <div class="song-list-container">
+                <ListContent :songList="hotSongs"></ListContent>
+              </div>
+            </el-tab-pane>
             <el-tab-pane name="album">
               <template #label>
                 <span>专辑</span>
