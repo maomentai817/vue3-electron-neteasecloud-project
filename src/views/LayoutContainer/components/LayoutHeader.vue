@@ -101,6 +101,9 @@ onMounted(() => {
     }
   )
 })
+
+// 搜索框
+const keyword = ref('')
 </script>
 
 <template>

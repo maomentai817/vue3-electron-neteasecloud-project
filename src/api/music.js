@@ -18,3 +18,10 @@ export const setLikeSong = (id, like = true) =>
 
 // 获取喜欢列表
 export const getLikeList = (uid) => instance.get(`/likelist?uid=${uid}`)
+
+// 获取专辑详情
+export const getAlbumDetail = (id) => instance.get(`/album?id=${id}`)
+
+// 获取专辑动态数据
+export const getAlbumDynamicDetail = (id) =>
+  instance.get(`/album/detail/dynamic?id=${id}`)

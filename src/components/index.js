@@ -3,6 +3,8 @@ import CardContainer from './modules/CardContainer/CardContainer.vue'
 import musicBox from './modules/MusicBox/musicBox.vue'
 import ListContent from './modules/ListContent/ListContent.vue'
 import ListItem from './modules/ListItem/ListItem.vue'
+import CommentArea from './modules/CommentArea/CommentArea.vue'
+import CommentItem from './modules/CommentItem/CommentItem.vue'
 
 export const componentPlugin = {
   install(app) {
@@ -10,5 +12,7 @@ export const componentPlugin = {
     app.component('musicBox', musicBox)
     app.component('ListContent', ListContent)
     app.component('ListItem', ListItem)
+    app.component('CommentArea', CommentArea)
+    app.component('CommentItem', CommentItem)
   }
 }

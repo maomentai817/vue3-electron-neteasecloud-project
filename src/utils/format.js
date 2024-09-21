@@ -9,6 +9,9 @@ import dayjs from 'dayjs'
 export const formatTimestamp = (timestamp) => {
   return dayjs(timestamp).format('YYYY-MM-DD HH:mm:ss')
 }
+export const formatTimestampDay = (timestamp) => {
+  return dayjs(timestamp).format('YYYY-MM-DD')
+}
 /**
  * 格式化数字为带万或亿的形式
  * @param {number} value - 传入的数值

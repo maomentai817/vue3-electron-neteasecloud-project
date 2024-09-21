@@ -48,6 +48,11 @@ const router = createRouter({
           path: '/singer',
           name: 'singerCenter',
           component: () => import('@/views/SingerCenter/SingerCenter.vue')
+        },
+        {
+          path: '/album',
+          name: 'albumPage',
+          component: () => import('@/views/AlbumPage/AlbumPage.vue')
         }
       ]
     }

@@ -8,6 +8,14 @@ defineProps({
   loading: {
     type: Boolean,
     default: false
+  },
+  isPic: {
+    type: Boolean,
+    default: true
+  },
+  isPop: {
+    type: Boolean,
+    default: false
   }
 })
 </script>
@@ -17,23 +25,24 @@ defineProps({
     <div
       class="list-header fs-14 h-35 color-#969696 flex items-center justify-around p-x-20 fw-600"
     >
-      <div class="title-item id w-45">#</div>
-      <div class="title-item title text-overflow m-r-2% w-45%">标题</div>
-      <div class="title-item album text-overflow m-r-1% w-35%">专辑</div>
-      <div class="title-item handle w-55 m-r-20">操作</div>
-      <div class="title-item time w-10%">时长</div>
+      <div class="title-item id w-5%">#</div>
+      <div class="title-item title text-overflow w-40%">标题</div>
+      <div class="title-item album text-overflow w-30%">专辑</div>
+      <div class="title-item pop w-9%" v-if="isPop">热度</div>
+      <div class="title-item handle w-8%">操作</div>
+      <div class="title-item time w-8%">时长</div>
     </div>
     <div class="list-content fd-col" v-loading="loading">
       <template v-for="(item, index) in songList" :key="index">
-        <ListItem :item="item" :index="index + 1" />
+        <ListItem
+          :item="item"
+          :index="index + 1"
+          :isPic="isPic"
+          :isPop="isPop"
+        />
       </template>
     </div>
   </div>
 </template>
 
-<style lang="scss" scoped>
-q {
-  background-color: #ffffff0f !important
-  ;
-}
-</style>
+<style lang="scss" scoped></style>

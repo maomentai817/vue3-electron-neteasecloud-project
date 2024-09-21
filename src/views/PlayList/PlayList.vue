@@ -28,7 +28,7 @@ onMounted(async () => {
   )
   songList.value = songRes.songs
   loading.value = false
-  console.log(songList.value)
+  // console.log(songList.value)
 })
 watch(
   () => route.query,
