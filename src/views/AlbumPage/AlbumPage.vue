@@ -5,7 +5,12 @@ import { getAlbumDetail, getAlbumDynamicDetail } from '@/api/music'
 import { getDominantColor } from '@/utils/getMainColor'
 import { useGlobalStore } from '@/stores'
 import { formatTimestampDay } from '@/utils/format'
-import { CaretRightFilled, MoreOutlined } from '@ant-design/icons-vue'
+import {
+  CaretRightFilled,
+  MoreOutlined,
+  NumberOutlined,
+  SmileOutlined
+} from '@ant-design/icons-vue'
 import ListContent from '@/components/modules/ListContent/ListContent.vue'
 
 const route = useRoute()
@@ -16,13 +21,13 @@ const init = async () => {
   if (route.query.id) {
     const res = await getAlbumDetail(route.query.id)
     albumInfo.value = res
-    if (albumInfo.value.picUrl) {
-      getDominantColor(albumInfo.value.picUrl).then((color) => {
+    if (albumInfo.value.album.picUrl) {
+      getDominantColor(albumInfo.value.album.picUrl).then((color) => {
         globalStore.setBackgroundStyle(color)
       })
     }
     albumDynamicDetail.value = await getAlbumDynamicDetail(route.query.id)
-    console.log(albumInfo.value)
+    // console.log(albumInfo.value)
   }
 }
 
@@ -31,11 +36,13 @@ onMounted(async () => {
 })
 
 const activeName = ref('songs')
+// 发表评论功能
+const myComment = ref('')
 </script>
 
 <template>
   <div class="album-container fd-col duration-1000 wh-full">
-    <div class="album-header flex rounded-20 duration-1000">
+    <div class="album-header flex rounded-20 duration-100">
       <CardContainer class="wh-full">
         <div class="content flex p-20 fw-600">
           <div class="avatar-box f-c wh-200 rounded-10 bg-#ffffff1a relative">
@@ -132,6 +139,28 @@ const activeName = ref('songs')
                 }}</span>
               </template>
               <div class="comments-area">
+                <div
+                  class="my-comment rounded-20 mb-40 bg-#ffffff1a h-110 relative pt-5"
+                >
+                  <a-textarea
+                    v-model:value="myComment"
+                    show-count
+                    :maxlength="140"
+                    :bordered="false"
+                    placeholder="说些什么吧"
+                    :autoSize="{ minRows: 3, maxRows: 3 }"
+                  />
+                  <div class="handle absolute right-10 bottom-3 f-e">
+                    <div class="tag item f-c">
+                      <NumberOutlined />
+                    </div>
+                    <div class="at item f-c text-center">@</div>
+                    <div class="emoji item f-c">
+                      <SmileOutlined />
+                    </div>
+                    <div class="submit item f-c ml-20 mr-10">发布</div>
+                  </div>
+                </div>
                 <CommentArea
                   :is-brief="true"
                   title="精彩评论"
@@ -150,7 +179,6 @@ const activeName = ref('songs')
               <div class="desc-content fd-col">
                 <div class="desc-title fw-600 fs-18 mb-10">专辑介绍</div>
                 <div class="desc-text">
-                  <!-- {{ albumInfo.album?.description }} -->
                   <p
                     class="txt mb-8 color-#d2d2d2cc"
                     v-for="(p, i) in albumInfo.album?.description.split('\n')"
@@ -219,5 +247,28 @@ const activeName = ref('songs')
 }
 :deep(.s-count) {
   transform: translate(30%, -30%);
+}
+:deep(.ant-input-textarea-show-count::after) {
+  float: left !important;
+  color: #d2d2d2cc;
+  font-size: 12px;
+  margin-left: 15px;
+  margin-top: 10px;
+}
+:deep(.ant-input) {
+  scrollbar-width: 0 !important;
+  color: #d2d2d2cc;
+  height: 65px;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+.item {
+  color: #d2d2d2cc;
+  cursor: pointer;
+  margin-left: 12px;
+  &:hover {
+    color: #fff;
+  }
 }
 </style>

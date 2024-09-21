@@ -3,6 +3,9 @@ import { ref, onMounted } from 'vue'
 import { getCommentList, getHotComment } from '@/api/comment'
 import CommentItem from '../CommentItem/CommentItem.vue'
 import { ArrowRightBold } from '@element-plus/icons-vue'
+import { useIntersectionObserver } from '@vueuse/core'
+import { useRouter } from 'vue-router'
+
 const props = defineProps({
   isBrief: {
     type: Boolean,
@@ -63,11 +66,35 @@ onMounted(() => {
   init(page.value)
 })
 
-// 无限滚动懒加载
+// 无限滚动
+const bottomLine = ref(false)
+useIntersectionObserver(bottomLine, async ([{ isIntersecting }]) => {
+  if (isIntersecting) {
+    // 触底
+    // 判断是否加载完毕
+    if (comments.value.length < total.value) {
+      // 请求下一页
+      page.value += 1
+      await init(page.value)
+    }
+  }
+})
+
+const router = useRouter()
+const navigateToWholeComment = () => {
+  router.push({
+    path: '/comment',
+    query: {
+      id: props.id,
+      type: props.type,
+      title: props.title
+    }
+  })
+}
 </script>
 
 <template>
-  <div class="comments-container">
+  <div class="comments-container" v-if="comments.length">
     <div class="comment-title relative">
       <span class="title fs-18 fw-600 color-#fff">{{ title }}</span>
       <span
@@ -78,15 +105,23 @@ onMounted(() => {
     </div>
     <div class="comments-content fd-col">
       <template v-for="(comment, index) in comments" :key="index">
-        <CommentItem :comment="comment"></CommentItem>
+        <template v-if="isBrief">
+          <template v-if="index < 10">
+            <CommentItem :comment="comment"></CommentItem>
+          </template>
+        </template>
+        <template v-else>
+          <CommentItem :comment="comment"></CommentItem>
+        </template>
       </template>
     </div>
-    <div class="comment-footer f-c" v-if="isBrief">
-      <div class="btn f-c">
+    <div class="comment-footer f-c my-20" v-if="isBrief">
+      <div class="btn f-c" @click="navigateToWholeComment">
         <span class="txt">更多{{ title }}</span>
         <el-icon><ArrowRightBold /></el-icon>
       </div>
     </div>
+    <div class="bottom-line h-1" ref="bottomLine" v-if="!isBrief"></div>
   </div>
 </template>
 

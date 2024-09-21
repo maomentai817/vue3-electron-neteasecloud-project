@@ -124,7 +124,7 @@ useIntersectionObserver(mvRef, async ([{ isIntersecting }]) => {
 const router = useRouter()
 // 跳转专辑页面
 const navigateToAlbum = (id) => {
-  console.log(id)
+  router.push(`/album?id=${id}`)
 }
 // 跳转 mv 页面
 const navigateToMV = (id) => {
