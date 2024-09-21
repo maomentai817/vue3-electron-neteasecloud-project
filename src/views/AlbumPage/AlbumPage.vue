@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { getAlbumDetail, getAlbumDynamicDetail } from '@/api/music'
 import { getDominantColor } from '@/utils/getMainColor'
 import { useGlobalStore } from '@/stores'
@@ -38,6 +38,13 @@ onMounted(async () => {
 const activeName = ref('songs')
 // 发表评论功能
 const myComment = ref('')
+
+// 跳转歌单创建者中心
+const router = useRouter()
+const navigateToUserCenter = (id) => {
+  if (id) router.push(`/user?uid=${id}`)
+  else ElNotification.warning('歌手暂未入驻')
+}
 </script>
 
 <template>
@@ -65,7 +72,10 @@ const myComment = ref('')
                   class="wh-full rounded-50%"
                 />
               </div>
-              <div class="artist-name ml-8">
+              <div
+                class="artist-name ml-8 color-#85b9e6 cursor-pointer hover: color-#96c8e6"
+                @click="navigateToUserCenter(albumInfo.album?.artist?.userId)"
+              >
                 {{ albumInfo.album?.artist?.name }}
               </div>
               <div class="create-time ml-15">

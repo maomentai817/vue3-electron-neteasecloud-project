@@ -16,6 +16,10 @@ defineProps({
   isPop: {
     type: Boolean,
     default: false
+  },
+  isRecently: {
+    type: Boolean,
+    default: false
   }
 })
 </script>
@@ -30,15 +34,28 @@ defineProps({
       <div class="title-item album text-overflow w-30%">专辑</div>
       <div class="title-item pop w-9%" v-if="isPop">热度</div>
       <div class="title-item handle w-8%">操作</div>
-      <div class="title-item time w-8%">时长</div>
+      <div class="title-item time w-8%" v-if="!isRecently">时长</div>
+      <div class="title-item time w-8%" v-if="isRecently">播放时间</div>
     </div>
-    <div class="list-content fd-col" v-loading="loading">
+    <div class="list-content fd-col" v-loading="loading" v-if="!isRecently">
       <template v-for="(item, index) in songList" :key="index">
         <ListItem
           :item="item"
           :index="index + 1"
           :isPic="isPic"
           :isPop="isPop"
+        />
+      </template>
+    </div>
+    <div class="list-content fd-col" v-loading="loading" v-else>
+      <template v-for="(item, index) in songList" :key="index">
+        <ListItem
+          :item="item.data"
+          :index="index + 1"
+          :isPic="isPic"
+          :isPop="isPop"
+          :isRecently="isRecently"
+          :playTime="item.playTime"
         />
       </template>
     </div>

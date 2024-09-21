@@ -25,3 +25,7 @@ export const getAlbumDetail = (id) => instance.get(`/album?id=${id}`)
 // 获取专辑动态数据
 export const getAlbumDynamicDetail = (id) =>
   instance.get(`/album/detail/dynamic?id=${id}`)
+
+// 获取最近播放列表
+export const getRecentlyPlayed = (type, limit = 100) =>
+  instance.get(`/record/recent/${type}?limit=${limit}`)

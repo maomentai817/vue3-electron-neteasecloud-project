@@ -3,6 +3,7 @@ import { HeartFilled, HeartOutlined } from '@ant-design/icons-vue'
 import { useUserStore } from '@/stores'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
+// import { formatTimestamp } from '@/utils/format'
 
 const userStore = useUserStore()
 
@@ -22,6 +23,14 @@ const props = defineProps({
   isPop: {
     type: Boolean,
     default: false
+  },
+  isRecently: {
+    type: Boolean,
+    default: false
+  },
+  playTime: {
+    type: Number,
+    default: 0
   }
 })
 const formatTime = (milliseconds) => {
@@ -51,6 +60,30 @@ const navigateToSinger = (singer) => {
 const navgateToAlbum = (id) => {
   router.push(`/album?id=${id}`)
 }
+
+// 时间处理函数
+const timeAgo = (timestamp) => {
+  const now = Date.now()
+  const diffInSeconds = Math.floor((now - timestamp) / 1000)
+
+  const units = [
+    { name: '年', seconds: 365 * 24 * 60 * 60 },
+    { name: '月', seconds: 30 * 24 * 60 * 60 },
+    { name: '天', seconds: 24 * 60 * 60 },
+    { name: '小时', seconds: 60 * 60 },
+    { name: '分钟', seconds: 60 },
+    { name: '秒', seconds: 1 }
+  ]
+
+  for (const unit of units) {
+    const value = Math.floor(diffInSeconds / unit.seconds)
+    if (value >= 1) {
+      return `${value} ${unit.name}前`
+    }
+  }
+
+  return '刚刚' // 如果时间戳是现在或未来，则返回“刚刚”
+}
 </script>
 
 <template>
@@ -75,7 +108,7 @@ const navgateToAlbum = (id) => {
       </div>
       <div class="title f-c w-40% text-overflow">
         <div class="cover-img wh-50 rounded-8 mr-10 bgc-#d2d2d2" v-if="isPic">
-          <img v-img-lazy="item.al.picUrl" alt="" class="wh-full rounded-8" />
+          <img v-img-lazy="item.al?.picUrl" alt="" class="wh-full rounded-8" />
         </div>
         <div class="song-info f-1">
           <div class="song-name color-#d2d2d2 text-overflow">
@@ -124,7 +157,10 @@ const navgateToAlbum = (id) => {
           @click="setLike"
         />
       </div>
-      <div class="time w-8%">{{ formatTime(item.dt) }}</div>
+      <div class="time w-8%" v-if="!isRecently">{{ formatTime(item.dt) }}</div>
+      <div class="time w-8% fs-13" v-if="isRecently">
+        {{ timeAgo(playTime) }}
+      </div>
     </div>
   </div>
 </template>
