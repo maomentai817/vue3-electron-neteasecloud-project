@@ -64,6 +64,18 @@ const userStore = useUserStore()
         <recommendSwiper title="精选歌单" :list="topList" />
       </div>
       <div class="floor">
+        <div class="re-song-header f-s fw-600 fs-18 mb-15">
+          <span>每天听点好音乐</span>
+        </div>
+        <div class="re-song-content f-b flex-wrap">
+          <template v-for="item in songsList" :key="item">
+            <div class="song-box w-50% mb-15">
+              <RecommendSong :item="item"></RecommendSong>
+            </div>
+          </template>
+        </div>
+      </div>
+      <div class="floor">
         <div class="rank-container fd-col">
           <div class="rank-header f-s fw-600 fs-18 mb-15">
             <span>榜单精选</span>

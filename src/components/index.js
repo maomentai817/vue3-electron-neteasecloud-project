@@ -6,6 +6,7 @@ import ListItem from './modules/ListItem/ListItem.vue'
 import CommentArea from './modules/CommentArea/CommentArea.vue'
 import CommentItem from './modules/CommentItem/CommentItem.vue'
 import RankItem from './modules/RankItem/RankItem.vue'
+import RecommendSong from './modules/RecommendSong/RecommendSong.vue'
 
 export const componentPlugin = {
   install(app) {
@@ -16,5 +17,6 @@ export const componentPlugin = {
     app.component('CommentArea', CommentArea)
     app.component('CommentItem', CommentItem)
     app.component('RankItem', RankItem)
+    app.component('RecommendSong', RecommendSong)
   }
 }
