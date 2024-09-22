@@ -11,6 +11,10 @@ const props = defineProps({
   img: {
     type: String,
     default: ''
+  },
+  idx: {
+    type: Number,
+    default: -1
   }
 })
 
@@ -30,7 +34,7 @@ const navgateToPlaylist = (id) => {
 
 <template>
   <div
-    class="swiper-item-container h-200 w-full rounded-15 mr-12 relative cursor-pointer"
+    class="swiper-item-container h-200 w-full rounded-15 relative cursor-pointer m-x-8"
     :style="{ backgroundImage: `url(${img})` }"
     @click="navgateToPlaylist(item.id)"
   >
@@ -75,6 +79,12 @@ const navgateToPlaylist = (id) => {
 </template>
 
 <style lang="scss" scoped>
+.nth1 {
+  margin-left: 0;
+}
+.nthl {
+  margin-right: 0;
+}
 .swiper-item-container {
   background-position: center;
   background-size: cover;
