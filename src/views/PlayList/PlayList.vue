@@ -4,8 +4,10 @@ import { getPlayListDetail, getSongListDetail } from '@/api/music'
 import { watch, ref, onMounted } from 'vue'
 import { formatTimestamp, formatNumber } from '@/utils/format'
 import { useIntersectionObserver } from '@vueuse/core'
+import { getDominantColor } from '@/utils/getMainColor'
+import { useGlobalStore } from '@/stores'
 
-// const userStore = useUserStore()
+const globalStore = useGlobalStore()
 const route = useRoute()
 const router = useRouter()
 const playList = ref([])
@@ -29,6 +31,12 @@ onMounted(async () => {
   songList.value = songRes.songs
   loading.value = false
   // console.log(songList.value)
+  // 设置主色
+  if (playList.value.coverImgUrl) {
+    getDominantColor(playList.value.coverImgUrl).then((color) => {
+      globalStore.setBackgroundStyle(color)
+    })
+  }
 })
 watch(
   () => route.query,
@@ -48,6 +56,12 @@ watch(
       songList.value = songRes.songs
       loading.value = false
       // console.log(playList.value)
+      // 设置主色
+      if (playList.value.coverImgUrl) {
+        getDominantColor(playList.value.coverImgUrl).then((color) => {
+          globalStore.setBackgroundStyle(color)
+        })
+      }
     }
   }
 )
