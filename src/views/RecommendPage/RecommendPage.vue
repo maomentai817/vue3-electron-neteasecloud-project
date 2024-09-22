@@ -10,7 +10,7 @@ import {
 } from '@/api/recommend'
 import recommendSwiper from './components/recommendSwiper.vue'
 import { useUserStore } from '@/stores'
-import { ArrowRightBold } from '@element-plus/icons-vue'
+import { ArrowRightBold, ArrowLeftBold } from '@element-plus/icons-vue'
 
 const bannerList = ref([])
 // 每日推荐歌单
@@ -23,6 +23,7 @@ const personalizedList = ref([])
 const topList = ref([])
 // 榜单简略数据
 const rankList = ref([])
+
 onMounted(async () => {
   const res = await getBanner()
   bannerList.value = res.banners
@@ -30,6 +31,10 @@ onMounted(async () => {
   resourceList.value = res2.recommend
   const res3 = await getRecommendSongs()
   songsList.value = res3.data.dailySongs
+  // 渲染方便, 截断songslist
+  const num = Math.floor(songsList.value.length / 6) * 6
+  songsList.value = songsList.value.slice(0, num)
+
   const res4 = await getPersonalized()
   personalizedList.value = res4.result
   const res5 = await getTopList()
@@ -40,6 +45,15 @@ onMounted(async () => {
 })
 
 const userStore = useUserStore()
+
+// swiper 切换
+const swiper = ref(null)
+const scrollLeft = () => {
+  swiper.value.prev()
+}
+const scrollRight = () => {
+  swiper.value.next()
+}
 </script>
 
 <template>
@@ -67,12 +81,37 @@ const userStore = useUserStore()
         <div class="re-song-header f-s fw-600 fs-18 mb-15">
           <span>每天听点好音乐</span>
         </div>
-        <div class="re-song-content f-b flex-wrap">
-          <template v-for="item in songsList" :key="item">
-            <div class="song-box w-50% mb-15">
-              <RecommendSong :item="item"></RecommendSong>
+        <div class="re-song-content">
+          <div class="re-swiper f-c">
+            <div class="arrow cursor-pointer" @click="scrollLeft">
+              <el-icon><ArrowLeftBold /></el-icon>
             </div>
-          </template>
+            <div class="swiper f-1 m-x-15">
+              <el-carousel
+                arrow="never"
+                :loop="false"
+                :autoplay="false"
+                indicator-position="none"
+                ref="swiper"
+              >
+                <el-carousel-item v-for="i in songsList.length / 6" :key="i">
+                  <template v-for="(item, index) in songsList" :key="index">
+                    <div
+                      class="single-container"
+                      v-if="index >= 6 * (i - 1) && index < 6 * i"
+                    >
+                      <div class="song-box w-50% mb-15">
+                        <RecommendSong :item="item"></RecommendSong>
+                      </div>
+                    </div>
+                  </template>
+                </el-carousel-item>
+              </el-carousel>
+            </div>
+            <div class="arrow cursor-pointer" @click="scrollRight">
+              <el-icon><ArrowRightBold /></el-icon>
+            </div>
+          </div>
         </div>
       </div>
       <div class="floor">
@@ -101,11 +140,26 @@ const userStore = useUserStore()
 </template>
 
 <style lang="scss" scoped>
-.el-carousel__item:nth-child(2n) {
-  background-color: #99a9bf;
+.el-carousel__item {
+  background-color: transparent;
+  display: flex;
+  flex-wrap: wrap;
 }
 
-.el-carousel__item:nth-child(2n + 1) {
-  background-color: #d3dce6;
+.re-swiper {
+  svg {
+    transform: scaleY(2);
+  }
+}
+.demonstration {
+  color: var(--el-text-color-secondary);
+}
+
+.el-carousel__item h3 {
+  color: #475669;
+  opacity: 0.75;
+  line-height: 150px;
+  margin: 0;
+  text-align: center;
 }
 </style>

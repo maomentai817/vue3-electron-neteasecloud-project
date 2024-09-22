@@ -103,7 +103,7 @@ const navigateToUserCenter = (id) => {
           {{ formatNumber(playList.playCount) }}
         </span>
       </div>
-      <div class="play-list-info m-l-20 fd-col m-t-5">
+      <div class="play-list-info m-l-20 fd-col m-t-5 f-1">
         <div class="songs-name f-s">
           <div
             class="tag fs-13 color-#ec4141 rounded-3 p-x-5 bo-#ec4141 fw-600"
