@@ -183,7 +183,4 @@ const timeAgo = (timestamp) => {
     }
   }
 }
-.pop-album {
-  transform: translateX(-20%);
-}
 </style>

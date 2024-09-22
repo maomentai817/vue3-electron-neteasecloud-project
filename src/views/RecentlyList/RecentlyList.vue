@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getRecentlyPlayed } from '@/api/music'
+import recentContent from './components/recentContent.vue'
 
 const activeName = ref('song')
 const songs = ref([])
@@ -54,6 +55,9 @@ onMounted(async () => {
             djs.total
           }}</span>
         </template>
+        <div class="dj-container">
+          <recentContent type="dj" :list="djs.list"></recentContent>
+        </div>
       </el-tab-pane>
       <el-tab-pane name="playlist">
         <template #label>
@@ -62,6 +66,9 @@ onMounted(async () => {
             playlists.total
           }}</span>
         </template>
+        <div class="playlist-container">
+          <recentContent type="playlist" :list="playlists.list"></recentContent>
+        </div>
       </el-tab-pane>
       <el-tab-pane name="album">
         <template #label>
@@ -70,15 +77,18 @@ onMounted(async () => {
             albums.total
           }}</span>
         </template>
+        <div class="album-container">
+          <recentContent type="album" :list="albums.list"></recentContent>
+        </div>
       </el-tab-pane>
-      <el-tab-pane name="video">
+      <!-- <el-tab-pane name="video">
         <template #label>
           <span class="label">视频</span>
           <span class="count fw-400 fs-12 translate-y--30%">{{
             videos.total
           }}</span>
         </template>
-      </el-tab-pane>
+      </el-tab-pane> -->
     </el-tabs>
   </div>
 </template>
@@ -91,7 +101,7 @@ onMounted(async () => {
 }
 :deep(.el-tabs__item) {
   font-size: 16px;
-  color: #969696;
+  color: #d2d2d2cc;
   &.is-active {
     color: #fff;
     font-size: 18px;
