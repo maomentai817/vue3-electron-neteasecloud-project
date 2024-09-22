@@ -16,3 +16,6 @@ export const getPersonalized = (limit = 10) =>
 // 网友精选碟
 export const getTopList = (limit = 10, order = 'hot') =>
   instance.get(`/top/playlist?limit=${limit}&order=${order}`)
+
+// 获取所有榜单摘要
+export const getTopListDetail = () => instance.get('/toplist/detail')

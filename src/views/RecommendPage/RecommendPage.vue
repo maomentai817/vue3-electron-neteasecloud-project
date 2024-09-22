@@ -5,10 +5,12 @@ import {
   getRecommendResource,
   getRecommendSongs,
   getPersonalized,
-  getTopList
+  getTopList,
+  getTopListDetail
 } from '@/api/recommend'
 import recommendSwiper from './components/recommendSwiper.vue'
 import { useUserStore } from '@/stores'
+import { ArrowRightBold } from '@element-plus/icons-vue'
 
 const bannerList = ref([])
 // 每日推荐歌单
@@ -19,6 +21,8 @@ const songsList = ref([])
 const personalizedList = ref([])
 // 精选歌单
 const topList = ref([])
+// 榜单简略数据
+const rankList = ref([])
 onMounted(async () => {
   const res = await getBanner()
   bannerList.value = res.banners
@@ -30,13 +34,16 @@ onMounted(async () => {
   personalizedList.value = res4.result
   const res5 = await getTopList()
   topList.value = res5.playlists
+
+  const res6 = await getTopListDetail()
+  rankList.value = res6.list.filter((item, index) => index < 4)
 })
 
 const userStore = useUserStore()
 </script>
 
 <template>
-  <div class="recommend-container fd-col p-x-20">
+  <div class="recommend-container fd-col p-x-20 p-b-50">
     <div class="swiper-container mb-10">
       <el-carousel :interval="4000" type="card" class="wh-full" height="200px">
         <el-carousel-item
@@ -50,10 +57,26 @@ const userStore = useUserStore()
     </div>
     <div class="recommend-floor">
       <div class="floor">
+        <recommendSwiper title="每日推荐" :list="resourceList" />
+      </div>
+
+      <div class="floor">
         <recommendSwiper title="精选歌单" :list="topList" />
       </div>
       <div class="floor">
-        <recommendSwiper title="每日推荐" :list="resourceList" />
+        <div class="rank-container fd-col">
+          <div class="rank-header f-s fw-600 fs-18 mb-15">
+            <span>榜单精选</span>
+            <el-icon class="f-c ml-5"><ArrowRightBold /> </el-icon>
+          </div>
+          <div class="rank-content f-b flex-wrap">
+            <template v-for="item in rankList" :key="item">
+              <div class="rank-box w-50% mb-15">
+                <RankItem :item="item" :title="item.name"></RankItem>
+              </div>
+            </template>
+          </div>
+        </div>
       </div>
       <div class="floor">
         <recommendSwiper

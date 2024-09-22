@@ -51,7 +51,7 @@ const formatTime = (milliseconds) => {
         <span class="count ml-2">{{ formatNumber(mv.playCount) }}</span>
       </div>
     </div>
-    <div class="title fw-600 f-1 mb-10">
+    <div class="mv-title fw-600 f-1 mb-10 p-x-15">
       {{ mv.name }}
     </div>
   </div>
@@ -64,6 +64,22 @@ const formatTime = (milliseconds) => {
     :deep(.img-box .msk) {
       z-index: 20;
       opacity: 1;
+    }
+  }
+  .mv-title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    &::after {
+      content: '';
+      display: inline-block;
+      width: 100%;
+      visibility: hidden; /* 隐藏的伪元素占用第二行空间 */
+      line-height: inherit;
     }
   }
   .img-box {

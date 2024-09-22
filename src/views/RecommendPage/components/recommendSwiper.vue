@@ -26,7 +26,7 @@ const scrollRight = () => {
 
 <template>
   <div class="re-container fd-col m-y-20">
-    <div class="re-header fs-18 mb-15">{{ title }}</div>
+    <div class="re-header fs-18 mb-15 fw-600">{{ title }}</div>
     <div class="re-swiper f-b">
       <div class="arrow cursor-pointer" @click="scrollLeft">
         <el-icon><ArrowLeftBold /></el-icon>
@@ -55,7 +55,9 @@ const scrollRight = () => {
 </template>
 
 <style lang="scss" scoped>
-svg {
-  transform: scaleY(2);
+.re-swiper {
+  svg {
+    transform: scaleY(2);
+  }
 }
 </style>

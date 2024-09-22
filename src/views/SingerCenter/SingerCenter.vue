@@ -316,7 +316,7 @@ const navigateToSinger = () => {
 }
 :deep(.el-tabs__item) {
   font-size: 16px;
-  color: #969696;
+  color: #d2d2d2;
   &.is-active {
     color: #fff;
     font-size: 18px;

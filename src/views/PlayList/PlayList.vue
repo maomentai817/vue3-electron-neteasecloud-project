@@ -114,6 +114,9 @@ const navigateToUserCenter = (id) => {
             {{ playList.name }}
           </div>
         </div>
+        <div class="songs-desc m-y-10" v-if="playList.description">
+          {{ playList.description }}
+        </div>
         <div class="songs-info f-s fs-12 m-t-5">
           <div class="creator-avatar wh-25 rounded-50%">
             <img

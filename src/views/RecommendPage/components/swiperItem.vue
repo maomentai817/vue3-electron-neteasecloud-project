@@ -1,7 +1,9 @@
 <script setup>
 import { getDominantColor } from '@/utils/getMainColor'
+import { formatNumber } from '@/utils/format'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { getSongListDetail } from '@/api/music'
 
 const props = defineProps({
   item: {
@@ -19,11 +21,14 @@ const props = defineProps({
 })
 
 const mainColor = ref('')
+const top3 = ref([])
 
 onMounted(async () => {
   if (props.img) {
     mainColor.value = await getDominantColor(props.img)
   }
+  const res = await getSongListDetail(props.item.id, 0, 3)
+  top3.value = res.songs.map((item) => item.name)
 })
 
 const router = useRouter()
@@ -38,19 +43,27 @@ const navgateToPlaylist = (id) => {
     :style="{ backgroundImage: `url(${img})` }"
     @click="navgateToPlaylist(item.id)"
   >
-    <div class="tags"></div>
+    <div class="count fs-12 fw-600 absolute top-5 right-5">
+      {{ formatNumber(item.playCount || item.playcount) }}
+    </div>
     <div
       class="info w-full h-50 absolute left-0 bottom-0"
       :style="{ backgroundColor: mainColor }"
     >
-      <div class="txt absolute p-x-10 p-t-3">
+      <div class="txt absolute p-x-10 p-t-3 w-full">
         <div class="brief wh-full color-#fff">
           {{ item.name }}
         </div>
-        <div class="top3">
-          <p>1</p>
-          <p>1</p>
-          <p>1</p>
+        <div class="top3 w-60% mt-3">
+          <p class="text-overflow fs-12 fw-400">
+            {{ top3[0] ? `1 ${top3[0]}` : '' }}
+          </p>
+          <p class="text-overflow fs-12 fw-400">
+            {{ top3[1] ? `2 ${top3[1]}` : '' }}
+          </p>
+          <p class="text-overflow fs-12 fw-400">
+            {{ top3[2] ? `3 ${top3[2]}` : '' }}
+          </p>
         </div>
       </div>
     </div>
@@ -90,6 +103,9 @@ const navgateToPlaylist = (id) => {
   background-size: cover;
   background-repeat: no-repeat;
   overflow: hidden;
+  .count {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  }
   &:hover {
     box-shadow: 0 5px 15px 5px rgb(0 0 0 / 10%);
     .msk {
@@ -112,6 +128,7 @@ const navgateToPlaylist = (id) => {
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
+        line-clamp: 2;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: normal;
@@ -122,6 +139,10 @@ const navgateToPlaylist = (id) => {
           visibility: hidden; /* 隐藏的伪元素占用第二行空间 */
           line-height: inherit;
         }
+      }
+      .top3 {
+        color: #fff;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
       }
     }
   }
