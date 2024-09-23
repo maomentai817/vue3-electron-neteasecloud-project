@@ -2,6 +2,12 @@
 ### 逐字歌词的npm包
 [https://www.npmjs.com/package/@lrc-player/core](https://www.npmjs.com/package/@lrc-player/core)
 
+### vue3-video-play 注意
+包入口出错, 解决方案
+```sh
+node_modules/vue3-video-play/package.json 文件  修改为"module": "./dist/index.mjs",
+```
+
 ## 安装
 ### 1.安装本地服务器
 ```bash
