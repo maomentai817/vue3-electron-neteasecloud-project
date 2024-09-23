@@ -40,9 +40,9 @@ onMounted(() => {
       <a-layout-content class="content-style no-select f-1!">
         <!-- 二级路由出口 -->
         <router-view v-slot="{ Component }">
-          <!--          <keep-alive>-->
+          <!-- <keep-alive> -->
           <component :key="refresh" :is="Component"></component>
-          <!--          </keep-alive>-->
+          <!-- </keep-alive> -->
         </router-view>
         <LoginBox ref="loginBoxRef" />
       </a-layout-content>

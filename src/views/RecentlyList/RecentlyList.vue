@@ -11,16 +11,24 @@ const albums = ref([])
 const videos = ref([])
 
 const init = async () => {
-  const songRes = await getRecentlyPlayed('song')
-  songs.value = songRes.data
-  const djRes = await getRecentlyPlayed('dj')
-  djs.value = djRes.data
-  const playlistRes = await getRecentlyPlayed('playlist')
-  playlists.value = playlistRes.data
-  const albumRes = await getRecentlyPlayed('album')
-  albums.value = albumRes.data
-  const videoRes = await getRecentlyPlayed('video')
-  videos.value = videoRes.data
+  try {
+    const [songRes, djRes, playlistRes, albumRes, videoRes] = await Promise.all(
+      [
+        getRecentlyPlayed('song'),
+        getRecentlyPlayed('dj'),
+        getRecentlyPlayed('playlist'),
+        getRecentlyPlayed('album'),
+        getRecentlyPlayed('video')
+      ]
+    )
+    songs.value = songRes.data
+    djs.value = djRes.data
+    playlists.value = playlistRes.data
+    albums.value = albumRes.data
+    videos.value = videoRes.data
+  } catch (error) {
+    console.error('xixi', error)
+  }
 }
 
 onMounted(async () => {

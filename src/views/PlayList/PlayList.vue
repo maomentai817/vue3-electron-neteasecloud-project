@@ -17,51 +17,40 @@ const page = ref(0)
 const songList = ref([])
 // loading
 const loading = ref(false)
-onMounted(async () => {
-  loading.value = true
-  const res = await getPlayListDetail(route.query.id)
-  playList.value = res.playlist
-  // 页面挂载时,先行获取歌曲数据
-  page.value = 0
-  const songRes = await getSongListDetail(
-    route.query.id,
-    page.value * pageSize,
-    pageSize
-  )
-  songList.value = songRes.songs
-  loading.value = false
-  // console.log(songList.value)
-  // 设置主色
-  if (playList.value.coverImgUrl) {
-    getDominantColor(playList.value.coverImgUrl).then((color) => {
-      globalStore.setBackgroundStyle(color)
-    })
+// 抽离请求函数
+const init = async (id) => {
+  try {
+    loading.value = true
+    // 页面挂载时,先行获取歌曲数据
+    // 切换歌单重新获取数据
+    page.value = 0
+    songList.value = []
+    const [playlistRes, songRes] = await Promise.all([
+      getPlayListDetail(id),
+      getSongListDetail(id, 0, pageSize)
+    ])
+    playList.value = playlistRes.playlist
+    songList.value = songRes.songs
+    loading.value = false
+    // 设置主色
+    if (playList.value.coverImgUrl) {
+      getDominantColor(playList.value.coverImgUrl).then((color) => {
+        globalStore.setBackgroundStyle(color)
+      })
+    }
+  } catch (error) {
+    console.error('xixi', error)
   }
+}
+
+onMounted(async () => {
+  await init(route.query.id)
 })
 watch(
   () => route.query,
   async (newVal) => {
     if (newVal) {
-      loading.value = true
-      const res = await getPlayListDetail(newVal.id)
-      playList.value = res.playlist
-      // 切换歌单重新获取数据
-      page.value = 0
-      songList.value = []
-      const songRes = await getSongListDetail(
-        route.query.id,
-        page.value * pageSize,
-        pageSize
-      )
-      songList.value = songRes.songs
-      loading.value = false
-      // console.log(playList.value)
-      // 设置主色
-      if (playList.value.coverImgUrl) {
-        getDominantColor(playList.value.coverImgUrl).then((color) => {
-          globalStore.setBackgroundStyle(color)
-        })
-      }
+      await init(newVal.id)
     }
   }
 )

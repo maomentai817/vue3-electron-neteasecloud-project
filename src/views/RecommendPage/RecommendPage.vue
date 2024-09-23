@@ -6,7 +6,8 @@ import {
   getRecommendSongs,
   getPersonalized,
   getTopList,
-  getTopListDetail
+  getTopListDetail,
+  getNewSongs
 } from '@/api/recommend'
 import recommendSwiper from './components/recommendSwiper.vue'
 import { useUserStore } from '@/stores'
@@ -23,25 +24,36 @@ const personalizedList = ref([])
 const topList = ref([])
 // 榜单简略数据
 const rankList = ref([])
+// 推荐新音乐
+const newSongs = ref([])
 
 onMounted(async () => {
-  const res = await getBanner()
-  bannerList.value = res.banners
-  const res2 = await getRecommendResource()
-  resourceList.value = res2.recommend
-  const res3 = await getRecommendSongs()
-  songsList.value = res3.data.dailySongs
-  // 渲染方便, 截断songslist
-  const num = Math.floor(songsList.value.length / 6) * 6
-  songsList.value = songsList.value.slice(0, num)
+  try {
+    const [res, res2, res3, res4, res5, res6, res7] = await Promise.all([
+      getBanner(),
+      getRecommendResource(),
+      getRecommendSongs(),
+      getPersonalized(),
+      getTopList(),
+      getTopListDetail(),
+      getNewSongs(12)
+    ])
 
-  const res4 = await getPersonalized()
-  personalizedList.value = res4.result
-  const res5 = await getTopList()
-  topList.value = res5.playlists
+    // 处理请求结果
+    bannerList.value = res.banners
+    resourceList.value = res2.recommend
+    songsList.value = res3.data.dailySongs
+    // 截断songslist
+    const num = Math.floor(songsList.value.length / 6) * 6
+    songsList.value = songsList.value.slice(0, num)
 
-  const res6 = await getTopListDetail()
-  rankList.value = res6.list.filter((item, index) => index < 4)
+    personalizedList.value = res4.result
+    topList.value = res5.playlists
+    rankList.value = res6.list.filter((item, index) => index < 4)
+    newSongs.value = res7.result
+  } catch (error) {
+    console.error('Error loading resources:', error)
+  }
 })
 
 const userStore = useUserStore()
@@ -53,6 +65,13 @@ const scrollLeft = () => {
 }
 const scrollRight = () => {
   swiper.value.next()
+}
+const swiper1 = ref(null)
+const scrollLeft1 = () => {
+  swiper1.value.prev()
+}
+const scrollRight1 = () => {
+  swiper1.value.next()
 }
 </script>
 
@@ -69,7 +88,7 @@ const scrollRight = () => {
         </el-carousel-item>
       </el-carousel>
     </div>
-    <div class="recommend-floor">
+    <div class="recommend-floor" v-if="userStore.isLogin">
       <div class="floor">
         <recommendSwiper title="每日推荐" :list="resourceList" />
       </div>
@@ -126,6 +145,43 @@ const scrollRight = () => {
                 <RankItem :item="item" :title="item.name"></RankItem>
               </div>
             </template>
+          </div>
+        </div>
+      </div>
+      <div class="floor">
+        <div class="re-song-header f-s fw-600 fs-18 mb-15">
+          <span>听点不一样的</span>
+        </div>
+        <div class="re-song-content">
+          <div class="re-swiper f-c">
+            <div class="arrow cursor-pointer" @click="scrollLeft1">
+              <el-icon><ArrowLeftBold /></el-icon>
+            </div>
+            <div class="swiper f-1 m-x-15">
+              <el-carousel
+                arrow="never"
+                :loop="false"
+                :autoplay="false"
+                indicator-position="none"
+                ref="swiper1"
+              >
+                <el-carousel-item v-for="i in newSongs.length / 6" :key="i">
+                  <template v-for="(item, index) in newSongs" :key="index">
+                    <div
+                      class="single-container"
+                      v-if="index >= 6 * (i - 1) && index < 6 * i"
+                    >
+                      <div class="song-box w-50% mb-15">
+                        <RecommendSong :item="item.song"></RecommendSong>
+                      </div>
+                    </div>
+                  </template>
+                </el-carousel-item>
+              </el-carousel>
+            </div>
+            <div class="arrow cursor-pointer" @click="scrollRight1">
+              <el-icon><ArrowRightBold /></el-icon>
+            </div>
           </div>
         </div>
       </div>

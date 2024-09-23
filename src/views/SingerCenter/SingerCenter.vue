@@ -20,50 +20,40 @@ const artist = ref({})
 const activeName = ref('songs')
 const pageSize = 20
 const page = ref([0, 0, 0, 0])
-// const songList = ref([])
-// const songTotal = ref(0)
 const hotSongs = ref([])
 
 const init = async () => {
-  page.value = [0, 0, 0, 0]
-  loading.value = false
-  activeName.value = 'songs'
-  const res = await getArtistDetail(route.query.id)
-  artist.value = res.artist
-  hotSongs.value = res.hotSongs
-  if (artist.value.picUrl) {
-    getDominantColor(artist.value.picUrl).then((color) => {
-      globalStore.setBackgroundStyle(color)
-    })
+  try {
+    page.value = [0, 0, 0, 0]
+    loading.value = false
+    activeName.value = 'songs'
+
+    const [ArRes, AlbumRes, MVRes, descRes, simiRes] = await Promise.all([
+      getArtistDetail(route.query.id),
+      getArtistAlbum(route.query.id, pageSize, 0),
+      getArtistMv(route.query.id, pageSize, 0),
+      getArtistDesc(route.query.id),
+      getArtistSimi(route.query.id)
+    ])
+    artist.value = ArRes.artist
+    hotSongs.value = ArRes.hotSongs
+    if (artist.value.picUrl) {
+      getDominantColor(artist.value.picUrl).then((color) => {
+        globalStore.setBackgroundStyle(color)
+      })
+    }
+
+    // 获取分页专辑数据
+    artist.value.albumInfo = AlbumRes.hotAlbums
+    // 分页获取 MV 数据
+    artist.value.mvInfo = MVRes.mvs
+    // 获取歌手介绍
+    artist.value.desc = descRes
+    // 获取相似歌手信息
+    artist.value.simiArtist = simiRes.artists
+  } catch (error) {
+    console.error('xixi', error)
   }
-  // 获取分页专辑数据
-  const res1 = await getArtistAlbum(
-    route.query.id,
-    pageSize,
-    page.value[0] * pageSize
-  )
-  artist.value.albumInfo = res1.hotAlbums
-  // 分页获取 MV 数据
-  const res2 = await getArtistMv(
-    route.query.id,
-    pageSize,
-    page.value[1] * pageSize
-  )
-  artist.value.mvInfo = res2.mvs
-  // 获取歌手介绍
-  const descRes = await getArtistDesc(route.query.id)
-  artist.value.desc = descRes
-  // 获取相似歌手信息
-  const simiRes = await getArtistSimi(route.query.id)
-  artist.value.simiArtist = simiRes.artists
-  // // 获取歌手全部歌曲
-  // const songRes = await getArtistSongs(
-  //   route.query.id,
-  //   pageSize,
-  //   page.value[2] * pageSize
-  // )
-  // songList.value = songRes.songs
-  // songTotal.value = songRes.total
 }
 onMounted(async () => {
   await init()
@@ -128,7 +118,7 @@ const navigateToAlbum = (id) => {
 }
 // 跳转 mv 页面
 const navigateToMV = (id) => {
-  console.log(id)
+  router.push(`/mv?id=${id}`)
 }
 // 跳转歌手个人中心
 const navigateToSinger = () => {

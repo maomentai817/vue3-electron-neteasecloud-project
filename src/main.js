@@ -25,6 +25,10 @@ import 'virtual:uno.css'
 // fontawesome icon
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+// 挂载 vue3-video-play
+import vue3videoPlay from 'vue3-video-play'
+import 'vue3-video-play/dist/style.css'
+
 const app = createApp(App)
 
 app.use(router)
@@ -38,6 +42,8 @@ app.use(Antd)
 app.use(componentPlugin)
 // 注册自定义插件
 app.use(lazyPlugin)
+// 挂载 video
+app.use(vue3videoPlay)
 
 app.component('font-awesome-icon', FontAwesomeIcon)
 

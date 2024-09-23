@@ -18,7 +18,7 @@ const navigateToSinger = (id) => {
 }
 
 const navigateToMV = (id) => {
-  console.log(id)
+  router.push(`/mv?id=${id}`)
 }
 </script>
 
@@ -28,7 +28,11 @@ const navigateToMV = (id) => {
     @click="play"
   >
     <div class="left wh-60 rounded-15 bg-#d2d2d2 flex-shrink-0">
-      <img v-img-lazy="item.al?.picUrl" alt="" class="wh-full rounded-15" />
+      <img
+        v-img-lazy="item.al?.picUrl || item.album?.picUrl"
+        alt=""
+        class="wh-full rounded-15"
+      />
     </div>
     <div class="right fd-col ml-12 w-25vw justify-between mb-10 fs-13">
       <div class="name fw-600 fs-16 text-overflow">{{ item.name }}</div>
@@ -58,7 +62,7 @@ const navigateToMV = (id) => {
         >
           原唱
         </div>
-        <div class="artisrs f-s text-overflow f-1">
+        <div class="artisrs f-s text-overflow f-1" v-if="item.ar">
           <template v-for="(a, i) in item.ar" :key="i">
             <div
               class="artist color-#d2d2d2cc"
@@ -67,6 +71,21 @@ const navigateToMV = (id) => {
               {{ a.name }}
             </div>
             <span class="color-#d2d2d2cc m-x-2" v-if="i < item.ar.length - 1"
+              >/</span
+            >
+          </template>
+        </div>
+        <div class="artisrs f-s text-overflow f-1" v-else>
+          <template v-for="(a, i) in item.artists" :key="i">
+            <div
+              class="artist color-#d2d2d2cc"
+              @click.stop="navigateToSinger(a.id)"
+            >
+              {{ a.name }}
+            </div>
+            <span
+              class="color-#d2d2d2cc m-x-2"
+              v-if="i < item.artists.length - 1"
               >/</span
             >
           </template>

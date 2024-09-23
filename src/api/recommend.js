@@ -19,3 +19,7 @@ export const getTopList = (limit = 10, order = 'hot') =>
 
 // 获取所有榜单摘要
 export const getTopListDetail = () => instance.get('/toplist/detail')
+
+// 获取推荐新音乐
+export const getNewSongs = (limit) =>
+  instance.get(`/personalized/newsong?limit=${limit}`)
