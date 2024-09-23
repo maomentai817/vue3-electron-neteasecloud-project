@@ -5,7 +5,7 @@ const baseURL = import.meta.env.VITE_APP_WEB_URL
 
 const instance = axios.create({
   baseURL,
-  timeout: 5000
+  timeout: 15000
 })
 
 const ignoreState = ['/login/qr/check']
@@ -51,15 +51,15 @@ instance.interceptors.response.use(
       status,
       data: { code }
     } = res
-    const url = res.config.url?.split('?')[0]
+    const url = res?.config.url?.split('?')[0]
     if (!ignoreState.includes(url) && (status !== 200 || code !== 200)) {
       ElMessage({
         type: 'error',
-        message: res.data.message || `请求出现错误, 当前状态码为 ${code}`
+        message: res?.data.message || `请求出现错误, 当前状态码为 ${code}`
       })
-      return Promise.reject(res.data)
+      return Promise.reject(res?.data)
     }
-    return res.data
+    return res?.data
   },
   (err) => {
     ElMessage({

@@ -22,18 +22,18 @@ const pageSize = 20
 const page = ref([0, 0, 0, 0])
 const hotSongs = ref([])
 
-const init = async () => {
+const init = async (id) => {
   try {
     page.value = [0, 0, 0, 0]
     loading.value = false
     activeName.value = 'songs'
 
     const [ArRes, AlbumRes, MVRes, descRes, simiRes] = await Promise.all([
-      getArtistDetail(route.query.id),
-      getArtistAlbum(route.query.id, pageSize, 0),
-      getArtistMv(route.query.id, pageSize, 0),
-      getArtistDesc(route.query.id),
-      getArtistSimi(route.query.id)
+      getArtistDetail(id),
+      getArtistAlbum(id, pageSize, 0),
+      getArtistMv(id, pageSize, 0),
+      getArtistDesc(id),
+      getArtistSimi(id)
     ])
     artist.value = ArRes.artist
     hotSongs.value = ArRes.hotSongs
@@ -56,13 +56,13 @@ const init = async () => {
   }
 }
 onMounted(async () => {
-  await init()
+  await init(route.query.id)
 })
 
 watch(
-  () => route.query.id,
-  async () => {
-    await init()
+  () => route.query,
+  async (newValue) => {
+    await init(newValue.id)
   }
 )
 

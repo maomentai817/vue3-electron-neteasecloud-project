@@ -27,7 +27,7 @@ onMounted(async () => {
   if (props.img) {
     mainColor.value = await getDominantColor(props.img)
   }
-  const res = await getSongListDetail(props.item.id, 0, 3)
+  const res = await getSongListDetail(props.item?.id, 0, 3)
   top3.value = res.songs.map((item) => item.name)
 })
 

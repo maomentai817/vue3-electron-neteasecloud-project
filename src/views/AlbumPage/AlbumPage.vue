@@ -269,6 +269,9 @@ const navigateToUserCenter = (id) => {
   scrollbar-width: 0 !important;
   color: #d2d2d2cc;
   height: 65px;
+  &::placeholder {
+    color: #d2d2d299;
+  }
   &::-webkit-scrollbar {
     display: none;
   }

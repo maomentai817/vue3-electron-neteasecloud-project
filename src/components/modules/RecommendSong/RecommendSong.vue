@@ -38,7 +38,7 @@ const navigateToMV = (id) => {
       <div class="name fw-600 fs-16 text-overflow">{{ item.name }}</div>
       <div class="info f-s color-#ff3a3a">
         <div
-          class="reason fs-12 fw-600 rounded-3 p-x-2 bo-#ec4141 mr-5 max-w-8vw"
+          class="reason fs-12 fw-600 rounded-3 p-x-2 bo-#ec4141 mr-5 max-w-8vw text-overflow"
           v-if="item.reason"
         >
           {{ item.reason }}
