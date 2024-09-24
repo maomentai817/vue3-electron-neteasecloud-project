@@ -36,6 +36,11 @@ onMounted(async () => {
       globalStore.setBackgroundStyle(color)
     })
   }
+  const video = document.querySelector('video')
+  video.onloadedmetadata = () => {
+    window.URL.revokeObjectURL(video.src)
+    console.log(video.videoWidth, video.videoHeight)
+  }
 })
 
 const isShow = ref(false)
@@ -47,7 +52,6 @@ const toggle = () => {
 // 当大屏离开可视区域, 停止播放, 小屏显示并同步时间
 const bigPlayer = ref(null)
 const line = ref(null)
-const placeholder = ref(null)
 const showSmallPlayer = ref(false)
 const { stop } = useIntersectionObserver(line, ([{ isIntersecting }]) => {
   if (!isIntersecting) {
@@ -59,6 +63,15 @@ const { stop } = useIntersectionObserver(line, ([{ isIntersecting }]) => {
 onBeforeUnmount(() => {
   stop()
 })
+
+const aspectRatio = ref(0)
+const getAspectRatio = () => {
+  if (bigPlayer.value) {
+    const videoWidth = bigPlayer.value.videoWidth
+    const videoHeight = bigPlayer.value.videoHeight
+    aspectRatio.value = (videoWidth / videoHeight).toFixed(2)
+  }
+}
 </script>
 
 <template>
@@ -73,9 +86,13 @@ onBeforeUnmount(() => {
         ref="bigPlayer"
         :poster="mvDetail.cover"
         class="absolute"
+        @loadedmetadata="getAspectRatio"
         :class="showSmallPlayer ? 'sm-vi' : ''"
       ></video>
-      <div class="placeholder wh-full" ref="placeholder"></div>
+      <div
+        class="placeholder wh-full"
+        :style="{ 'aspect-ratio': aspectRatio }"
+      ></div>
     </div>
     <div class="video-line h-1" ref="line"></div>
     <div class="video-info fd-col w-85% mt-15">
@@ -285,6 +302,6 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   display: block;
-  aspect-ratio: 16 / 9;
+  // aspect-ratio: 16 / 9;
 }
 </style>
