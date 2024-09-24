@@ -1,7 +1,7 @@
 <script setup>
 import { useRoute } from 'vue-router'
 import { getMvDetail, getMvUrl, getMvInfo } from '@/api/mv'
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { getDominantColor } from '@/utils/getMainColor'
 import { useGlobalStore } from '@/stores'
 import { NumberOutlined, SmileOutlined } from '@ant-design/icons-vue'
@@ -36,77 +36,48 @@ onMounted(async () => {
       globalStore.setBackgroundStyle(color)
     })
   }
-  const bugs = document.querySelectorAll('.d-tool-item .icon-replay')
-  for (let i = 0; i < bugs.length; i++) {
-    bugs[i].click()
-  }
-})
-
-// 播放器参数
-const options = ref({
-  width: '85%',
-  height: '100%',
-  color: '#409eff', //主题色
-  poster: mvDetail.value.cover
-})
-const optionsTiny = ref({
-  width: '35%',
-  height: '100%',
-  color: '#409eff', //主题色
-  poster: mvDetail.value.cover,
-  controlBtns: []
-  // control: false
 })
 
 const isShow = ref(false)
 const toggle = () => {
   isShow.value = !isShow.value
 }
-// 是否显示小播放器
-const isBigPlayerVisible = ref(true)
 
-// 监听大播放器是否可见
+// 小屏逻辑
+// 当大屏离开可视区域, 停止播放, 小屏显示并同步时间
 const bigPlayer = ref(null)
-
-onMounted(() => {
-  const { stop } = useIntersectionObserver(
-    bigPlayer, // 监听的大播放器 DOM 元素
-    ([{ isIntersecting }]) => {
-      isBigPlayerVisible.value = isIntersecting
-    }
-  )
+const line = ref(null)
+const placeholder = ref(null)
+const showSmallPlayer = ref(false)
+const { stop } = useIntersectionObserver(line, ([{ isIntersecting }]) => {
+  if (!isIntersecting) {
+    showSmallPlayer.value = true
+  } else {
+    showSmallPlayer.value = false
+  }
 })
-
-// 同步两个播放器的 currentTime
-const syncCurrentTime = () => {
-  const bigVideo = bigPlayer.value.$el.querySelector('video') // 获取大播放器中的 video 元素
-  const smallVideo = document.querySelector('.small-player video') // 获取小播放器中的 video 元素
-
-  if (bigVideo && smallVideo) {
-    smallVideo.currentTime = bigVideo.currentTime // 同步播放时间
-  }
-}
-
-// 监听大播放器的播放时间变化
-watch(
-  () => bigPlayer.value?.$el.querySelector('video')?.currentTime,
-  () => {
-    console.log(bigPlayer.value?.$el.querySelector('video').currentTime)
-    syncCurrentTime()
-  }
-)
+onBeforeUnmount(() => {
+  stop()
+})
 </script>
 
 <template>
   <div class="mv-container fd-col justify-center items-center relative">
-    <vue3VideoPlay v-bind="options" :src="mvUrl.url" ref="bigPlayer" />
-    <div class="fixed bottom-50 translate-x-60% small-player">
-      <vue3VideoPlay
-        v-bind="optionsTiny"
+    <div class="vi-area w-85% relative">
+      <video
         :src="mvUrl.url"
-        v-show="!isBigPlayerVisible"
-      />
+        autoplay
+        controls
+        width="100%"
+        preload="auto"
+        ref="bigPlayer"
+        :poster="mvDetail.cover"
+        class="absolute"
+        :class="showSmallPlayer ? 'sm-vi' : ''"
+      ></video>
+      <div class="placeholder wh-full" ref="placeholder"></div>
     </div>
+    <div class="video-line h-1" ref="line"></div>
     <div class="video-info fd-col w-85% mt-15">
       <div class="header f-s fs-20 fw-600 mb-5">{{ mvDetail.name }}</div>
       <div class="artists fs-13 w-full" :class="isShow ? '' : 'flex-start'">
@@ -301,5 +272,19 @@ watch(
   &:hover {
     color: #fff;
   }
+}
+.sm-vi {
+  position: fixed;
+  width: 30%;
+  bottom: 30px;
+  right: 30px;
+  border-radius: 5px;
+  z-index: 100;
+}
+.placeholder {
+  width: 100%;
+  height: 100%;
+  display: block;
+  aspect-ratio: 16 / 9;
 }
 </style>
