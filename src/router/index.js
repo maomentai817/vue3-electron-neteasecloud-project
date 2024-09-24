@@ -63,6 +63,11 @@ const router = createRouter({
           path: '/mv',
           name: 'mvPage',
           component: () => import('@/views/MVPage/MVPage.vue')
+        },
+        {
+          path: '/search',
+          name: 'searchPage',
+          component: () => import('@/views/SearchPage/SearchPage.vue')
         }
       ]
     }
