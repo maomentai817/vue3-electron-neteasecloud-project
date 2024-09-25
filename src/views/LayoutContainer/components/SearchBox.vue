@@ -1,8 +1,8 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch, watchEffect } from 'vue'
 import { getHotSearchList } from '@/api/search'
 
-defineProps({
+const props = defineProps({
   keywords: {
     type: String,
     default: ''
@@ -14,7 +14,16 @@ defineProps({
   isSearch: {
     type: Boolean,
     default: false
+  },
+  inputValue: {
+    type: String,
+    default: ''
   }
+})
+
+watchEffect(() => {
+  // console.log(props.suggestion)
+  // console.log(props.inputValue)
 })
 
 const showSearchBox = ref(false)
@@ -31,6 +40,41 @@ onMounted(async () => {
   hotlist.value = data
 })
 
+const hiSuggestion = ref({})
+
+watch(
+  [() => props.inputValue, () => props.suggestion],
+  ([newInputValue, newSuggestion]) => {
+    if (newSuggestion) {
+      // 如果 inputValue 有值，则高亮处理
+      hiSuggestion.value = highlightData(newSuggestion, newInputValue)
+    } else {
+      // 如果没有输入值，清空高亮结果
+      hiSuggestion.value = {}
+    }
+  }
+)
+watch(
+  () => props.keywords,
+  (newValue) => {
+    if (newValue.length === 0) {
+      hiSuggestion.value = {}
+    }
+  }
+)
+
+const highlightData = (data, keyword) => {
+  const highlight = (str) => {
+    const regex = new RegExp(`(${keyword})`, 'gi')
+    return str.replace(regex, '<span class="highlight">$1</span>')
+  }
+
+  return Object.entries(data).reduce((acc, [key, values]) => {
+    acc[key] = values?.map((item) => highlight(item)) // 添加高亮类
+    return acc
+  }, {})
+}
+
 defineExpose({
   open,
   close
@@ -44,65 +88,65 @@ defineExpose({
   >
     <el-scrollbar>
       <div class="search-list-container fd-col" v-if="isSearch">
-        <div class="guess" v-if="suggestion.allMatch?.length">
+        <div class="guess" v-if="hiSuggestion.allMatch?.length">
           <div class="title fs-17 fw-600 p-l-20 color-#969696 lh-48">
             猜你想搜
           </div>
           <div class="list fd-col">
             <div
               class="item lh-48 px-20"
-              v-for="(item, index) in suggestion.allMatch"
+              v-for="(item, index) in hiSuggestion.allMatch"
               :key="index"
             >
-              <span>{{ item.keyword }}</span>
+              <span v-html="item"></span>
             </div>
           </div>
         </div>
-        <div class="songs" v-if="suggestion.songs?.length">
+        <div class="songs" v-if="hiSuggestion.songs?.length">
           <div class="title fs-17 fw-600 p-l-20 color-#969696 lh-48">单曲</div>
           <div class="list fd-col">
             <div
               class="item lh-48 px-20"
-              v-for="(item, index) in suggestion.songs"
+              v-for="(item, index) in hiSuggestion.songs"
               :key="index"
             >
-              <span>{{ item.name }}</span>
+              <span v-html="item"></span>
             </div>
           </div>
         </div>
-        <div class="artists" v-if="suggestion.artists?.length">
+        <div class="artists" v-if="hiSuggestion.artists?.length">
           <div class="title fs-17 fw-600 p-l-20 color-#969696 lh-48">歌手</div>
           <div class="list fd-col">
             <div
               class="item lh-48 px-20"
-              v-for="(item, index) in suggestion.artists"
+              v-for="(item, index) in hiSuggestion.artists"
               :key="index"
             >
-              <span>{{ item.name }}</span>
+              <span v-html="item"></span>
             </div>
           </div>
         </div>
-        <div class="albums" v-if="suggestion.albums?.length">
+        <div class="albums" v-if="hiSuggestion.albums?.length">
           <div class="title fs-17 fw-600 p-l-20 color-#969696 lh-48">专辑</div>
           <div class="list fd-col">
             <div
               class="item lh-48 px-20"
-              v-for="(item, index) in suggestion.albums"
+              v-for="(item, index) in hiSuggestion.albums"
               :key="index"
             >
-              <span>{{ item.name }}</span>
+              <span v-html="item"></span>
             </div>
           </div>
         </div>
-        <div class="playlists" v-if="suggestion.playlists?.length">
+        <div class="playlists" v-if="hiSuggestion.playlists?.length">
           <div class="title fs-17 fw-600 p-l-20 color-#969696 lh-48">歌单</div>
           <div class="list fd-col">
             <div
               class="item lh-48 px-20"
-              v-for="(item, index) in suggestion.playlists"
+              v-for="(item, index) in hiSuggestion.playlists"
               :key="index"
             >
-              <span>{{ item.name }}</span>
+              <span v-html="item"></span>
             </div>
           </div>
         </div>
@@ -144,6 +188,9 @@ defineExpose({
       text-overflow: ellipsis;
       white-space: nowrap;
       cursor: pointer;
+      :deep(.highlight) {
+        color: #4d6190 !important;
+      }
       &:hover {
         background-color: #393944;
       }

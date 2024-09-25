@@ -147,27 +147,46 @@ const handleBlur = () => {
 const suggestion = ref({})
 const isSearch = ref(false)
 let composing = false
-const suggest = async (e) => {
-  const inputValue = composing ? e.data : keyword.value // 处理拼音输入和普通输入
+const inputValue = ref('')
 
-  if (inputValue) {
+// 防抖函数
+const debounce = (func, delay) => {
+  let timeout
+  return (...args) => {
+    clearTimeout(timeout)
+    timeout = setTimeout(() => {
+      func.apply(this, args)
+    }, delay)
+  }
+}
+const suggest = async (e) => {
+  inputValue.value = composing ? e.data : keyword.value // 处理拼音输入和普通输入
+
+  if (inputValue.value) {
     isSearch.value = true
     // 发起请求
+    const rq =
+      inputValue.value?.length > keyword.value?.length
+        ? inputValue.value
+        : keyword.value
     const [pcRes, moRes] = await Promise.all([
-      getSearchSuggest(inputValue),
-      getSearchSuggest(inputValue, 'mobile')
+      getSearchSuggest(rq),
+      getSearchSuggest(rq, 'mobile')
     ])
     suggestion.value = {
-      allMatch: moRes.result.allMatch,
-      playlist: pcRes.result.playlists,
-      artists: pcRes.result.artists,
-      albums: pcRes.result.albums,
-      songs: pcRes.result.songs
+      allMatch: moRes?.result?.allMatch?.map((i) => i.keyword),
+      playlist: pcRes?.result?.playlists?.map((i) => i.name),
+      artists: pcRes?.result?.artists?.map((i) => i.name),
+      albums: pcRes?.result?.albums?.map((i) => i.name),
+      songs: pcRes?.result?.songs?.map((i) => i.name)
     }
   } else {
     isSearch.value = false // 清空输入时隐藏建议
   }
 }
+
+// 将 suggest 函数进行防抖处理
+const debouncedSuggest = debounce(suggest, 100) // 100毫秒延迟
 
 const handleCompositionStart = () => {
   composing = true
@@ -244,7 +263,7 @@ const adjustColor = () => {
                 ref="searchInput"
                 @focus="handleFocus"
                 @blur.stop="handleBlur"
-                @input="suggest"
+                @input="debouncedSuggest"
                 @compositionstart="handleCompositionStart"
                 @compositionend="handleCompositionEnd"
               />
@@ -293,6 +312,7 @@ const adjustColor = () => {
               :keywords="keyword"
               :suggestion="suggestion"
               :isSearch="isSearch"
+              :inputValue="inputValue"
             ></SearchBox>
           </div>
         </div>
