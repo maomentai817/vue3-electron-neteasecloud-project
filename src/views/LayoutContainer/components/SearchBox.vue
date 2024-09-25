@@ -75,6 +75,16 @@ const highlightData = (data, keyword) => {
   }, {})
 }
 
+// 提纯文本
+const extractTextFromHTML = (htmlString) => {
+  return htmlString.replace(/<[^>]*>/g, '')
+}
+
+const emit = defineEmits(['search'])
+const handleSearch = (keywords) => {
+  emit('search', keywords)
+}
+
 defineExpose({
   open,
   close
@@ -83,7 +93,7 @@ defineExpose({
 
 <template>
   <div
-    class="search-box w-390 h-600 color-white rounded-12 z-999 overflow-y-auto"
+    class="search-box w-390 h-600 color-white rounded-12 overflow-y-auto"
     v-show="showSearchBox"
   >
     <el-scrollbar>
@@ -97,6 +107,7 @@ defineExpose({
               class="item lh-48 px-20"
               v-for="(item, index) in hiSuggestion.allMatch"
               :key="index"
+              @click="handleSearch(extractTextFromHTML(item))"
             >
               <span v-html="item"></span>
             </div>
@@ -109,6 +120,7 @@ defineExpose({
               class="item lh-48 px-20"
               v-for="(item, index) in hiSuggestion.songs"
               :key="index"
+              @click="handleSearch(extractTextFromHTML(item))"
             >
               <span v-html="item"></span>
             </div>
@@ -121,6 +133,7 @@ defineExpose({
               class="item lh-48 px-20"
               v-for="(item, index) in hiSuggestion.artists"
               :key="index"
+              @click="handleSearch(extractTextFromHTML(item))"
             >
               <span v-html="item"></span>
             </div>
@@ -133,6 +146,7 @@ defineExpose({
               class="item lh-48 px-20"
               v-for="(item, index) in hiSuggestion.albums"
               :key="index"
+              @click="handleSearch(extractTextFromHTML(item))"
             >
               <span v-html="item"></span>
             </div>
@@ -145,6 +159,7 @@ defineExpose({
               class="item lh-48 px-20"
               v-for="(item, index) in hiSuggestion.playlists"
               :key="index"
+              @click="handleSearch(extractTextFromHTML(item))"
             >
               <span v-html="item"></span>
             </div>
@@ -158,7 +173,7 @@ defineExpose({
             class="item f-s p-l-20 hover:bg-#393944"
             v-for="(item, index) in hotlist"
             :key="index"
-            @click="close"
+            @click="handleSearch(item.searchWord)"
           >
             <span class="index fw-600" :class="index < 3 ? 'red' : ''">{{
               index + 1

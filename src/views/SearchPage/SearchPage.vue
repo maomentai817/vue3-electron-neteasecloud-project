@@ -1,5 +1,9 @@
-<script setup></script>
+<script setup>
+import { useRoute } from 'vue-router'
 
-<template>1212</template>
+const route = useRoute()
+</script>
+
+<template>{{ route.query.keywords }}</template>
 
 <style lang="scss" scoped></style>

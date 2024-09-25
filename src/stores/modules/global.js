@@ -5,7 +5,7 @@ export const useGlobalStore = defineStore(
   'global',
   () => {
     // state
-    const color = ref('#13131a')
+    const color = ref('rgb(255,255,255)')
     const pointer = ref(0) // 指示当前使用的背景层
     const bgLayer1Style = ref({
       backgroundImage: 'linear-gradient(to bottom, #13131a, #13131a)',

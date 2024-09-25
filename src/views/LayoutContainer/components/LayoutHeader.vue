@@ -41,7 +41,7 @@ onMounted(async () => {
   const {
     data: { showKeyword, realkeyword: realKeyword }
   } = await getDefaultSearchResult()
-  placeholder.value = { showKeyword, realKeyword }
+  placeholder.value = { showKeyword: showKeyword || 'Search', realKeyword }
 })
 
 // 最小化窗口函数
@@ -140,8 +140,11 @@ const handleFocus = () => {
   searchbox.value.open()
 }
 const handleBlur = () => {
-  noDrag.value = false
-  searchbox.value.close()
+  // 延时失焦事件, 使搜索点击可以触发
+  setTimeout(() => {
+    noDrag.value = false
+    searchbox.value.close()
+  }, 100)
 }
 
 const suggestion = ref({})
@@ -213,6 +216,20 @@ const adjustColor = () => {
   // 判断颜色是否偏黑
   return brightness < 0.3 ? 'rgb(255, 255, 255)' : globalStore.color
 }
+
+const handleSearch = (keywords) => {
+  if (keywords) {
+    keyword.value = keywords
+    router.push(`/search?keywords=${keywords}`)
+    searchbox.value.close()
+  } else {
+    if (placeholder.value.realKeyword) {
+      keyword.value = placeholder.value.realKeyword
+      router.push(`/search?keywords=${placeholder.value.realKeyword}`)
+      searchbox.value.close()
+    }
+  }
+}
 </script>
 
 <template>
@@ -262,10 +279,11 @@ const adjustColor = () => {
                 v-model="keyword"
                 ref="searchInput"
                 @focus="handleFocus"
-                @blur.stop="handleBlur"
+                @blur="handleBlur"
                 @input="debouncedSuggest"
                 @compositionstart="handleCompositionStart"
                 @compositionend="handleCompositionEnd"
+                @keyup.enter="handleSearch(keyword)"
               />
               <kbd class="kbd kbd-sm">ctrl</kbd>
               <kbd class="kbd kbd-sm">K</kbd>
@@ -307,12 +325,13 @@ const adjustColor = () => {
               </svg>
             </div>
             <SearchBox
-              class="absolute top-3.8em"
+              class="absolute top-3.8em z-999"
               ref="searchbox"
               :keywords="keyword"
               :suggestion="suggestion"
               :isSearch="isSearch"
               :inputValue="inputValue"
+              @search="handleSearch"
             ></SearchBox>
           </div>
         </div>
