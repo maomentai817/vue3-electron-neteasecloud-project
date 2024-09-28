@@ -75,6 +75,7 @@ const navgateToPlaylist = (id) => {
         viewBox="0 0 384 512"
         width="20"
         height="20"
+        class="absolute top-50% left-50% translate-x--50% translate-y--50%"
         :style="{ fill: mainColor }"
       >
         <path

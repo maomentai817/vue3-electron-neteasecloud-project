@@ -20,3 +20,7 @@ export const getArtistSimi = (id) => instance.get(`/simi/artist?id=${id}`)
 // 获取歌手全部歌曲
 export const getArtistSongs = (id, limit, offset) =>
   instance.get(`/artist/songs?id=${id}&limit=${limit}&offset=${offset}`)
+
+// 获取歌手粉丝数
+export const getArtistFollowerCount = (id) =>
+  instance.get(`/artist/follow/count?id=${id}`)

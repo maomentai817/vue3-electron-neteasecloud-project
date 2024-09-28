@@ -18,22 +18,22 @@ import { getDefaultSearchResult, getSearchSuggest } from '@/api/search'
 
 library.add(faWindowMaximize, faWindowRestore)
 
-let ipcRenderer = null
-const isElectron = () => {
-  return (
-    typeof window !== 'undefined' &&
-    typeof window.process === 'object' &&
-    window.process.type === 'renderer'
-  )
-}
+// let ipcRenderer = null
+// const isElectron = () => {
+//   return (
+//     typeof window !== 'undefined' &&
+//     typeof window.process === 'object' &&
+//     window.process.type === 'renderer'
+//   )
+// }
 
 // 使用异步函数来处理 ipcRenderer 的动态导入
 const loadIpcRenderer = async () => {
-  if (isElectron()) {
-    ipcRenderer = await import('electron').then(
-      (electron) => electron.ipcRenderer
-    )
-  }
+  // if (isElectron()) {
+  //   ipcRenderer = await import('electron').then(
+  //     (electron) => electron.ipcRenderer
+  //   )
+  // }
 }
 
 onMounted(async () => {
@@ -46,28 +46,36 @@ onMounted(async () => {
 
 // 最小化窗口函数
 const minimize = async () => {
-  await loadIpcRenderer() // 确保 ipcRenderer 加载完成
-  if (ipcRenderer) {
-    ipcRenderer.send('minimize')
-  }
+  // await loadIpcRenderer() // 确保 ipcRenderer 加载完成
+  // if (ipcRenderer) {
+  //   ipcRenderer.send('minimize')
+  // }
+  window.electronAPI.minimize()
 }
 // 关闭窗口函数
 const close = async () => {
-  await loadIpcRenderer() // 确保 ipcRenderer 加载完成
-  if (ipcRenderer) {
-    ipcRenderer.send('close')
-  }
+  // await loadIpcRenderer() // 确保 ipcRenderer 加载完成
+  // if (ipcRenderer) {
+  //   ipcRenderer.send('close')
+  // }
+  window.electronAPI.close()
 }
 
 // 最大化窗口函数
 const isFullScreen = ref(false)
 const maximizeToggle = async () => {
   await loadIpcRenderer() // 确保 ipcRenderer 加载完成
-  if (ipcRenderer) {
-    if (isFullScreen.value) ipcRenderer.send('unmaximize')
-    else ipcRenderer.send('maximize')
-    isFullScreen.value = !isFullScreen.value
+  // if (ipcRenderer) {
+  //   if (isFullScreen.value) ipcRenderer.send('unmaximize')
+  //   else ipcRenderer.send('maximize')
+  //   isFullScreen.value = !isFullScreen.value
+  // }
+  if (isFullScreen.value) {
+    window.electronAPI.unmaximize()
+  } else {
+    window.electronAPI.maximize()
   }
+  isFullScreen.value = !isFullScreen.value
 }
 
 // 前进后退路由导航
@@ -144,7 +152,7 @@ const handleBlur = () => {
   setTimeout(() => {
     noDrag.value = false
     searchbox.value.close()
-  }, 100)
+  }, 200)
 }
 
 const suggestion = ref({})

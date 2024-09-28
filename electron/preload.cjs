@@ -19,6 +19,12 @@ const { contextBridge, ipcRenderer } = require('electron')
 const path = require('path')
 
 contextBridge.exposeInMainWorld('electronAPI', {
+  maximize: () => ipcRenderer.send('maximize'),
+  unmaximize: () => ipcRenderer.send('unmaximize'),
+  minimize: () => ipcRenderer.send('minimize'),
+  restore: () => ipcRenderer.send('restore'),
+  close: () => ipcRenderer.send('close'),
+  reset: () => ipcRenderer.send('reset'),
   pathJoin: (...args) => path.join(...args),
   send: (channel, data) => ipcRenderer.send(channel, data),
   on: (channel, func) => {

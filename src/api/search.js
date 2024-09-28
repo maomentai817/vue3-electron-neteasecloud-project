@@ -3,11 +3,15 @@ import instance from '@/utils/instance'
 // type: 搜索类型；默认为 1 即单曲
 // 取值意义: 1: 单曲, 10: 专辑, 100: 歌手, 1000: 歌单, 1002: 用户, 1004: MV, 1006: 歌词, 1009: 电台, 1014: 视频, 1018: 综合, 2000: 声音(搜索声音返回字段格式会不一样)
 
-// 搜索关键词
+// 搜索关键词 -- 1018, 2000 无效, 转用 /search 接口
 export const getSearchResult = (keyword, type = 1, offset = 0, limit = 30) =>
   instance.get(
     `/cloudsearch?keywords=${keyword}&type=${type}&offset=${offset}&limit=${limit}`
   )
+
+// 综合搜索 -- 未提供 mv 数据
+export const getSearchAllResult = (keyword, type = 1018) =>
+  instance.get(`/search?keywords=${keyword}&type=${type}`)
 
 // 默认搜索关键词
 export const getDefaultSearchResult = () => instance.get(`/search/default`)

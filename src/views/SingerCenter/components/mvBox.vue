@@ -27,7 +27,7 @@ const formatTime = (milliseconds) => {
     class="mv-container fd-col items-center cursor-pointer w-20vw mt-20 rounded-20"
   >
     <div
-      class="img-box rounded-20 f-c mb-10 relative"
+      class="img-box rounded-20 f-c mb-10 relative filter-brightness-90"
       :style="{ backgroundImage: `url(${img})` }"
     >
       <div class="msk wh-full rounded-20 absolute f-c">
@@ -44,7 +44,9 @@ const formatTime = (milliseconds) => {
       <div class="duration absolute right-6% bottom-2% fs-12 z-30 color-#fff">
         {{ formatTime(mv.duration) }}
       </div>
-      <div class="play-count f-c fs-13 fw-600 z-30 absolute top-5% right-4%">
+      <div
+        class="play-count f-c fs-13 fw-600 z-30 absolute top-5% right-4% color-#fff"
+      >
         <span class="icon f-c">
           <CaretRightFilled />
         </span>

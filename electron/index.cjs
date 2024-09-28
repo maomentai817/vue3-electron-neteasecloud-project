@@ -57,7 +57,7 @@ class Main {
         width: 1150,
         webPreferences: {
           nodeIntegration: true,
-          contextIsolation: false,
+          contextIsolation: true,
           enableRemoteModule: true,
           preload: path.join(__dirname, './preload.cjs')
         },
@@ -72,6 +72,8 @@ class Main {
         this.win.loadURL(url)
       }
       this.win.webContents.openDevTools() // 打开开发者工具
+
+      //! 开启 contextIsolation 上下文隔离, 需要使用 contextBridge 进行安全通信, 在 preload 中配置暴露 electronAPI, 在渲染进程中直接调用方法
       this.setupWindowEventListeners()
     } catch (error) {
       log.error('Error while creating window:', error)

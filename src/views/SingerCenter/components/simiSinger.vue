@@ -36,8 +36,11 @@ const navigateToSinger = (id) => {
     </div>
     <div class="info fd-col items-center">
       <div class="name fs-18">{{ singer.name }}</div>
-      <div class="count fw-400 fs-13 color-#d2d2d2cc">
+      <div class="count fw-400 fs-13 color-#d2d2d2cc" v-if="singer.musicSize">
         单曲: {{ singer.musicSize }}
+      </div>
+      <div class="count fw-400 fs-13 color-#d2d2d2cc" v-else>
+        专辑: {{ singer.albumSize }}
       </div>
     </div>
   </div>
