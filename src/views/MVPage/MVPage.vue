@@ -39,7 +39,7 @@ onMounted(async () => {
   const video = document.querySelector('video')
   video.onloadedmetadata = () => {
     window.URL.revokeObjectURL(video.src)
-    console.log(video.videoWidth, video.videoHeight)
+    // console.log(video.videoWidth, video.videoHeight)
   }
 })
 

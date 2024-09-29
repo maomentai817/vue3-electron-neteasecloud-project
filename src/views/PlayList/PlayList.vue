@@ -92,7 +92,7 @@ const navigateToUserCenter = (id) => {
           {{ formatNumber(playList.playCount) }}
         </span>
       </div>
-      <div class="play-list-info m-l-20 fd-col m-t-5 f-1">
+      <div class="play-list-info m-l-20 fd-col m-t-5 f-1 justify-around">
         <div class="songs-name f-s">
           <div
             class="tag fs-13 color-#ec4141 rounded-3 p-x-5 bo-#ec4141 fw-600"
@@ -165,5 +165,12 @@ const navigateToUserCenter = (id) => {
   &:state(webkit-scrollbar) {
     display: none;
   }
+}
+.songs-desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* 限定显示的行数，2 行为示例 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis; /* 超出部分用省略号表示 */
 }
 </style>

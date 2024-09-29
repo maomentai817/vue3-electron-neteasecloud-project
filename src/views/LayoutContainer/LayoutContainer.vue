@@ -4,6 +4,7 @@ import LayoutHeader from './components/LayoutHeader.vue'
 import LoginBox from './components/LoginBox.vue'
 import { onMounted, ref } from 'vue'
 import { useGlobalStore } from '@/stores'
+// import { ArrowUpBold } from '@element-plus/icons-vue'
 
 const refresh = ref(0) // 登录成功后强制刷新页面
 const loginBoxRef = ref(null)
@@ -16,6 +17,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <!-- {{ content }} -->
   <a-layout class="min-h-screen layout-style h-full">
     <div
       id="opacity-bg1"
@@ -37,14 +39,25 @@ onMounted(() => {
       <a-layout-header class="header-style h-90! bg-transparent! p-x-20!">
         <layout-header></layout-header>
       </a-layout-header>
-      <a-layout-content class="content-style no-select f-1!">
+      <a-layout-content class="content-style no-select f-1! relative">
         <!-- 二级路由出口 -->
         <router-view v-slot="{ Component }">
           <!-- <keep-alive> -->
-          <component :key="refresh" :is="Component"></component>
+          <el-scrollbar>
+            <component :key="refresh" :is="Component"></component>
+          </el-scrollbar>
           <!-- </keep-alive> -->
         </router-view>
         <LoginBox ref="loginBoxRef" />
+        <!-- 返回顶部 -->
+        <!-- <div
+          class="top-btn w-5vw h-5vw rounded-50% f-c cursor-pointer"
+          :style="{ backgroundColor: globalStore.color }"
+          @click="scrollToTop"
+          v-show="showButton"
+        >
+          <el-icon><ArrowUpBold /></el-icon>
+        </div> -->
       </a-layout-content>
     </a-layout>
   </a-layout>
@@ -91,9 +104,12 @@ onMounted(() => {
   height: calc(100% - 60px);
   overflow: hidden;
   overflow-y: auto;
-  scrollbar-width: none;
+  scrollbar-width: 0;
   &:state(webkit-scrollbar) {
     display: none;
   }
+}
+.top-btn {
+  font-size: 3vw;
 }
 </style>

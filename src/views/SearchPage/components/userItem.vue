@@ -77,7 +77,10 @@ defineProps({
           </svg>
         </span>
       </div>
-      <div class="signature fs-12 text-overflow" v-if="user?.signature">
+      <div
+        class="signature fs-12 text-overflow text-center"
+        v-if="user?.signature"
+      >
         {{ user.signature }}
       </div>
     </div>

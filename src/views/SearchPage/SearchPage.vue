@@ -4,6 +4,11 @@ import { ref, onMounted, watch } from 'vue'
 import { getSearchAllResult, getSearchResult } from '@/api/search'
 import { getArtistFollowerCount } from '@/api/artist'
 import allPane from './components/allPane.vue'
+import songsPane from './components/songsPane.vue'
+import playPane from './components/playPane.vue'
+import singerPane from './components/singerPane.vue'
+import userPane from './components/userPane.vue'
+import mvPane from './components/mvPane.vue'
 
 const route = useRoute()
 // 数据
@@ -18,7 +23,7 @@ const mvList = ref([]) // mv
 const userList = ref([]) // 用户
 
 // 分页预备
-// const pageSize = 30
+const pageSize = 30
 const page = ref([0, 0, 0, 0, 0, 0, 0])
 
 const counts = ref([0, 0, 0, 0, 0, 0, 0])
@@ -113,8 +118,29 @@ watch(
 )
 
 const paneChange = (e) => {
-  console.log(e)
+  // 返回顶部
   activeName.value = e
+}
+
+// 无限滚动加载部分
+const loadMore = async (f) => {
+  // 页数 +1
+  const index = typeMap[activeName.value]
+  page.value[index]++
+  // 请求操作
+  const res = await getSearchResult(
+    route.query.keywords,
+    f,
+    page.value[index] * pageSize,
+    pageSize
+  )
+  if (f === 1) songList.value = [...songList.value, ...res.result.songs]
+  if (f === 10) albumList.value = [...albumList.value, ...res.result.albums]
+  if (f === 100) artistList.value = [...artistList.value, ...res.result.artists]
+  if (f === 1000) playList.value = [...playList.value, ...res.result.playlists]
+  if (f === 1002)
+    userList.value = [...userList.value, ...res.result.userprofiles]
+  if (f === 1004) mvList.value = [...mvList.value, ...res.result.mvs]
 }
 </script>
 
@@ -127,7 +153,10 @@ const paneChange = (e) => {
       <span>的相关搜索如下</span>
       <span
         class="extra"
-        v-show="!['all', 'voice', 'video'].includes(activeName)"
+        v-show="
+          !['all', 'voice', 'video'].includes(activeName) &&
+          counts[typeMap[activeName]]
+        "
         >,找到{{ counts[typeMap[activeName]] }}{{ activeName }}</span
       >
     </div>
@@ -144,15 +173,53 @@ const paneChange = (e) => {
             @pane="paneChange"
           ></allPane>
         </el-tab-pane>
-        <el-tab-pane label="单曲" name="首单曲"> </el-tab-pane>
-        <el-tab-pane label="歌单" name="个歌单"> </el-tab-pane>
-        <el-tab-pane label="歌手" name="位歌手"> </el-tab-pane>
-        <el-tab-pane label="声音" name="voice">无 </el-tab-pane>
-        <el-tab-pane label="播客" name="video">无 </el-tab-pane>
-        <el-tab-pane label="歌词" name="篇歌词"> </el-tab-pane>
-        <el-tab-pane label="专辑" name="张专辑"> </el-tab-pane>
-        <el-tab-pane label="MV" name="个MV"> </el-tab-pane>
-        <el-tab-pane label="用户" name="个用户"> </el-tab-pane>
+        <el-tab-pane label="单曲" name="首单曲">
+          <songsPane
+            :list="songList"
+            :count="counts[0]"
+            @load-more="loadMore"
+          ></songsPane>
+        </el-tab-pane>
+        <el-tab-pane label="歌单" name="个歌单">
+          <playPane
+            type="playlist"
+            :list="playList"
+            :count="counts[1]"
+            @load-more="loadMore"
+          ></playPane>
+        </el-tab-pane>
+        <el-tab-pane label="歌手" name="位歌手">
+          <singerPane
+            :list="artistList"
+            :count="counts[2]"
+            @load-more="loadMore"
+          ></singerPane>
+        </el-tab-pane>
+        <el-tab-pane label="声音" name="voice">暂不提供</el-tab-pane>
+        <el-tab-pane label="播客" name="video">暂不提供</el-tab-pane>
+        <el-tab-pane label="歌词" name="篇歌词">暂不提供</el-tab-pane>
+        <el-tab-pane label="专辑" name="张专辑">
+          <playPane
+            type="album"
+            :list="albumList"
+            :count="counts[4]"
+            @load-more="loadMore"
+          ></playPane>
+        </el-tab-pane>
+        <el-tab-pane label="MV" name="个MV">
+          <mvPane
+            :list="mvList"
+            :count="counts[5]"
+            @load-more="loadMore"
+          ></mvPane>
+        </el-tab-pane>
+        <el-tab-pane label="用户" name="个用户">
+          <userPane
+            :list="userList"
+            :count="counts[6]"
+            @load-more="loadMore"
+          ></userPane>
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
