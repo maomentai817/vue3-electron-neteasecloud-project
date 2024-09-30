@@ -37,6 +37,7 @@ useIntersectionObserver(line, async ([{ isIntersecting }]) => {
           <mvBox
             :mv="item"
             :img="item?.cover"
+            :kw="$route.query.keywords"
             @click="$router.push(`/mv?id=${item.id}`)"
           />
         </div>

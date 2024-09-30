@@ -34,7 +34,7 @@ useIntersectionObserver(line, async ([{ isIntersecting }]) => {
     <div class="singer-pane-content flex flex-wrap">
       <template v-for="(item, index) in list" :key="index">
         <div class="simi-container w-25%">
-          <simiSinger :singer="item"></simiSinger>
+          <simiSinger :singer="item" :kw="$route.query.keywords"></simiSinger>
         </div>
       </template>
       <div class="line h-1" ref="line"></div>

@@ -1,5 +1,5 @@
 <script setup>
-import { formatNumber, formatTimestampDay } from '@/utils/format'
+import { formatNumber, formatTimestampDay, highlight } from '@/utils/format'
 
 defineProps({
   item: {
@@ -9,6 +9,10 @@ defineProps({
   type: {
     type: String,
     default: 'dj'
+  },
+  kw: {
+    type: String,
+    default: ''
   }
 })
 </script>
@@ -58,7 +62,9 @@ defineProps({
       </div>
     </div>
     <div class="info fd-col mt-10 pl-20 p-r-10">
-      <div class="name color-#fff text-overflow">{{ item?.name }}</div>
+      <div class="name color-#fff text-overflow">
+        <span v-html="highlight(item?.name, kw)"></span>
+      </div>
       <div class="dj-info f-s fs-12" v-if="type === 'dj'">
         <div class="voice mr-8">声音: {{ item?.programCount }}</div>
         <div class="djer">by {{ item?.dj?.nickname }}</div>

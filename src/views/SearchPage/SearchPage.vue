@@ -168,7 +168,7 @@ const loadMore = async (f) => {
             :first="artistShow"
             :follower="followerCount"
             :kw="route.query.keywords"
-            :mv="mvList.slice(0, 3)"
+            :mv="mvList?.slice(0, 3)"
             v-loading="loading"
             @pane="paneChange"
           ></allPane>
@@ -246,5 +246,8 @@ const loadMore = async (f) => {
 }
 :deep(.el-loading-mask) {
   background-color: transparent;
+}
+:deep(.highlight) {
+  color: #4d6190 !important;
 }
 </style>

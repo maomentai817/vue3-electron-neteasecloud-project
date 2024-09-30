@@ -36,6 +36,7 @@ useIntersectionObserver(line, async ([{ isIntersecting }]) => {
         <div class="user-item-container w-25%">
           <userItem
             :user="item"
+            :kw="$route.query.keywords"
             @click="$router.push(`/user?uid=${item.userId}`)"
           />
         </div>

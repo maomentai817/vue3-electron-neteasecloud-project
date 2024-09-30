@@ -20,6 +20,10 @@ defineProps({
   isRecently: {
     type: Boolean,
     default: false
+  },
+  kw: {
+    type: String,
+    default: ''
   }
 })
 </script>
@@ -44,6 +48,7 @@ defineProps({
           :index="index + 1"
           :isPic="isPic"
           :isPop="isPop"
+          :kw="kw"
         />
       </template>
     </div>
@@ -56,6 +61,7 @@ defineProps({
           :isPop="isPop"
           :isRecently="isRecently"
           :playTime="item.playTime"
+          :kw="kw"
         />
       </template>
     </div>

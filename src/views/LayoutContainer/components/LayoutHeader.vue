@@ -12,7 +12,7 @@ import {
 } from '@element-plus/icons-vue'
 import { onMounted, ref, watch, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useGlobalStore } from '@/stores'
+import { useGlobalStore, useSearchStore } from '@/stores'
 import SearchBox from './SearchBox.vue'
 import { getDefaultSearchResult, getSearchSuggest } from '@/api/search'
 
@@ -147,7 +147,8 @@ const handleFocus = () => {
   noDrag.value = true
   searchbox.value.open()
 }
-const handleBlur = () => {
+const handleBlur = (e) => {
+  if (e.relatedTarget?.tagName === 'BUTTON') return
   // 延时失焦事件, 使搜索点击可以触发
   setTimeout(() => {
     noDrag.value = false
@@ -225,16 +226,19 @@ const adjustColor = () => {
   return brightness < 0.3 ? 'rgb(255, 255, 255)' : globalStore.color
 }
 
+const searchStore = useSearchStore()
 const handleSearch = (keywords) => {
   if (keywords) {
     keyword.value = keywords
     router.push(`/search?keywords=${keywords}`)
     searchbox.value.close()
+    searchStore.pushHistory(keywords)
   } else {
     if (placeholder.value.realKeyword) {
       keyword.value = placeholder.value.realKeyword
       router.push(`/search?keywords=${placeholder.value.realKeyword}`)
       searchbox.value.close()
+      searchStore.pushHistory(placeholder.value.realKeyword)
     }
   }
 }

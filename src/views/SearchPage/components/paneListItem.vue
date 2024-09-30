@@ -1,5 +1,5 @@
 <script setup>
-import { formatNumber, formatTimestampDay } from '@/utils/format'
+import { formatNumber, formatTimestampDay, highlight } from '@/utils/format'
 
 defineProps({
   item: {
@@ -13,6 +13,10 @@ defineProps({
   type: {
     type: String,
     default: 'playlist'
+  },
+  kw: {
+    type: String,
+    default: ''
   }
 })
 </script>
@@ -54,7 +58,9 @@ defineProps({
             class="wh-full rounded-15"
           />
         </div>
-        <div class="name fs-14 ml-20 text-overflow pr-30">{{ item?.name }}</div>
+        <div class="name fs-14 ml-20 text-overflow pr-30">
+          <span v-html="highlight(item?.name, kw)"></span>
+        </div>
       </div>
       <template v-if="type === 'playlist'">
         <div class="item-num w-12%">{{ item?.trackCount }}首</div>

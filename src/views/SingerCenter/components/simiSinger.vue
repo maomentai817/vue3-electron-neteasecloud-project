@@ -1,9 +1,14 @@
 <script setup>
 import { useRouter } from 'vue-router'
+import { highlight } from '@/utils/format'
 defineProps({
   singer: {
     type: Object,
     default: () => ({})
+  },
+  kw: {
+    type: String,
+    default: ''
   }
 })
 
@@ -35,7 +40,9 @@ const navigateToSinger = (id) => {
       </div>
     </div>
     <div class="info fd-col items-center">
-      <div class="name fs-18">{{ singer.name }}</div>
+      <div class="name fs-18">
+        <span v-html="highlight(singer.name, kw)"></span>
+      </div>
       <div class="count fw-400 fs-13 color-#d2d2d2cc" v-if="singer.musicSize">
         单曲: {{ singer.musicSize }}
       </div>

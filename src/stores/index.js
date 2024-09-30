@@ -9,3 +9,4 @@ export default pinia
 // export * from './modules/xxx'
 export * from './modules/user'
 export * from './modules/global'
+export * from './modules/search'

@@ -1,5 +1,5 @@
 <script setup>
-import { formatNumber } from '@/utils/format'
+import { formatNumber, highlight } from '@/utils/format'
 import { CaretRightFilled } from '@ant-design/icons-vue'
 defineProps({
   mv: {
@@ -7,6 +7,10 @@ defineProps({
     default: () => {}
   },
   img: {
+    type: String,
+    default: ''
+  },
+  kw: {
     type: String,
     default: ''
   }
@@ -54,7 +58,7 @@ const formatTime = (milliseconds) => {
       </div>
     </div>
     <div class="mv-title fw-600 f-1 mb-10 p-x-15">
-      {{ mv.name }}
+      <span v-html="highlight(mv.name, kw)"></span>
     </div>
   </div>
 </template>

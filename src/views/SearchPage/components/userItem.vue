@@ -1,8 +1,14 @@
 <script setup>
+import { highlight } from '@/utils/format'
+
 defineProps({
   user: {
     type: Object,
     default: () => ({})
+  },
+  kw: {
+    type: String,
+    default: ''
   }
 })
 </script>
@@ -39,7 +45,9 @@ defineProps({
     </div>
     <div class="info fd-col w-full">
       <div class="name fs-17 self-center f-b">
-        <span class="mr-5">{{ user.nickname }}</span>
+        <span class="mr-5"
+          ><span v-html="highlight(user.nickname, kw)"></span
+        ></span>
         <span v-if="user?.gender === 1">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -81,7 +89,7 @@ defineProps({
         class="signature fs-12 text-overflow text-center"
         v-if="user?.signature"
       >
-        {{ user.signature }}
+        <span v-html="highlight(user.signature, kw)"></span>
       </div>
     </div>
   </div>

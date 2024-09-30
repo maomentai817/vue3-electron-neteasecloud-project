@@ -5,6 +5,7 @@ import squareItem from './squareItem.vue'
 import mvBox from '@/views/SingerCenter/components/mvBox.vue'
 import simiSinger from '@/views/SingerCenter/components/simiSinger.vue'
 import userItem from './userItem.vue'
+import { highlight } from '@/utils/format'
 
 defineProps({
   data: {
@@ -61,7 +62,9 @@ const paneChange = (e) => {
         </div>
       </div>
       <div class="right fd-col justify-between ml-15 h-60">
-        <div class="title fs-18 fw-600 color-#fff">歌手: {{ first.name }}</div>
+        <div class="title fs-18 fw-600 color-#fff">
+          歌手: <span v-html="highlight(first.name, kw)"></span>
+        </div>
         <div class="info f-b">
           <div class="count mr-15">专辑: {{ first.albumSize }}</div>
           <div class="funs">粉丝: {{ formatNumber(follower) }}</div>
@@ -76,8 +79,11 @@ const paneChange = (e) => {
         单曲 >
       </div>
       <div class="song-content mt-10 f-b flex-wrap">
-        <template v-for="(item, index) in data?.song?.songs" :key="index">
-          <RecommendSong :item="item" v-if="index < 6" class="w-49%" />
+        <template
+          v-for="(item, index) in data?.song?.songs.slice(0, 6)"
+          :key="index"
+        >
+          <RecommendSong :item="item" :kw="kw" class="w-49%" />
         </template>
       </div>
     </div>
@@ -96,6 +102,7 @@ const paneChange = (e) => {
           <div class="w-25%">
             <squareItem
               :item="item"
+              :kw="kw"
               type="playlist"
               @click="$router.push(`/play-list?id=${item?.id}`)"
             />
@@ -116,6 +123,7 @@ const paneChange = (e) => {
           <mvBox
             :mv="item"
             :img="item?.cover"
+            :kw="kw"
             class="mr-25"
             @click="$router.push(`/mv?id=${item?.id}`)"
           />
@@ -135,7 +143,7 @@ const paneChange = (e) => {
           :key="index"
         >
           <div class="w-25%">
-            <squareItem :item="item?.baseInfo" type="dj" />
+            <squareItem :item="item?.baseInfo" type="dj" :kw="kw" />
           </div>
         </template>
       </div>
@@ -149,7 +157,7 @@ const paneChange = (e) => {
       </div>
       <div class="artist-content f-s">
         <template v-for="(item, index) in data?.artist?.artists" :key="index">
-          <simiSinger :singer="item" class="m-r-10" />
+          <simiSinger :singer="item" :kw="kw" class="m-r-10" />
         </template>
       </div>
     </div>
@@ -165,6 +173,7 @@ const paneChange = (e) => {
           <div class="w-25%">
             <squareItem
               :item="item"
+              :kw="kw"
               type="album"
               @click="$router.push(`/album?id=${item?.id}`)"
             />
@@ -184,6 +193,7 @@ const paneChange = (e) => {
           <div class="w-25%">
             <userItem
               :user="item"
+              :kw="kw"
               class="m-r-10"
               @click="$router.push(`/user?uid=${item?.userId}`)"
             />

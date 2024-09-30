@@ -26,3 +26,13 @@ export const formatNumber = (value) => {
     return (value / 100000000).toFixed(1) + '亿'
   }
 }
+
+/**
+ * 高亮类添加
+ * @param {string} str - 待高亮的字符串
+ * @returns {string} 高亮后的字符串
+ */
+export const highlight = (str, keyword) => {
+  const regex = new RegExp(`(${keyword})`, 'gi')
+  return str.replace(regex, '<span class="highlight">$1</span>')
+}

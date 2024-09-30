@@ -1,10 +1,15 @@
 <script setup>
 import { useRouter } from 'vue-router'
+import { highlight } from '@/utils/format'
 
 defineProps({
   item: {
     type: Object,
     default: () => {}
+  },
+  kw: {
+    type: String,
+    default: ''
   }
 })
 
@@ -49,7 +54,9 @@ const navigateToMV = (id) => {
       </div>
     </div>
     <div class="right fd-col ml-12 w-25vw justify-between fs-13 h-60">
-      <div class="name fw-600 fs-16 text-overflow">{{ item?.name }}</div>
+      <div class="name fw-600 fs-16 text-overflow">
+        <span v-html="highlight(item?.name, kw)"></span>
+      </div>
       <div class="info f-s color-#ff3a3a">
         <div
           class="reason fs-12 fw-600 rounded-3 p-x-2 bo-#ec4141 mr-5 max-w-8vw text-overflow"
@@ -106,7 +113,7 @@ const navigateToMV = (id) => {
         </div>
       </div>
       <div class="alia fs-12" v-if="item?.alia && item?.alia?.length">
-        {{ item.alia[0] }}
+        <span v-html="highlight(item.alia[0], kw)"></span>
       </div>
     </div>
   </div>

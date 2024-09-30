@@ -30,7 +30,7 @@ useIntersectionObserver(line, async ([{ isIntersecting }]) => {
 
 <template>
   <div class="songs-pane">
-    <ListContent :songList="list"></ListContent>
+    <ListContent :songList="list" :kw="$route.query.keywords"></ListContent>
     <div class="line h-1" ref="line"></div>
   </div>
 </template>

@@ -50,7 +50,12 @@ useIntersectionObserver(line, async ([{ isIntersecting }]) => {
     </div>
     <div class="pane-lists fd-col">
       <template v-for="(item, index) in list" :key="index">
-        <paneListItem :item="item" :index="index + 1" :type="type" />
+        <paneListItem
+          :item="item"
+          :index="index + 1"
+          :type="type"
+          :kw="$route.query.keywords"
+        />
       </template>
       <div class="line h-1" ref="line"></div>
     </div>

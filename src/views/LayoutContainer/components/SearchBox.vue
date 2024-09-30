@@ -1,6 +1,7 @@
 <script setup>
-import { ref, onMounted, watch, watchEffect } from 'vue'
+import { ref, onMounted, watch, watchEffect, nextTick } from 'vue'
 import { getHotSearchList } from '@/api/search'
+import { useSearchStore } from '@/stores'
 
 const props = defineProps({
   keywords: {
@@ -27,14 +28,18 @@ watchEffect(() => {
 })
 
 const showSearchBox = ref(false)
+const sb = ref(null)
 const open = () => {
   showSearchBox.value = true
 }
 const close = () => {
+  sb.value.scrollTo(0, 0)
+  sb.value.setScrollTop(0)
   showSearchBox.value = false
 }
 
 const hotlist = ref([])
+const searchStore = useSearchStore()
 onMounted(async () => {
   const { data } = await getHotSearchList()
   hotlist.value = data
@@ -89,6 +94,42 @@ defineExpose({
   open,
   close
 })
+
+// 历史记录
+const expanded = ref(false) // 控制展开和收回的状态
+const showToggleButton = ref(false) // 控制按钮显示
+const historyList = ref(null) // 引用容器元素
+
+// 切换展开和收回状态
+const toggleExpand = () => {
+  expanded.value = !expanded.value
+}
+
+// 在挂载后检查是否需要显示「展开全部」按钮
+const checkExpandButton = () => {
+  const containerHeight = historyList.value?.clientHeight
+  const contentHeight = historyList.value?.scrollHeight
+
+  if (contentHeight > containerHeight) {
+    showToggleButton.value = true
+  } else {
+    showToggleButton.value = false
+  }
+}
+onMounted(() => {
+  checkExpandButton()
+})
+
+// 监听搜索历史记录变化
+watch(
+  () => searchStore.searchHistory,
+  async () => {
+    // 等待 DOM 更新完成后再检查高度
+    await nextTick()
+    checkExpandButton()
+  },
+  { deep: true } // 深度监听，捕捉数组内容变化
+)
 </script>
 
 <template>
@@ -96,7 +137,7 @@ defineExpose({
     class="search-box w-390 h-600 color-white rounded-12 overflow-y-auto"
     v-show="showSearchBox"
   >
-    <el-scrollbar>
+    <el-scrollbar ref="sb">
       <div class="search-list-container fd-col" v-if="isSearch">
         <div class="guess" v-if="hiSuggestion.allMatch?.length">
           <div class="title fs-17 fw-600 p-l-20 color-#969696 lh-48">
@@ -167,10 +208,50 @@ defineExpose({
         </div>
       </div>
       <div class="hot-list-container" v-else>
-        <div class="title fs-18 fw-600 p-l-20 color-#969696 lh-54">热搜榜</div>
+        <template v-if="searchStore.searchHistory.length">
+          <div class="title fs-17 fw-600 p-l-20 p-r-30 color-#969696 lh-54 f-b">
+            <span>搜索历史</span>
+            <span class="cursor-pointer" @click="searchStore.clearSearchHistory"
+              >🗑</span
+            >
+          </div>
+          <div class="history-container relative p-l-20 p-r-35">
+            <div
+              ref="historyList"
+              class="history-list overflow-hidden flex flex-wrap relative"
+              :class="{ clamped: !expanded }"
+            >
+              <div
+                class="tag fs-13 rounded-12 bg-#9696961f m-r-8 m-b-8 line-height-loose p-x-10 cursor-pointer flex-shrink-0"
+                v-for="(item, index) in searchStore.searchHistory"
+                :key="index"
+                @click="handleSearch(item)"
+              >
+                {{ item }}
+              </div>
+              <!-- 展开/收回按钮 -->
+              <button
+                v-if="showToggleButton && expanded"
+                @click="toggleExpand"
+                class="rotate-90 rounded-12 bg-#9696961f m-r-8 m-b-8 line-height-loose p-x-10"
+              >
+                {{ expanded ? '<' : '>' }}
+              </button>
+            </div>
+            <!-- 展开/收回按钮 -->
+            <button
+              v-if="showToggleButton && !expanded"
+              @click="toggleExpand"
+              class="rotate-90 rounded-12 bg-#9696961f m-r-8 m-b-8 line-height-loose p-x-10 translate-y--55%"
+            >
+              {{ expanded ? '<' : '>' }}
+            </button>
+          </div>
+        </template>
+        <div class="title fs-17 fw-600 p-l-20 color-#969696 lh-54">热搜榜</div>
         <div class="hot-list">
           <div
-            class="item f-s p-l-20 hover:bg-#393944"
+            class="item f-s p-l-20 hover:bg-#393944 cursor-pointer"
             v-for="(item, index) in hotlist"
             :key="index"
             @click="handleSearch(item.searchWord)"
@@ -209,6 +290,15 @@ defineExpose({
       &:hover {
         background-color: #393944;
       }
+    }
+  }
+  .history-list {
+    transition: max-height 0.3s ease-in-out;
+    &.clamped {
+      max-height: calc(4em + 12px);
+    }
+    &:not(.clamped) {
+      max-height: none;
     }
   }
 }

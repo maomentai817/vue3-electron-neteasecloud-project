@@ -3,7 +3,7 @@ import { HeartFilled, HeartOutlined } from '@ant-design/icons-vue'
 import { useUserStore } from '@/stores'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-// import { formatTimestamp } from '@/utils/format'
+import { highlight } from '@/utils/format'
 
 const userStore = useUserStore()
 
@@ -31,6 +31,10 @@ const props = defineProps({
   playTime: {
     type: Number,
     default: 0
+  },
+  kw: {
+    type: String,
+    default: ''
   }
 })
 const formatTime = (milliseconds) => {
@@ -112,7 +116,7 @@ const timeAgo = (timestamp) => {
         </div>
         <div class="song-info f-1">
           <div class="song-name color-#d2d2d2 text-overflow">
-            {{ item.name }}
+            <span v-html="highlight(item.name, kw)"></span>
           </div>
           <div class="singers f-s">
             <span class="singer" v-for="(singer, i) in item.ar" :key="i">
@@ -134,7 +138,7 @@ const timeAgo = (timestamp) => {
         class="album w-30% text-overflow hover:color-#d2d2d2 cursor-pointer"
         @click="navgateToAlbum(item.al.id)"
       >
-        {{ item.al.name }}
+        <span v-html="highlight(item.al.name, kw)"></span>
       </div>
       <div class="pop w-9%" v-if="isPop">
         <progress
