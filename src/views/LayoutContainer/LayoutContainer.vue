@@ -4,21 +4,23 @@ import LayoutHeader from './components/LayoutHeader.vue'
 import LoginBox from './components/LoginBox.vue'
 import { onMounted, ref } from 'vue'
 import { useGlobalStore } from '@/stores'
+import MusicPlayer from '../MusicPlayer/MusicPlayer.vue'
 // import { ArrowUpBold } from '@element-plus/icons-vue'
 
 const refresh = ref(0) // 登录成功后强制刷新页面
 const loginBoxRef = ref(null)
+const audio = ref(null)
 const globalStore = useGlobalStore()
 onMounted(() => {
   // 初始化全局挂载 $audio
   // 初始化 全局变量 $login
   window.$login = loginBoxRef.value
+  window.$player = audio.value
 })
 </script>
 
 <template>
-  <!-- {{ content }} -->
-  <a-layout class="min-h-screen layout-style h-full">
+  <a-layout class="min-h-screen layout-style h-full relative">
     <div
       id="opacity-bg1"
       class="background-layer fixed wh-full"
@@ -30,16 +32,19 @@ onMounted(() => {
       :style="globalStore.bgLayer2Style"
     ></div>
     <a-layout-sider
-      class="aside-style no-select bgc-#ffffff08! h-full"
+      class="aside-style no-select bgc-#ffffff08! h-full z-800"
       width="235px"
     >
       <layout-aside class="h-full"></layout-aside>
     </a-layout-sider>
-    <a-layout class="layout-style fd-col h-full">
+    <a-layout class="layout-style fd-col h-full z-auto!">
       <a-layout-header class="header-style h-90! bg-transparent! p-x-20!">
         <layout-header></layout-header>
       </a-layout-header>
-      <a-layout-content class="content-style no-select f-1! relative">
+      <a-layout-content
+        class="content-style no-select f-1! relative"
+        :style="{ paddingBottom: audio?.playerVisible ? '11%' : '' }"
+      >
         <!-- 二级路由出口 -->
         <router-view v-slot="{ Component }">
           <!-- <keep-alive> -->
@@ -60,6 +65,11 @@ onMounted(() => {
         </div> -->
       </a-layout-content>
     </a-layout>
+    <!-- 播放器 -->
+    <music-player
+      class="wh-full absolute left-0 bottom-0"
+      ref="audio"
+    ></music-player>
   </a-layout>
 </template>
 

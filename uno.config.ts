@@ -27,7 +27,8 @@ export default defineConfig({
     'tf-0': 'top-0 left-0',
     'tf-50': 'top-50% left-50%',
     'tf-center': 'top-50% left-50% translate-x--50% translate-y--50%',
-    'm-0-auto': 'm-y-0 m-x-auto'
+    'm-0-auto': 'm-y-0 m-x-auto',
+    cp: 'cursor-pointer'
   },
   rules: [
     [/^b-(\d+)$/, (match) => ({ 'border-width': `${match[1]}px` })],

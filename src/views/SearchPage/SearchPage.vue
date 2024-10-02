@@ -77,7 +77,7 @@ const init = async (kw) => {
     artistList.value = artistListRes.result.artists
     lyricList.value = lyricListRes.result.songs
     albumList.value = albumListRes.result.albums
-    mvList.value = mvListRes.result.mvs
+    mvList.value = mvListRes.result?.mvs
     userList.value = userListRes.result.userprofiles
   } catch (error) {
     console.log(error)
@@ -94,11 +94,14 @@ onMounted(async () => {
   const kw = route.query.keywords
   await init(kw)
   // 综合页获取首个歌手粉丝数
-  artistShow.value = allResultList.value?.artist?.artists[0]
-  const {
-    data: { fansCnt }
-  } = await getArtistFollowerCount(artistShow.value?.id)
-  followerCount.value = fansCnt
+  if (allResultList.value?.artist?.artists[0]) {
+    artistShow.value = allResultList.value?.artist?.artists[0]
+    const {
+      data: { fansCnt }
+    } = await getArtistFollowerCount(artistShow.value?.id)
+    followerCount.value = fansCnt
+  }
+
   loading.value = false
 })
 

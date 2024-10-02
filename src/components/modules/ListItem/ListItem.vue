@@ -88,10 +88,15 @@ const timeAgo = (timestamp) => {
 
   return '刚刚' // 如果时间戳是现在或未来，则返回“刚刚”
 }
+
+// 播放
+const open = () => {
+  window.$player.show(props.item?.id)
+}
 </script>
 
 <template>
-  <div class="list-item-container p-x-20 rounded-10">
+  <div class="list-item-container p-x-20 rounded-10" @dblclick="open">
     <div class="item-content f-a h-70 fs-14 fw-600 color-#969696">
       <div class="id w-5% relative">
         <span class="id-count opacity-100">{{
@@ -134,11 +139,11 @@ const timeAgo = (timestamp) => {
           </div>
         </div>
       </div>
-      <div
-        class="album w-30% text-overflow hover:color-#d2d2d2 cursor-pointer"
-        @click="navgateToAlbum(item.al.id)"
-      >
-        <span v-html="highlight(item.al.name, kw)"></span>
+      <div class="album w-30% text-overflow hover:color-#d2d2d2 cursor-pointer">
+        <span
+          v-html="highlight(item.al.name, kw)"
+          @click="navgateToAlbum(item.al.id)"
+        ></span>
       </div>
       <div class="pop w-9%" v-if="isPop">
         <progress

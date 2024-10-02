@@ -66,8 +66,10 @@ defineProps({
         <span v-html="highlight(item?.name, kw)"></span>
       </div>
       <div class="dj-info f-s fs-12" v-if="type === 'dj'">
-        <div class="voice mr-8">声音: {{ item?.programCount }}</div>
-        <div class="djer">by {{ item?.dj?.nickname }}</div>
+        <div class="voice mr-8 flex-shrink-0">
+          声音: {{ item?.programCount }}
+        </div>
+        <div class="djer text-overflow">by {{ item?.dj?.nickname }}</div>
       </div>
       <div class="al-info f-s fs-10" v-if="type === 'album'">
         <div class="artist m-r-8 f-1 text-overflow z-1000">
@@ -80,7 +82,7 @@ defineProps({
             >
           </template>
         </div>
-        <div class="date w-45% flex-shrink-0 color-#969696">
+        <div class="date w-48% flex-shrink-0 color-#969696">
           {{ formatTimestampDay(item?.publishTime) }}
         </div>
       </div>

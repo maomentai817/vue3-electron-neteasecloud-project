@@ -5,7 +5,7 @@ export const useGlobalStore = defineStore(
   'global',
   () => {
     // state
-    const color = ref('rgb(255,255,255)')
+    const color = ref('rgb(210,210,210)')
     const pointer = ref(0) // 指示当前使用的背景层
     const bgLayer1Style = ref({
       backgroundImage: 'linear-gradient(to bottom, #13131a, #13131a)',
@@ -36,13 +36,17 @@ export const useGlobalStore = defineStore(
         pointer.value = 0
       }
     }
+    const setColor = (rgbColor) => {
+      color.value = rgbColor
+    }
 
     // getters
     return {
       color,
       bgLayer1Style,
       bgLayer2Style,
-      setBackgroundStyle
+      setBackgroundStyle,
+      setColor
     }
   },
   // 本地持久化

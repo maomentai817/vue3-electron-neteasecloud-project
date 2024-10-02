@@ -34,6 +34,11 @@ const emit = defineEmits(['pane'])
 const paneChange = (e) => {
   emit('pane', e)
 }
+
+// 播放
+const songPlay = (id) => {
+  window.$player.show(id)
+}
 </script>
 
 <template>
@@ -41,6 +46,7 @@ const paneChange = (e) => {
     <div
       class="first-line f-s p-15 rounded-15 cursor-pointer w-40%"
       v-if="first?.id"
+      @click="$router.push(`/singer?id=${first?.id}`)"
     >
       <div class="left">
         <div class="cover-img wh-60 rounded-50% relative">
@@ -83,7 +89,12 @@ const paneChange = (e) => {
           v-for="(item, index) in data?.song?.songs.slice(0, 6)"
           :key="index"
         >
-          <RecommendSong :item="item" :kw="kw" class="w-49%" />
+          <RecommendSong
+            :item="item"
+            :kw="kw"
+            class="w-49%"
+            @dblclick="songPlay(item?.id)"
+          />
         </template>
       </div>
     </div>
@@ -110,7 +121,7 @@ const paneChange = (e) => {
         </template>
       </div>
     </div>
-    <div class="mv mt-20" v-if="mv">
+    <div class="mv mt-20" v-if="mv?.length">
       <div
         class="title fw-600 fs-20 color-#fff cursor-pointer w-12%"
         @click="paneChange('个MV')"

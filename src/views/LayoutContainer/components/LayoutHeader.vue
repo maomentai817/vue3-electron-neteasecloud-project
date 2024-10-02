@@ -348,8 +348,8 @@ const handleSearch = (keywords) => {
           </div>
         </div>
         <div class="center-part no-drag"></div>
-        <div class="right-part no-drag color-hue">
-          <div class="operator f-c">
+        <div class="right-part no-drag color-hue z-9999">
+          <div class="operator f-c z-9999 relative">
             <div class="handler f-c" @click="minimize">
               <el-icon><SemiSelect /></el-icon>
             </div>
@@ -374,6 +374,7 @@ const handleSearch = (keywords) => {
 .handler {
   padding: 0 15px;
   cursor: pointer;
+  z-index: 9999;
 }
 .history-nav {
   .disabled {
