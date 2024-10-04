@@ -37,12 +37,17 @@ onMounted(() => {
     >
       <layout-aside class="h-full"></layout-aside>
     </a-layout-sider>
-    <a-layout class="layout-style fd-col h-full z-auto!">
-      <a-layout-header class="header-style h-90! bg-transparent! p-x-20!">
+    <a-layout
+      class="layout-style fd-col h-full"
+      :style="{ zIndex: audio?.songShow ? 'auto' : '800' }"
+    >
+      <a-layout-header
+        class="header-style h-90! bg-transparent! p-x-20! z-auto!"
+      >
         <layout-header></layout-header>
       </a-layout-header>
       <a-layout-content
-        class="content-style no-select f-1! relative"
+        class="content-style no-select f-1! relative z-auto"
         :style="{ paddingBottom: audio?.playerVisible ? '11%' : '' }"
       >
         <!-- 二级路由出口 -->
@@ -67,7 +72,7 @@ onMounted(() => {
     </a-layout>
     <!-- 播放器 -->
     <music-player
-      class="wh-full absolute left-0 bottom-0"
+      class="wh-full absolute left-0 bottom-0 z-auto!"
       ref="audio"
     ></music-player>
   </a-layout>

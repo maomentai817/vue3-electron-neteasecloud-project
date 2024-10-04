@@ -2,13 +2,15 @@
 import { ref } from 'vue'
 import { getSongDetail, getSongUrl } from '@/api/song'
 import { getMaxColorDifference, getDominantColor } from '@/utils/getMainColor'
-import { useGlobalStore } from '@/stores'
+import { useGlobalStore, useMusicStore } from '@/stores'
+import ProgressBar from './components/ProgressBar.vue'
 
 const playerVisible = ref(false)
 const songDetail = ref({})
 const songUrl = ref({})
 
 const colors = ref(['#13131a', '#13131a'])
+const musicStore = useMusicStore()
 const show = async (id) => {
   playerVisible.value = true
   try {
@@ -24,17 +26,19 @@ const show = async (id) => {
     // color-thief
     const colorRes = await getMaxColorDifference(songDetail.value?.al?.picUrl)
     colors.value = colorRes?.map((i) => `rgb(${i[0]}, ${i[1]}, ${i[2]})`)
+    globalStore.setColors(colors.value[0], colors.value[1])
     // 主色
     if (songDetail.value?.al?.picUrl) {
       getDominantColor(songDetail.value?.al?.picUrl).then((color) => {
         globalStore.setColor(color)
       })
     }
+    // 更新状态管理器
+    musicStore.updateInfo(songUrl.value?.url, songDetail.value)
   } catch (error) {
     console.error(error)
   }
 }
-defineExpose({ show, playerVisible })
 
 // 单曲播放详情
 const songShow = ref(false)
@@ -42,6 +46,44 @@ const toggleShow = () => {
   songShow.value = !songShow.value
 }
 const globalStore = useGlobalStore()
+defineExpose({ show, playerVisible, songShow })
+
+// 播放器相关逻辑
+
+const audio = ref(null)
+const timeState = ref({
+  stop: false,
+  previousTime: 0
+})
+
+const pb1 = ref(null)
+const pb2 = ref(null)
+const timeupdate = (e) => {
+  if (timeState.value.stop) return
+  // 更新 currentTime 值
+  timeState.value.previousTime = musicStore.currentTime
+
+  musicStore.updateTime(e.target.currentTime)
+}
+
+// 进度条相关
+const progressChange = (val) => {
+  timeState.value.stop = true
+  musicStore.updateTime(val)
+  audio.value.currentTime = val
+  setTimeout(() => {
+    timeState.value.stop = false
+  }, 50)
+}
+// 鼠标拖动开始时禁用 timeupdate
+const handleMouseDown = () => {
+  timeState.value.stop = true
+}
+
+// 鼠标拖动结束时恢复 timeupdate
+const handleMouseUp = () => {
+  timeState.value.stop = false
+}
 </script>
 
 <template>
@@ -49,8 +91,18 @@ const globalStore = useGlobalStore()
     class="music-player-container wh-full fd-col overflow-hidden"
     v-show="playerVisible"
   >
+    <audio
+      @timeupdate="timeupdate"
+      @ended="end"
+      @seeked="seeked"
+      ref="audio"
+      class="plyr-audio"
+      :src="songUrl.url"
+      preload="auto"
+      autoplay
+    />
     <div
-      class="desc-content wh-full z-1001 absolute left-0 top-0 translate-y-100% bg-#13131a"
+      class="desc-content wh-full z-1003 absolute left-0 top-0 translate-y-100% bg-#13131a"
       :class="songShow ? 'show' : ''"
     >
       <div class="song-content w-full h-89% relative">
@@ -97,12 +149,28 @@ const globalStore = useGlobalStore()
         </div>
       </div>
       <div
+        class="timeline w-full absolute left-0 bottom-11% z-9999"
+        v-show="songShow"
+      >
+        <progress-bar
+          :song="songDetail"
+          :duration="songUrl?.time / 1000"
+          ref="pb1"
+          @change="progressChange"
+          @mousedown="handleMouseDown"
+          @mouseup="handleMouseUp"
+        ></progress-bar>
+      </div>
+      <div
         class="song-play-box w-full h-11% f-b p-x-25 z-1002 relative"
         :style="{
           background: `linear-gradient(to right, ${colors[1]}, ${colors[0]})`
         }"
       >
-        <div class="info w-25% h-full f-s">
+        <div
+          class="dark absolute wh-full top-0 left-0 bg-#0000003f z-1004"
+        ></div>
+        <div class="info w-25% h-full f-s z-1005">
           <div class="song-handle f-s pl-20">
             <div class="collect mr-10 cp">
               <svg
@@ -180,8 +248,8 @@ const globalStore = useGlobalStore()
             </div>
           </div>
         </div>
-        <div class="audio-container f-1"></div>
-        <div class="handle w-20%"></div>
+        <div class="audio-container f-1 z-1005"></div>
+        <div class="handle w-20% z-1005"></div>
       </div>
     </div>
     <div
@@ -298,6 +366,19 @@ const globalStore = useGlobalStore()
       </div>
       <div class="audio-container f-1"></div>
       <div class="handle w-20%"></div>
+    </div>
+    <div
+      class="timeline w-full absolute left-0 bottom-11% z-9999"
+      v-show="!songShow"
+    >
+      <progress-bar
+        :song="songDetail"
+        :duration="songUrl?.time / 1000"
+        ref="pb2"
+        @change="progressChange"
+        @mousedown="handleMouseDown"
+        @mouseup="handleMouseUp"
+      ></progress-bar>
     </div>
   </div>
 </template>
