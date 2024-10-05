@@ -64,7 +64,7 @@ const navigateToMV = (id) => {
           vip
         </div>
         <div
-          class="mv fs-11 rounded-3 bo-#ec4141 mr-5 p-x-2"
+          class="mv fs-11 rounded-3 bo-#ec4141 mr-5 p-x-2 cp"
           v-if="item?.mv !== 0"
           @click.stop="navigateToMV(item.mv)"
         >
@@ -76,27 +76,25 @@ const navigateToMV = (id) => {
         >
           原唱
         </div>
-        <div class="artisrs f-s text-overflow f-1" v-if="item?.ar">
+        <div class="artists f-s text-overflow f-1" v-if="item?.ar">
           <template v-for="(a, i) in item.ar" :key="i">
             <div
               class="artist color-#d2d2d2cc"
               @click.stop="navigateToSinger(a.id)"
-            >
-              {{ a.name }}
-            </div>
+              v-html="highlight(a.name, kw)"
+            ></div>
             <span class="color-#d2d2d2cc m-x-2" v-if="i < item.ar.length - 1"
               >/</span
             >
           </template>
         </div>
-        <div class="artisrs f-s text-overflow f-1" v-else>
+        <div class="artists f-s text-overflow f-1" v-else>
           <template v-for="(a, i) in item?.artists" :key="i">
             <div
               class="artist color-#d2d2d2cc"
               @click.stop="navigateToSinger(a.id)"
-            >
-              {{ a.name }}
-            </div>
+              v-html="highlight(a.name, kw)"
+            ></div>
             <span
               class="color-#d2d2d2cc m-x-2"
               v-if="i < item.artists.length - 1"

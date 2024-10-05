@@ -48,13 +48,13 @@ const change = (val) => {
   display: none;
 }
 :deep(.el-slider__runway) {
-  height: 1px;
+  height: 3px;
   width: 100%;
   // padding: 15px 0;
   background-color: transparent;
 }
 :deep(.el-slider__bar) {
-  height: 1px;
+  height: 3px;
   background-color: rgb(236, 65, 65);
   border-radius: 0;
 }
@@ -70,9 +70,14 @@ const change = (val) => {
       height: 6px;
       background-image: linear-gradient(
         to right,
-        v-bind('globalStore.colors[0]'),
-        v-bind('globalStore.colors[1]')
+        v-bind('globalStore.color'),
+        v-bind('globalStore.color')
       );
+      // background-image: linear-gradient(
+      //   to right,
+      //   v-bind('globalStore.colors[0]'),
+      //   v-bind('globalStore.colors[1]')
+      // );
       opacity: 0.8;
       border-radius: 6px;
       background-color: transparent;

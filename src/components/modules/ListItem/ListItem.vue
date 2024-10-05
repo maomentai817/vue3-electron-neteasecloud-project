@@ -1,6 +1,6 @@
 <script setup>
 import { HeartFilled, HeartOutlined } from '@ant-design/icons-vue'
-import { useUserStore } from '@/stores'
+import { useUserStore, useMusicStore } from '@/stores'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { highlight } from '@/utils/format'
@@ -90,8 +90,16 @@ const timeAgo = (timestamp) => {
 }
 
 // 播放
+const musicStore = useMusicStore()
+const selectFlag = computed(() => {
+  return props.item?.id === musicStore.songInfo.id
+})
 const open = () => {
   window.$player.show(props.item?.id)
+}
+
+const navigateToMV = (id) => {
+  router.push(`/mv?id=${id}`)
 }
 </script>
 
@@ -121,17 +129,41 @@ const open = () => {
         </div>
         <div class="song-info f-1">
           <div class="song-name color-#d2d2d2 text-overflow">
-            <span v-html="highlight(item.name, kw)"></span>
+            <span
+              v-html="highlight(item.name, kw)"
+              :class="selectFlag ? 'playing' : ''"
+            ></span>
           </div>
-          <div class="singers f-s">
+          <div class="singers f-s" :class="selectFlag ? 'playing' : ''">
+            <span class="f-s color-#ff3a3a">
+              <div
+                class="vip fs-11 rounded-3 bo-#ec4141 mr-5 p-x-2"
+                v-if="item?.fee === 1"
+              >
+                vip
+              </div>
+              <div
+                class="mv fs-11 rounded-3 bo-#ec4141 mr-5 p-x-2 cp"
+                v-if="item?.mv !== 0"
+                @click.stop="navigateToMV(item.mv)"
+              >
+                mv&#9654;
+              </div>
+              <div
+                class="origin fs-11 rounded-3 bo-#ec4141 mr-5 p-x-2"
+                v-if="item?.originCoverType === 1"
+              >
+                原唱
+              </div>
+            </span>
             <span class="singer" v-for="(singer, i) in item.ar" :key="i">
               <span
-                class="hover:color-#d2d2d2 cursor-pointer"
+                class="hover:color-#d2d2d2 cursor-pointer fs-13 fw-500"
                 v-if="singer.id !== 0"
                 @click="navigateToSinger(singer)"
-                >{{ singer.name }}</span
-              >
-              <span v-else>{{ singer.name }}</span>
+                v-html="highlight(singer.name, kw)"
+              ></span>
+              <span v-else v-html="highlight(singer.name, kw)"></span>
               <span class="empty m-x-4">{{
                 i === item.ar.length - 1 ? '' : '/'
               }}</span>
@@ -191,5 +223,8 @@ const open = () => {
       opacity: 1;
     }
   }
+}
+.playing {
+  color: #fc3d49 !important;
 }
 </style>

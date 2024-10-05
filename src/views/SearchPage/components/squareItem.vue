@@ -74,9 +74,10 @@ defineProps({
       <div class="al-info f-s fs-10" v-if="type === 'album'">
         <div class="artist m-r-8 f-1 text-overflow z-1000">
           <template v-for="(artist, index) in item?.artists" :key="artist.id">
-            <span class="text-overflow color-#969696 hover:color-#fff">{{
-              artist.name
-            }}</span>
+            <span
+              class="text-overflow color-#969696 hover:color-#fff"
+              v-html="highlight(artist?.name, kw)"
+            ></span>
             <span v-if="index !== item?.artists?.length - 1" class="m-x-2"
               >/</span
             >

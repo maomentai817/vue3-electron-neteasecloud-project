@@ -34,6 +34,7 @@ onMounted(() => {
     <a-layout-sider
       class="aside-style no-select bgc-#ffffff08! h-full z-800"
       width="235px"
+      :style="{ paddingBottom: audio?.playerVisible ? '7%' : '' }"
     >
       <layout-aside class="h-full"></layout-aside>
     </a-layout-sider>

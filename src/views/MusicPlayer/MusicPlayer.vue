@@ -4,6 +4,7 @@ import { getSongDetail, getSongUrl } from '@/api/song'
 import { getMaxColorDifference, getDominantColor } from '@/utils/getMainColor'
 import { useGlobalStore, useMusicStore } from '@/stores'
 import ProgressBar from './components/ProgressBar.vue'
+import DetailCenter from './components/DetailCenter.vue'
 
 const playerVisible = ref(false)
 const songDetail = ref({})
@@ -35,6 +36,12 @@ const show = async (id) => {
     }
     // 更新状态管理器
     musicStore.updateInfo(songUrl.value?.url, songDetail.value)
+
+    // 更新时间管理器
+    timeState.value = {
+      stop: false,
+      previousTime: 0
+    }
   } catch (error) {
     console.error(error)
   }
@@ -71,6 +78,10 @@ const progressChange = (val) => {
   timeState.value.stop = true
   musicStore.updateTime(val)
   audio.value.currentTime = val
+  // 检查歌曲是否结束，结束的话重新播放
+  if (audio.value.ended) {
+    audio.value.play()
+  }
   setTimeout(() => {
     timeState.value.stop = false
   }, 50)
@@ -88,7 +99,7 @@ const handleMouseUp = () => {
 
 <template>
   <div
-    class="music-player-container wh-full fd-col overflow-hidden"
+    class="music-player-container wh-full fd-col overflow-hidden no-select"
     v-show="playerVisible"
   >
     <audio
@@ -171,12 +182,12 @@ const handleMouseUp = () => {
           class="dark absolute wh-full top-0 left-0 bg-#0000003f z-1004"
         ></div>
         <div class="info w-25% h-full f-s z-1005">
-          <div class="song-handle f-s pl-20">
-            <div class="collect mr-10 cp">
+          <div class="song-handle f-a pl-40">
+            <div class="collect mr-20 cp">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
+                width="22"
+                height="22"
                 viewBox="0 0 24 24"
               >
                 <path
@@ -186,11 +197,11 @@ const handleMouseUp = () => {
                 ></path>
               </svg>
             </div>
-            <div class="comment mr-10 cp">
+            <div class="comment mr-20 cp">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
+                width="22"
+                height="22"
                 viewBox="0 0 24 24"
               >
                 <path
@@ -200,11 +211,11 @@ const handleMouseUp = () => {
                 ></path>
               </svg>
             </div>
-            <div class="share mr-10 cp">
+            <div class="share mr-20 cp">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
+                width="22"
+                height="22"
                 viewBox="0 0 24 24"
               >
                 <g
@@ -231,8 +242,8 @@ const handleMouseUp = () => {
             <div class="download cp">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
+                width="22"
+                height="22"
                 viewBox="0 0 24 24"
               >
                 <path
@@ -248,7 +259,13 @@ const handleMouseUp = () => {
             </div>
           </div>
         </div>
-        <div class="audio-container f-1 z-1005"></div>
+        <div class="audio-container f-1 z-1005">
+          <detail-center
+            @play="audio.play()"
+            @pause="audio.pause()"
+            :isPlay="!timeState.stop"
+          ></detail-center>
+        </div>
         <div class="handle w-20% z-1005"></div>
       </div>
     </div>
@@ -364,11 +381,17 @@ const handleMouseUp = () => {
           </div>
         </div>
       </div>
-      <div class="audio-container f-1"></div>
+      <div class="audio-container f-1">
+        <detail-center
+          @play="audio.play()"
+          @pause="audio.pause()"
+          :isPlay="!timeState.stop"
+        ></detail-center>
+      </div>
       <div class="handle w-20%"></div>
     </div>
     <div
-      class="timeline w-full absolute left-0 bottom-11% z-9999"
+      class="timeline w-full absolute left-0 bottom-11% z-1006"
       v-show="!songShow"
     >
       <progress-bar
@@ -494,5 +517,11 @@ const handleMouseUp = () => {
   100% {
     transform: rotate(360deg);
   }
+}
+.no-select {
+  -webkit-user-select: none; /* 针对 Safari 和 Chrome */
+  -moz-user-select: none; /* 针对 Firefox */
+  -ms-user-select: none; /* 针对 IE 和 Edge */
+  user-select: none; /* 标准属性 */
 }
 </style>
