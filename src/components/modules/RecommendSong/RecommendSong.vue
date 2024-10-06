@@ -2,7 +2,7 @@
 import { useRouter } from 'vue-router'
 import { highlight } from '@/utils/format'
 
-defineProps({
+const props = defineProps({
   item: {
     type: Object,
     default: () => {}
@@ -21,10 +21,17 @@ const navigateToSinger = (id) => {
 const navigateToMV = (id) => {
   router.push(`/mv?id=${id}`)
 }
+
+const open = () => {
+  window.$player.show(props.item?.id)
+}
 </script>
 
 <template>
-  <div class="re-song-item f-s cursor-pointer w-35vw p-10 rounded-15">
+  <div
+    class="re-song-item f-s cursor-pointer w-35vw p-10 rounded-15"
+    @dblclick="open"
+  >
     <div class="left wh-60 rounded-15 bg-#d2d2d2 flex-shrink-0 relative">
       <img
         :src="item?.al?.picUrl || item?.album?.picUrl"

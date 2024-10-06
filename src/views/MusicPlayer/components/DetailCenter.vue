@@ -1,6 +1,7 @@
 <script setup>
 import { useMusicStore } from '@/stores'
 import { ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
 const musicStore = useMusicStore()
 // 播放 ing
@@ -15,16 +16,29 @@ watch(
   () => musicStore.musicUrl,
   () => {
     isPlaying.value = true
+    musicStore.stop = false
+  }
+)
+
+// mv 页时, 暂停
+const route = useRoute()
+watch(
+  () => route.path,
+  (newValue) => {
+    if (newValue === '/mv') pause()
   }
 )
 const pauseToggle = () => {
   isPlaying.value = !isPlaying.value
+  musicStore.stop = !isPlaying.value
 }
 const emits = defineEmits(['play', 'pause'])
 const play = () => {
+  pauseToggle()
   emits('play')
 }
 const pause = () => {
+  pauseToggle()
   emits('pause')
 }
 </script>
@@ -62,13 +76,13 @@ const pause = () => {
         </g>
       </svg>
     </div>
-    <div class="pause cp" @click="pauseToggle">
+    <div class="pause cp">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
         height="24"
         viewBox="0 0 24 24"
-        v-show="isPlaying"
+        v-show="!musicStore.stop"
         @click="pause"
       >
         <title>暂停</title>
@@ -87,7 +101,7 @@ const pause = () => {
         width="24"
         height="24"
         viewBox="0 0 24 24"
-        v-show="!isPlaying"
+        v-show="musicStore.stop"
         @click="play"
       >
         <title>暂停</title>

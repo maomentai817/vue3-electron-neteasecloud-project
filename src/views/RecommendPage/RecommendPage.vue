@@ -40,17 +40,17 @@ onMounted(async () => {
     ])
 
     // 处理请求结果
-    bannerList.value = res.banners
-    resourceList.value = res2.recommend
-    songsList.value = res3.data.dailySongs
+    bannerList.value = res?.banners
+    resourceList.value = res2?.recommend
+    songsList.value = res3?.data?.dailySongs
     // 截断songslist
-    const num = Math.floor(songsList.value.length / 6) * 6
-    songsList.value = songsList.value.slice(0, num)
+    const num = Math.floor(songsList?.value.length / 6) * 6
+    songsList.value = songsList.value?.slice(0, num)
 
-    personalizedList.value = res4.result
-    topList.value = res5.playlists
-    rankList.value = res6.list.filter((item, index) => index < 4)
-    newSongs.value = res7.result
+    personalizedList.value = res4?.result
+    topList.value = res5?.playlists
+    rankList.value = res6?.list?.filter((item, index) => index < 4)
+    newSongs.value = res7?.result
   } catch (error) {
     console.error('Error loading resources:', error)
   }

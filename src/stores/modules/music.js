@@ -5,6 +5,7 @@ export const useMusicStore = defineStore('music', () => {
   // state
   const musicUrl = ref('') // 用户当前播放歌曲的url
   const songInfo = ref({}) // 用户当前播放歌曲的信息
+  const stop = ref(false) // 播放状态
   const currentTime = ref(0)
   const mode = ref(1) // 播放模式 1: 顺序播放 2: 单曲循环 3: 随机播放
 
@@ -29,6 +30,7 @@ export const useMusicStore = defineStore('music', () => {
     songInfo,
     currentTime,
     mode,
+    stop,
     updateInfo,
     updateTime,
     modeChange

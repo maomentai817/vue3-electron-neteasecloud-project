@@ -73,6 +73,7 @@ const change = (val) => {
         v-bind('globalStore.color'),
         v-bind('globalStore.color')
       );
+      filter: brightness(200%);
       // background-image: linear-gradient(
       //   to right,
       //   v-bind('globalStore.colors[0]'),

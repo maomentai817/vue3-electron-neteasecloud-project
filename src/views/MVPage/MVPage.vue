@@ -21,9 +21,9 @@ const init = async () => {
       getMvUrl(route.query.id)
     ])
 
-    mvDetail.value = res1.data
+    mvDetail.value = res1?.data
     mvInfo.value = res2
-    mvUrl.value = res3.data
+    mvUrl.value = res3?.data
   } catch (error) {
     console.error('xixi', error)
   }
@@ -293,7 +293,7 @@ const getAspectRatio = () => {
 .sm-vi {
   position: fixed;
   width: 30%;
-  bottom: 30px;
+  bottom: 12%;
   right: 30px;
   border-radius: 5px;
   z-index: 100;
