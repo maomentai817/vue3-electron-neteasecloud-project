@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { getSongDetail, getSongUrl, getLyric } from '@/api/song'
 import { getMaxColorDifference, getDominantColor } from '@/utils/getMainColor'
 import { useGlobalStore, useMusicStore } from '@/stores'
@@ -7,6 +8,7 @@ import ProgressBar from './components/ProgressBar.vue'
 import DetailCenter from './components/DetailCenter.vue'
 import LyricContainer from './components/LyricContainer.vue'
 import DetailRight from './components/DetailRight.vue'
+import PlayDrawer from './components/PlayDrawer.vue'
 
 const playerVisible = ref(false)
 const songDetail = ref({})
@@ -20,6 +22,9 @@ const show = async (id) => {
   try {
     const detailRes = await getSongDetail(id)
     songDetail.value = detailRes.songs[0]
+    // 将该歌曲数据添加至播放列表
+    musicStore.addSong(id)
+    musicStore.addSongInfo(songDetail.value)
 
     const urlRes = await getSongUrl(
       id,
@@ -78,6 +83,36 @@ const timeupdate = (e) => {
   musicStore.updateTime(e.target.currentTime)
 }
 
+const end = () => {
+  // 播放结束，播放下一首
+  musicStore.stop = true
+  // 获取当前播放歌曲在播放列表中的 index
+  const currentSongId = musicStore.songInfo.id
+  const currentSongIndex = musicStore.preList.findIndex(
+    (id) => id === currentSongId
+  )
+  const preSongCount = musicStore.preList.length
+  // 顺序播放
+  if (musicStore.mode === 1) {
+    show(musicStore.preList[(currentSongIndex + 1) % preSongCount])
+  }
+  // 单曲循环
+  if (musicStore.mode === 2) {
+    show(currentSongId)
+  }
+  // 随机播放
+  if (musicStore.mode === 3) {
+    // 随机一个不为 currentSongId 的随机数
+    let randomSongIndex = Math.floor(Math.random() * preSongCount)
+    while (randomSongIndex === currentSongIndex) {
+      if (randomSongIndex !== currentSongIndex) break
+      randomSongIndex = Math.floor(Math.random() * preSongCount)
+    }
+    const randomSongId = musicStore.preList[randomSongIndex]
+    show(randomSongId)
+  }
+}
+
 // 进度条相关
 const progressChange = (val) => {
   timeState.value.stop = true
@@ -114,6 +149,23 @@ const handlePlay = () => {
 const volumeUpdate = (val) => {
   audio.value.volume = val
 }
+
+// 播放列表相关
+const drawer = ref(null)
+const handleOpenDrawer = () => {
+  // 展开逻辑冲突
+  // drawer.value.openDrawer()
+}
+
+const route = useRoute()
+watch(
+  () => route.fullPath,
+  () => {
+    // 切换页面时, 暂停播放, 收起歌曲页
+    handlePause()
+    songShow.value = false
+  }
+)
 </script>
 
 <template>
@@ -282,6 +334,7 @@ const volumeUpdate = (val) => {
           <detail-right
             @input="volumeUpdate"
             @volume="volumeUpdate"
+            @open="handleOpenDrawer"
           ></detail-right>
         </div>
       </div>
@@ -410,6 +463,7 @@ const volumeUpdate = (val) => {
         <detail-right
           @input="volumeUpdate"
           @volume="volumeUpdate"
+          @open="handleOpenDrawer"
         ></detail-right>
       </div>
     </div>
@@ -426,6 +480,7 @@ const volumeUpdate = (val) => {
         @mouseup="handleMouseUp"
       ></progress-bar>
     </div>
+    <play-drawer ref="drawer"></play-drawer>
   </div>
 </template>
 

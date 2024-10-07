@@ -70,6 +70,8 @@ const getAspectRatio = () => {
     const videoWidth = bigPlayer.value.videoWidth
     const videoHeight = bigPlayer.value.videoHeight
     aspectRatio.value = (videoWidth / videoHeight).toFixed(2)
+    // 要求限位大于1.6
+    aspectRatio.value = aspectRatio.value > 1.6 ? aspectRatio.value : 1.6
   }
 }
 </script>
@@ -88,6 +90,7 @@ const getAspectRatio = () => {
         class="absolute"
         @loadedmetadata="getAspectRatio"
         :class="showSmallPlayer ? 'sm-vi' : ''"
+        :style="{ 'aspect-ratio': aspectRatio }"
       ></video>
       <div
         class="placeholder wh-full"
