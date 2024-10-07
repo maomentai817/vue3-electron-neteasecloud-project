@@ -29,21 +29,6 @@ export const useMusicStore = defineStore(
     const modeChange = () => {
       mode.value = ((mode.value + 1) % 3) + 1
     }
-    // // 添加歌曲 ID 至播放列表，头插且去重
-    // const addSong = (id) => {
-    //   preList.value = [
-    //     id,
-    //     ...preList.value.filter((existingId) => existingId !== id)
-    //   ]
-    // }
-
-    // // 添加歌曲信息至播放列表，头插且去重
-    // const addSongInfo = (info) => {
-    //   preListInfo.value = [
-    //     info,
-    //     ...preListInfo.value.filter((song) => song.id !== info.id)
-    //   ]
-    // }
     // 添加歌曲 ID 至播放列表
     const addSong = (id) => {
       // 去重

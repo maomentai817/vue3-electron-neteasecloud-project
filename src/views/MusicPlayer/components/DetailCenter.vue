@@ -41,6 +41,24 @@ const pause = () => {
   pauseToggle()
   emits('pause')
 }
+
+const songChange = (target) => {
+  // 获取当前播放歌曲在播放列表中的 index
+  const currentSongId = musicStore.songInfo.id
+  const currentSongIndex = musicStore.preList.findIndex(
+    (id) => id === currentSongId
+  )
+  const preSongCount = musicStore.preList.length
+  // 下一首
+  if (target)
+    window.$player.show(
+      musicStore.preList[(currentSongIndex + 1) % preSongCount]
+    )
+  else
+    window.$player.show(
+      musicStore.preList[(currentSongIndex - 1 + preSongCount) % preSongCount]
+    )
+}
 </script>
 
 <template>
@@ -58,7 +76,7 @@ const pause = () => {
         ></path>
       </svg>
     </div>
-    <div class="prev cp">
+    <div class="prev cp" @click="songChange(false)">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -116,7 +134,7 @@ const pause = () => {
         </g>
       </svg>
     </div>
-    <div class="next cp">
+    <div class="next cp" @click="songChange(true)">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
