@@ -18,9 +18,12 @@ const yrc = ref([])
 
 const colors = ref(['#13131a', '#13131a'])
 const musicStore = useMusicStore()
+// 音乐资源是否存在
+const isExist = ref(true)
 const show = async (id) => {
   musicStore.updateTime(0)
-  audio.value.currentTime = 0
+  isExist.value = true
+  if (audio.value) audio.value.currentTime = 0
   playerVisible.value = true
   try {
     const detailRes = await getSongDetail(id)
@@ -36,6 +39,7 @@ const show = async (id) => {
     songUrl.value = urlRes.data[0]
     // 歌曲无资源处理
     if (songUrl.value.url === null) {
+      isExist.value = false
       ElNotification({
         title: '歌曲无资源',
         message: '请尝试切换其他歌曲',
@@ -45,7 +49,7 @@ const show = async (id) => {
       musicStore.mode = 1
       setTimeout(() => {
         end()
-      }, 2000)
+      }, 4500)
     }
 
     // color-thief
@@ -267,7 +271,9 @@ watch(
             :lrc="lrc"
             :yrc="yrc"
             :songShow="songShow"
+            :isExist="isExist"
             @lyric="progressChange"
+            v-if="isExist"
           ></lyric-container>
         </div>
       </div>

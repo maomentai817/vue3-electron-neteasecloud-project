@@ -14,6 +14,10 @@ const props = defineProps({
   songShow: {
     type: Boolean,
     default: false
+  },
+  isExist: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -91,6 +95,7 @@ watch(
     artistInfo.value = convertArray(artistInfo.value)
 
     lrcs.value = [...artistInfo.value, ...lrcs.value]
+    console.log(props.yrc)
   }
 )
 
@@ -157,7 +162,7 @@ const scrollToActiveLyric = () => {
         :class="musicStore.stop ? '' : 'pointer-on'"
       ></div>
     </div>
-    <div class="lyric-content f-1 wh-full fd-col p-r-30 p-b-20">
+    <div class="lyric-content f-1 wh-full fd-col p-r-30 p-b-20" v-if="isExist">
       <div class="song-des">
         <div class="song-name m-b-10">
           <span class="name fs-26 fw-600 color-#fff">{{
