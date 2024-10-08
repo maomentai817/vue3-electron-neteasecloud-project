@@ -25,6 +25,28 @@ const tabChange = (target) => {
 const artistInfo = ref([])
 const lrcs = ref([])
 
+// 歌词格式二次转换
+const parseLyrics = (arr) => {
+  return arr
+    .filter((item) => item.trim() !== '') // 过滤掉空字符串
+    .map((item) => {
+      // 使用正则表达式解析时间和歌词文本
+      const match = item.match(/\[(\d{2}):(\d{2}\.\d{1,3})\](.*)/)
+      if (match) {
+        const minutes = parseInt(match[1])
+        const seconds = parseFloat(match[2])
+        const timeInMs = (minutes * 60 + seconds) * 1000
+        const text = match[3].trim()
+        return {
+          time: Math.ceil(timeInMs),
+          txt: text
+        }
+      }
+      return null
+    })
+    .filter((item) => item !== null) // 过滤掉无效的匹配
+}
+
 // 切歌
 watch(
   () => props.lrc[0],
@@ -37,6 +59,7 @@ watch(
       if (item[0] === '[') lrcs.value.push(item)
       if (item[0] === '{') artistInfo.value.push(item)
     })
+    lrcs.value = parseLyrics(lrcs.value)
   }
 )
 </script>
@@ -134,7 +157,7 @@ watch(
                   v-for="(item, index) in lrcs"
                   :key="index"
                 >
-                  {{ item }}
+                  {{ item.txt }}
                 </div>
               </div>
             </div>

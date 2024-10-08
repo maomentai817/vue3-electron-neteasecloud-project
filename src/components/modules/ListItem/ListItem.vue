@@ -272,5 +272,8 @@ setInterval(() => {
 }
 .playing {
   color: #fc3d49 !important;
+  :deep(.highlight) {
+    color: #fc3d49 !important;
+  }
 }
 </style>

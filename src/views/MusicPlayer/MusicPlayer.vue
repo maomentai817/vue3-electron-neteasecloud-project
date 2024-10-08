@@ -19,6 +19,8 @@ const yrc = ref([])
 const colors = ref(['#13131a', '#13131a'])
 const musicStore = useMusicStore()
 const show = async (id) => {
+  musicStore.updateTime(0)
+  audio.value.currentTime = 0
   playerVisible.value = true
   try {
     const detailRes = await getSongDetail(id)
@@ -32,6 +34,19 @@ const show = async (id) => {
       detailRes?.privileges[0]?.playMaxBrLevel
     )
     songUrl.value = urlRes.data[0]
+    // 歌曲无资源处理
+    if (songUrl.value.url === null) {
+      ElNotification({
+        title: '歌曲无资源',
+        message: '请尝试切换其他歌曲',
+        type: 'error'
+      })
+      document.querySelector('.list-draw').click()
+      musicStore.mode = 1
+      setTimeout(() => {
+        end()
+      }, 2000)
+    }
 
     // color-thief
     const colorRes = await getMaxColorDifference(songDetail.value?.al?.picUrl)
