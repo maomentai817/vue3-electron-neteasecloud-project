@@ -13,7 +13,8 @@ import PlayDrawer from './components/PlayDrawer.vue'
 const playerVisible = ref(false)
 const songDetail = ref({})
 const songUrl = ref({})
-const lyric = ref('')
+const lrc = ref([])
+const yrc = ref([])
 
 const colors = ref(['#13131a', '#13131a'])
 const musicStore = useMusicStore()
@@ -51,7 +52,12 @@ const show = async (id) => {
       previousTime: 0
     }
     // 获取逐字歌词
-    lyric.value = (await getLyric(id))?.lrc?.lyric
+    // lyric.value = (await getLyric(id))?.lrc?.lyric
+    const lyricRes = await getLyric(id)
+    // 逐行
+    lrc.value = lyricRes?.lrc?.lyric?.split('\n')
+    // 逐字
+    yrc.value = lyricRes?.yrc?.lyric?.split('\n')
   } catch (error) {
     console.error(error)
   }
@@ -59,8 +65,18 @@ const show = async (id) => {
 
 // 单曲播放详情
 const songShow = ref(false)
-const toggleShow = () => {
+const toggleShow = async () => {
   songShow.value = !songShow.value
+  // color-thief
+  // const colorRes = await getMaxColorDifference(songDetail.value?.al?.picUrl)
+  // colors.value = colorRes?.map((i) => `rgb(${i[0]}, ${i[1]}, ${i[2]})`)
+  // globalStore.setColors(colors.value[0], colors.value[1])
+  // 主色
+  if (songDetail.value?.al?.picUrl) {
+    getDominantColor(songDetail.value?.al?.picUrl).then((color) => {
+      globalStore.setColor(color)
+    })
+  }
 }
 const globalStore = useGlobalStore()
 defineExpose({ show, playerVisible, songShow })
@@ -232,7 +248,7 @@ watch(
         </div>
         <!-- 歌词区域 -->
         <div class="lyric-area p-t-90 absolute top-0 left-0 wh-full">
-          <lyric-container :lyric="lyric"></lyric-container>
+          <lyric-container :lrc="lrc" :yrc="yrc"></lyric-container>
         </div>
       </div>
       <div
