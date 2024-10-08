@@ -263,7 +263,12 @@ watch(
         </div>
         <!-- 歌词区域 -->
         <div class="lyric-area p-t-90 absolute top-0 left-0 wh-full">
-          <lyric-container :lrc="lrc" :yrc="yrc"></lyric-container>
+          <lyric-container
+            :lrc="lrc"
+            :yrc="yrc"
+            :songShow="songShow"
+            @lyric="progressChange"
+          ></lyric-container>
         </div>
       </div>
       <div
@@ -517,8 +522,8 @@ watch(
 
 <style lang="scss" scoped>
 .music-player-container {
-  transition: all 0.3s ease;
   .show {
+    transition: all 0.3s ease;
     transform: translateY(0) !important;
   }
   .collect,

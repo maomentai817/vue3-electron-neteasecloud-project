@@ -1,6 +1,6 @@
 <script setup>
 import { useMusicStore, useGlobalStore } from '@/stores'
-import { ref, watch } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 
 const props = defineProps({
   lrc: {
@@ -10,6 +10,10 @@ const props = defineProps({
   yrc: {
     type: Array,
     default: () => []
+  },
+  songShow: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -37,6 +41,9 @@ const parseLyrics = (arr) => {
         const seconds = parseFloat(match[2])
         const timeInMs = (minutes * 60 + seconds) * 1000
         const text = match[3].trim()
+        if (text === '') {
+          return null
+        }
         return {
           time: Math.ceil(timeInMs),
           txt: text
@@ -46,8 +53,27 @@ const parseLyrics = (arr) => {
     })
     .filter((item) => item !== null) // 过滤掉无效的匹配
 }
+const convertArray = (arr) => {
+  if (arr?.length === 0) return
+  return arr?.map((item) => {
+    // 将 c 数组中的文本拼接起来
+    item = JSON.parse(item)
+    const text = item.c
+      ?.map((element) => {
+        return element.tx
+      })
+      .join('')
+
+    return {
+      time: item.t,
+      txt: text
+    }
+  })
+}
 
 // 切歌
+// 纯音乐标志
+const pureMusic = ref(false)
 watch(
   () => props.lrc[0],
   () => {
@@ -55,13 +81,62 @@ watch(
     // 数据处理
     lrcs.value = []
     artistInfo.value = []
+    pureMusic.value = false
     props.lrc.forEach((item) => {
       if (item[0] === '[') lrcs.value.push(item)
       if (item[0] === '{') artistInfo.value.push(item)
     })
     lrcs.value = parseLyrics(lrcs.value)
+    if (lrcs.value.length === 1) pureMusic.value = true
+    artistInfo.value = convertArray(artistInfo.value)
+
+    lrcs.value = [...artistInfo.value, ...lrcs.value]
   }
 )
+
+const timerTansform = (seconds) => {
+  // 将秒转换为 xx:xx
+  seconds = parseInt(seconds)
+  const minutes = Math.floor(seconds / 60)
+  const secondLeft = seconds % 60
+  return `${('0' + minutes).slice(-2)}:${('0' + secondLeft).slice(-2)}`
+}
+
+const emit = defineEmits(['lyric'])
+// 点击切换歌词
+const lyricChange = (time) => {
+  emit('lyric', time / 1000)
+}
+
+const activeLyric = ref(0)
+// 监听时间变化
+watch(
+  () => musicStore.currentTime,
+  (currentTime) => {
+    // 寻找对应时间的歌词索引
+    const index = lrcs.value.findIndex(
+      (item) => item.time >= currentTime * 1000
+    )
+    if (index !== -1) {
+      activeLyric.value = index - 1
+      if (props.songShow) scrollToActiveLyric()
+    }
+  }
+)
+
+// 滚动到当前歌词
+const lyricList = ref(null)
+const scrollToActiveLyric = () => {
+  nextTick(() => {
+    const activeLyric = lyricList.value.querySelector('.lrc-active')
+    if (activeLyric) {
+      activeLyric.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end'
+      })
+    }
+  })
+}
 </script>
 
 <template>
@@ -82,7 +157,7 @@ watch(
         :class="musicStore.stop ? '' : 'pointer-on'"
       ></div>
     </div>
-    <div class="lyric-content f-1 wh-full fd-col p-r-30 p-b-30">
+    <div class="lyric-content f-1 wh-full fd-col p-r-30 p-b-20">
       <div class="song-des">
         <div class="song-name m-b-10">
           <span class="name fs-26 fw-600 color-#fff">{{
@@ -97,7 +172,7 @@ watch(
         </div>
         <div class="desc-content fs-16 color-#f2f2f2 f-s">
           <span
-            class="album w-40% text-overflow m-r-30"
+            class="album w-220 text-overflow m-r-30"
             v-if="musicStore.songInfo?.al?.id"
             >专辑:
             <span
@@ -107,7 +182,7 @@ watch(
             >
           </span>
           <span
-            class="singer w-40% text-overflow"
+            class="singer w-260 text-overflow"
             v-if="musicStore.songInfo?.ar?.length"
             >歌手:
             <template
@@ -147,18 +222,32 @@ watch(
           >相似推荐</a
         >
       </div>
-      <el-scrollbar>
-        <div class="m-tabs m-t-15 f-1">
+      <el-scrollbar class="translate-x--60 duration-400 m-t-15 f-1">
+        <div class="m-tabs m-t-15">
           <div class="tab-content wh-full">
             <div class="tab1 wh-full" v-show="active === 0">
-              <div class="lyric-list w-full">
-                <div
-                  class="lyric-item"
-                  v-for="(item, index) in lrcs"
-                  :key="index"
+              <div class="lyric-list w-full" ref="lyricList">
+                <template v-if="pureMusic">
+                  <div
+                    class="lyric-item cp translate-x-60 p-x-25 p-y-15 rounded-15 fw-600 fs-20 hover:bg-#ffffff2e"
+                  >
+                    <span class="lyric-text">纯音乐，请欣赏</span>
+                  </div>
+                </template>
+                <template v-else>
+                  <div
+                    class="lyric-item cp p-x-25 p-y-15 f-s rounded-15 fw-500 fs-20 hover:bg-#ffffff2e"
+                    v-for="(item, index) in lrcs"
+                    :key="index"
+                    @click="lyricChange(item.time)"
+                    :class="{ 'lrc-active': index === activeLyric }"
+                  >
+                    <span class="time fs-11 m-r-20 opacity-0 w-38">{{
+                      timerTansform(parseInt(item.time / 1000))
+                    }}</span>
+                    <span class="txt">{{ item.txt }}</span>
+                  </div></template
                 >
-                  {{ item.txt }}
-                </div>
               </div>
             </div>
             <div class="tab2 wh-full" v-show="active === 1">百科</div>
@@ -220,7 +309,6 @@ watch(
     .tabs-boxed {
       border-radius: 14px;
       background-color: rgba(255, 255, 255, 0.1);
-      // background-color: transparent;
       color: #fff !important;
       .tab {
         color: #fff;
@@ -228,7 +316,6 @@ watch(
       .tab-active:not(.tab-disabled):not([disabled]) {
         border-radius: 12px;
         color: v-bind('globalStore.colors[1]') !important;
-        // color: v-bind('globalStore.color') !important;
         filter: brightness(120%);
         background-color: transparent;
         backdrop-filter: blur(60px) saturate(210%);
@@ -238,10 +325,44 @@ watch(
       .tab-content {
         color: v-bind('globalStore.colors[1]');
       }
+      .lyric-list {
+        padding-bottom: 32vh;
+        .lyric-item {
+          &:hover {
+            .time {
+              opacity: 1;
+            }
+          }
+        }
+      }
     }
   }
   :deep(.el-scrollbar__bar) {
-    background-color: transparent;
+    display: none;
+  }
+  :deep(.el-scrollbar) {
+    height: calc(100% + 65px);
+    mask-image: linear-gradient(
+      to bottom,
+      transparent,
+      black 30%,
+      black 70%,
+      transparent
+    );
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent,
+      black 30%,
+      black 70%,
+      transparent
+    );
+  }
+  .lrc-active {
+    color: #fff !important;
+    font-size: 26px;
+    font-weight: 520;
+    text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
+    scroll-margin-bottom: 32vh;
   }
 }
 @keyframes imgRotate {
