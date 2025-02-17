@@ -11,6 +11,7 @@ import UnoCSS from 'unocss/vite'
 import { presetUno } from 'unocss'
 import { presetDaisy } from 'unocss-preset-daisy'
 import optimizer from 'vite-plugin-optimizer'
+import legacy from '@vitejs/plugin-legacy'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -18,9 +19,13 @@ export default defineConfig({
     host: 'localhost',
     port: 5173
   },
+  base: './',
   mode: 'development',
   plugins: [
     vue(),
+    legacy({
+      targets: ['defaults', 'not IE 11']
+    }),
     optimizer({
       electron: `const { ipcRenderer } = require('electron'); export { ipcRenderer };`
     }),
