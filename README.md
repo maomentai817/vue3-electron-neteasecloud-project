@@ -6,6 +6,16 @@
 node_modules/vue3-video-play/package.json 文件  修改为"module": "./dist/index.mjs",
 ```
 
+### 高德 apikey 注册
+```bash
+// 网易云个人主页返回 ip 包含地区城市码
+// 该项目不提供对应字典, 采用调用高德地图接口方式返回对应城市名称
+// 仅供学习, 请勿用于商业用途
+// key 服务平台选择 Web服务
+
+// 修改位置相对路径: src\api\user.js
+```
+
 ## 安装
 ### 1.安装本地服务器
 ```bash
