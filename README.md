@@ -1,4 +1,20 @@
 # Vue3 + Electron 构建的仿网易云桌面端应用
+
+## 效果图
+![](./src/assets/readme/1.png)
+![](./src/assets/readme/2.png)
+![](./src/assets/readme/3.png)
+![](./src/assets/readme/4.png)
+![](./src/assets/readme/5.png)
+![](./src/assets/readme/6.png)
+![](./src/assets/readme/7.png)
+![](./src/assets/readme/8.png)
+![](./src/assets/readme/9.png)
+![](./src/assets/readme/10.png)
+![](./src/assets/readme/11.png)
+![](./src/assets/readme/12.png)
+![](./src/assets/readme/13.png)
+
 ### 逐字歌词播放待实现
 ### vue3-video-play 注意 -- (弃用, 转原生video封装)
 包入口出错, 解决方案
@@ -51,20 +67,6 @@ pnpm electron -- 启动 electron 开发环境, 保证访问端口号同步, 检�
 出于网易云安全策略问题, 仅提供二维码登录, 请使用网易云音乐APP扫码登录
 ```
 
-## 效果图
-![](./src/assets/readme/1.png)
-![](./src/assets/readme/2.png)
-![](./src/assets/readme/3.png)
-![](./src/assets/readme/4.png)
-![](./src/assets/readme/5.png)
-![](./src/assets/readme/6.png)
-![](./src/assets/readme/7.png)
-![](./src/assets/readme/8.png)
-![](./src/assets/readme/9.png)
-![](./src/assets/readme/10.png)
-![](./src/assets/readme/11.png)
-![](./src/assets/readme/12.png)
-![](./src/assets/readme/13.png)
 
 ## Electron API
 ```js
